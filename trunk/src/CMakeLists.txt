@@ -10,7 +10,8 @@ SET( SRC main.cpp
         nzbfile.cpp
         nzbhandler.cpp
         nzbreader.cpp
-		nzbmodel.cpp )
+        nzbmodel.cpp
+        nzbwidget.cpp )
 ADD_DEFINITIONS( ${KDE4_DEFINITIONS} ${QT_DEFINITIONS} )
 KDE4_ADD_EXECUTABLE( knewz ${SRC} )
 LINK_DIRECTORIES( knewz ${KDE4_LIB_DIR} )

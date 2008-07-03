@@ -44,6 +44,10 @@ bool NzbHandler::endDocument()
 bool NzbHandler::startElement( const QString &/*namespaceURI*/, const QString &/*localName*/,
                                const QString &qName, const QXmlAttributes &atts )
 {
+    if( qName == "nzb" ){
+        nzbFiles = new NzbFile( m_filename );
+    }
+
     if( qName == "file" ){
         currentFile = new File();
         currentSubject = atts.value( "subject" );
@@ -71,7 +75,7 @@ bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*l
     if( qName == "file" ){
         currentFile->setBytes( file_bytes );
         currentFile->setGroups( groups );
-        files.append( currentFile );
+        nzbFiles->append( currentFile );
         nzbfile_bytes += file_bytes;
         currentText.clear();
         file_bytes = 0;
@@ -83,7 +87,12 @@ bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*l
     }
 
     if( qName == "nzb" ){
+        nzbFiles->setBytes( nzbfile_bytes );
         nzbfile_bytes = 0;
+
+        for( int i = 0, size = nzbFiles->size(); i < size; i++ ){
+            nzbFiles->at( i )->setParent( nzbFiles );
+        }
     }
 
     return true;
@@ -102,9 +111,4 @@ bool NzbHandler::fatalError( const QXmlParseException& exception )
                << exception.message();
 
     return false;
-}
-
-NzbFile* NzbHandler::nzbFile()
-{
-    return &files;
 }

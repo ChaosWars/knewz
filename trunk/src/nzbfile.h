@@ -21,19 +21,21 @@
 #define NZBFILE_H
 
 #include <QtCore>
+#include "basetype.h"
 
 class File;
 
 /**
 	@author Lawrence Lee <valheru@facticius.net>
 */
-class NzbFile : public QList<File*>{
+class NzbFile : public QList<File*>, BaseType
+{
     public:
 
         /**
          * Default constructor
          */
-        NzbFile( const quint32 &bytes = 0, const QString &filename = QString() );
+        NzbFile( const QString &filename = QString(), quint32 bytes = 0 );
 
         /**
          * Default destructor
@@ -45,32 +47,34 @@ class NzbFile : public QList<File*>{
          *  @param filename
          *      the filename of the file.
          */
-        void setFilename( const QString filename ){ m_filename = filename; }
+        void setFilename( const QString &filename ){ m_filename = filename; }
 
         /**
          *  Access function for the filename of the file.
          *  @return
          *      The filename of the file.
          */
-        const QString filename(){ return m_filename; }
+        const QString filename() const{ return m_filename; }
 
         /**
          *  Sets the size of the file in bytes.
          *  @param bytes
          *      the size of the file in bytes.
          */
-        void setBytes( const quint32 bytes ){ m_bytes = bytes; }
+        void setBytes( quint32 bytes ){ m_bytes = bytes; }
 
         /**
          *  Access function for the size of the file.
          *  @return
          *      the size of the file in bytes.
          */
-        quint32 bytes(){ return m_bytes; }
+        quint32 bytes() const{ return m_bytes; }
+
+        const QString type() const{ return QString( "NzbFile" ); }
 
     private:
-        quint32 m_bytes;
         QString m_filename;
+        quint32 m_bytes;
 };
 
 #endif

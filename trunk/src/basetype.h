@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Lawrence Lee   *
+ *   Copyright (C) 2007 by Lawrence Lee   *
  *   valheru@facticius.net   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "file.h"
+#ifndef BASETYPE_H
+#define BASETYPE_H
 
-File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
-    : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
-{
-}
+/**
+	@author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+*/
+class BaseType{
 
-File::~File()
-{
-}
+    public:
+        BaseType(){};
+        virtual ~BaseType(){};
+        virtual const QString type() const = 0;
+
+};
+
+#endif

@@ -17,6 +17,7 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include <KDE/KDebug>
 #include "nzbmodel.h"
 #include "nzbfile.h"
 #include "file.h"
@@ -60,6 +61,7 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
         }
 
     }else{
+
         switch( index.column() ){
             case 0:
                 if( role == Qt::CheckStateRole )
@@ -72,6 +74,7 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
                 return QVariant();
                 break;
         }
+
     }
 
     return QVariant();
@@ -101,12 +104,16 @@ QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) co
     if( !parent.isValid() )
         return createIndex( row, column, m_nzbFiles.at( row ) );
 
-    NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
+    BaseType *base = static_cast< BaseType* >( parent.internalPointer() );
+    NzbFile *nzbFile;
 
-    if( !nzbFile )
+    if( base->type() == "NzbFile" ){
+        nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
+    }else{
         return QModelIndex();
+    }
 
-    File *file = nzbFile->at( row );
+    File *file = nzbFile->value( row );
 
     if( !file )
         return QModelIndex();
@@ -119,22 +126,22 @@ QModelIndex NzbModel::parent( const QModelIndex &index ) const
     if ( !index.isValid() )
         return QModelIndex();
 
-    File *file = static_cast< File* >( index.internalPointer() );
+    BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+    File *file;
 
-    if( !file )
+    if( base->type() == "File" ){
+        file = static_cast< File* >( index.internalPointer() );
+    }else{
         return QModelIndex();
+    }
 
     NzbFile *nzbFile = file->parent();
-
-    if ( !nzbFile )
-        return QModelIndex();
-
     return createIndex( m_nzbFiles.indexOf( nzbFile ), 0, nzbFile );
 }
 
 int NzbModel::rowCount( const QModelIndex &parent ) const
 {
-    if( parent.row() > 1 )
+    if( parent.column() > 1 )
         return 0;
 
     if ( !parent.isValid() )
