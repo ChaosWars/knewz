@@ -20,15 +20,22 @@
 #ifndef BASETYPE_H
 #define BASETYPE_H
 
+#include <QtCore>
+
 /**
 	@author Lawrence Lee <valheru.ashen.shugar@gmail.com>
 */
 class BaseType{
 
     public:
-        BaseType(){};
+        BaseType( Qt::CheckState state = Qt::Checked ) : m_state( state ){};
         virtual ~BaseType(){};
+        Qt::CheckState state() const{ return m_state; }
+        void setState( Qt::CheckState state ){ m_state = state; }
         virtual const QString type() const = 0;
+
+    private:
+        Qt::CheckState m_state;
 
 };
 
