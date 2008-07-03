@@ -31,8 +31,8 @@ class Segment
         Segment( const QString &id, const int &nr, const quint32 &bytes );
         ~Segment();
         const QString id(){ return m_id; }
-        const int nr(){ return m_nr; }
-        const quint32 bytes(){ return m_bytes; }
+        int nr(){ return m_nr; }
+        quint32 bytes(){ return m_bytes; }
 
     private:
         QString m_id;

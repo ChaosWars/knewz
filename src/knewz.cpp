@@ -43,7 +43,7 @@ KNewz::KNewz( QWidget *parent ) : KXmlGuiWindow( parent )
     setupActions();
     setupAccel();
     config = KGlobal::config();
-    createGUI( "knewz2/knewz2ui.rc" );
+    createGUI( "knewz/knewzui.rc" );
     setAutoSaveSettings();
 }
 
@@ -134,9 +134,10 @@ void KNewz::urlOpen()
 
     if( files.size() > 0 ){
         NzbReader reader;
+        QList<NzbFile*> nzbfiles;
 
         for( int i = 0; i < files.size(); i++ ){
-            openUrl( files.at( i ) );
+            nzbfiles.append( reader.parseData( files.at( i ) ) );
         }
 
     }

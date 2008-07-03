@@ -1,0 +1,149 @@
+/***************************************************************************
+ *   Copyright (C) 2007 by Lawrence Lee   *
+ *   valheru@facticius.net   *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+#include "nzbmodel.h"
+#include "nzbfile.h"
+#include "file.h"
+
+NzbModel::NzbModel( QObject *parent, const QList<NzbFile*> &nzbfiles )
+    : QAbstractItemModel( parent ), m_nzbFiles( nzbfiles )
+{
+    rootItem << "Subject" << "Size";
+}
+
+NzbModel::~NzbModel()
+{
+}
+
+int NzbModel::columnCount( const QModelIndex &/*parent*/ ) const
+{
+    return 2;
+}
+
+QVariant NzbModel::data( const QModelIndex &index, int role ) const
+{
+    if ( !index.isValid() )
+        return QVariant();
+
+    if ( role != Qt::DisplayRole )
+        return QVariant();
+
+    const QModelIndex parentIndex = index.parent();
+
+    if( !parentIndex.isValid() ){
+
+        switch( index.column() ){
+            case 0:
+                return m_nzbFiles.at( index.row() )->filename();
+                break;
+            case 1:
+                return m_nzbFiles.at( index.row() )->bytes();
+                break;
+            default:
+                break;
+        }
+
+    }else{
+        switch( index.column() ){
+            case 0:
+                if( role == Qt::CheckStateRole )
+                    return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
+                break;
+            case 1:
+                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->bytes();
+                break;
+            default:
+                return QVariant();
+                break;
+        }
+    }
+
+    return QVariant();
+}
+
+Qt::ItemFlags NzbModel::flags( const QModelIndex &index ) const
+{
+    if ( !index.isValid() )
+        return 0;
+
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+}
+
+QVariant NzbModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+    if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
+        return rootItem.at( section );
+
+    return QVariant();
+}
+
+QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) const
+{
+    if( !hasIndex( row, column, parent ) )
+        return QModelIndex();
+
+    if( !parent.isValid() )
+        return createIndex( row, column, m_nzbFiles.at( row ) );
+
+    NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
+
+    if( !nzbFile )
+        return QModelIndex();
+
+    File *file = nzbFile->at( row );
+
+    if( !file )
+        return QModelIndex();
+
+    return createIndex( row, column, file );
+}
+
+QModelIndex NzbModel::parent( const QModelIndex &index ) const
+{
+    if ( !index.isValid() )
+        return QModelIndex();
+
+    File *file = static_cast< File* >( index.internalPointer() );
+
+    if( !file )
+        return QModelIndex();
+
+    NzbFile *nzbFile = file->parent();
+
+    if ( !nzbFile )
+        return QModelIndex();
+
+    return createIndex( m_nzbFiles.indexOf( nzbFile ), 0, nzbFile );
+}
+
+int NzbModel::rowCount( const QModelIndex &parent ) const
+{
+    if( parent.row() > 1 )
+        return 0;
+
+    if ( !parent.isValid() )
+        return m_nzbFiles.size();
+
+    if( !parent.parent().isValid() )
+        return m_nzbFiles.at( parent.row() )->size();
+
+    return 0;
+}
+
+#include "nzbmodel.moc"

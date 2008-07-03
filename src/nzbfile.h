@@ -66,7 +66,7 @@ class NzbFile : public QList<File*>{
          *  @return
          *      the size of the file in bytes.
          */
-        const quint32 bytes(){ return m_bytes; }
+        quint32 bytes(){ return m_bytes; }
 
     private:
         quint32 m_bytes;
