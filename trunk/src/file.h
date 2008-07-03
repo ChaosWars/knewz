@@ -42,6 +42,8 @@ class File : public QList<Segment*>, BaseType
     public:
 
         /**
+         * The default constructor.
+         *
          * @param parent
          * @param bytes
          * @param groups
@@ -110,6 +112,12 @@ class File : public QList<Segment*>, BaseType
          */
         void setSubject( const QString &subject ){ m_subject = subject; }
 
+        /**
+         * The type of the object. This is the implementation of the inherited function from
+         * the base class BaseType.
+         * @return
+         *      The type File.
+         */
         const QString type() const{ return QString( "File" ); };
 
     private:

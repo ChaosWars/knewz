@@ -42,6 +42,11 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
     if ( !index.isValid() )
         return QVariant();
 
+    if( role == Qt::CheckStateRole && index.column() == 0 ){
+        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+        return base->state();
+    }
+
     if ( role != Qt::DisplayRole )
         return QVariant();
 
@@ -64,8 +69,7 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
 
         switch( index.column() ){
             case 0:
-                if( role == Qt::CheckStateRole )
-                    return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
+                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
                 break;
             case 1:
                 return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->bytes();
@@ -85,7 +89,7 @@ Qt::ItemFlags NzbModel::flags( const QModelIndex &index ) const
     if ( !index.isValid() )
         return 0;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
 QVariant NzbModel::headerData( int section, Qt::Orientation orientation, int role ) const
