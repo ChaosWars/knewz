@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Lawrence Lee   *
+ *   Copyright (C) 2007 by Lawrence Lee   *
  *   valheru@facticius.net   *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,31 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "file.h"
+#ifndef NZBWIDGET_H
+#define NZBWIDGET_H
 
-File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
-    : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
-{
-}
+#include <QWidget>
 
-File::~File()
+class NzbFile;
+class NzbModel;
+class QTreeView;
+class QVBoxLayout;
+
+/**
+	@author 
+*/
+class NzbWidget : public QWidget
 {
-}
+    Q_OBJECT
+
+    public:
+        NzbWidget( const QList<NzbFile*> &nzbfiles );
+        ~NzbWidget();
+
+    private:
+        NzbModel *model;
+        QTreeView *view;
+        QVBoxLayout *layout;
+};
+
+#endif

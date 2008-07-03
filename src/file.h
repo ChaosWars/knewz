@@ -29,6 +29,7 @@
 #define FILE_H
 
 #include <QtCore>
+#include "basetype.h"
 
 class NzbFile;
 class Segment;
@@ -36,17 +37,17 @@ class Segment;
 /**
  *  Class implementing a QList of Segment that represents a file entry in a *.nzb file.
  */
-class File : public QList<Segment*>
+class File : public QList<Segment*>, BaseType
 {
     public:
 
         /**
-         *
+         * @param parent
          * @param bytes
          * @param groups
          * @param subject
          */
-        File( NzbFile *parent = NULL, const quint32 &bytes = 0, const QStringList &groups = QStringList(), const QString &subject = QString() );
+        File( NzbFile *parent = NULL, quint32 bytes = 0, const QStringList &groups = QStringList(), const QString &subject = QString() );
 
         /**
          * Default destructor
@@ -58,28 +59,28 @@ class File : public QList<Segment*>
          *  @return
          *      the size of the file in bytes.
          */
-        quint32 bytes(){ return m_bytes; }
+        quint32 bytes() const{ return m_bytes; }
 
         /**
          *  Sets the size of the file in bytes.
          *  @param bytes
          *      the size of the file in bytes.
          */
-        void setBytes( const quint32 bytes ){ m_bytes = bytes; }
+        void setBytes( quint32 bytes ){ m_bytes = bytes; }
 
         /**
          *  Access function for the groups of the file.
          *  @return
          *      The groups where the file can be downloaded.
          */
-        const QStringList groups(){ return m_groups; }
+        const QStringList groups() const{ return m_groups; }
 
         /**
          *  Sets the groups for the file.
          *  @param bytes
          *      The groups where the file can be downloaded.
          */
-        void setGroups( const QStringList groups ){ m_groups = groups; }
+        void setGroups( const QStringList &groups ){ m_groups = groups; }
 
         /**
          * Access function for the NZB file the file belongs to
@@ -100,14 +101,16 @@ class File : public QList<Segment*>
          *  @return
          *      The subject of the file.
          */
-        const QString subject(){ return m_subject; }
+        const QString subject() const{ return m_subject; }
 
         /**
          *  Sets the subject of the file.
          *  @param subject
          *      the subject of the file.
          */
-        void setSubject( const QString subject ){ m_subject = subject; }
+        void setSubject( const QString &subject ){ m_subject = subject; }
+
+        const QString type() const{ return QString( "File" ); };
 
     private:
         NzbFile *m_parent;

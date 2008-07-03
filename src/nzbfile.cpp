@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "nzbfile.h"
 
-NzbFile::NzbFile( const quint32 &bytes, const QString &filename )
-    : m_bytes( bytes ), m_filename( filename )
+NzbFile::NzbFile( const QString &filename, quint32 bytes )
+    : m_filename( filename ), m_bytes( bytes )
 {
 }
 

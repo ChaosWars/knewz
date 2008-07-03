@@ -34,7 +34,10 @@
 #include <QTreeView>
 #include "knewz.h"
 #include "nzbreader.h"
+#include "nzbwidget.h"
 #include "downloadqueue.h"
+#include "file.h"
+#include "segment.h"
 
 KNewz::KNewz( QWidget *parent ) : KXmlGuiWindow( parent )
 {
@@ -136,10 +139,35 @@ void KNewz::urlOpen()
         NzbReader reader;
         QList<NzbFile*> nzbfiles;
 
-        for( int i = 0; i < files.size(); i++ ){
+        for( int i = 0, size = files.size(); i < size; i++ ){
             nzbfiles.append( reader.parseData( files.at( i ) ) );
         }
 
+//         for( int i = 0, size = nzbfiles.size(); i < size; i++ ){
+//             NzbFile *nzbfile = nzbfiles.at( i );
+//             qDebug() << "file :" << nzbfile->filename();
+//             qDebug() << "size :" << nzbfile->bytes();
+//             qDebug() << "files :";
+// 
+//             for( int j = 0, jsize = nzbfile->size(); j < jsize; j++ ){
+//                 File *file = nzbfile->at( j );
+//                 qDebug() << "\n file :";
+//                 qDebug() << "   subject :" << file->subject();
+//                 qDebug() << "   bytes :" << file->bytes();
+//                 qDebug() << "   groups :" << file->groups();
+// 
+//                 for( int k = 0, ksize = file->size(); k < ksize; k++ ){
+//                     Segment *segment = file->at( k );
+//                     qDebug() << "\n     segment :";
+//                     qDebug() << "       nr :" << segment->nr();
+//                     qDebug() << "       id :" << segment->id();
+//                     qDebug() << "       bytes :" << segment->bytes();
+//                 }
+//             }
+//         }
+
+        NzbWidget *nzbwidget = new NzbWidget( nzbfiles );
+        nzbwidget->show();
     }
 }
 
