@@ -27,6 +27,10 @@ NzbHandler::NzbHandler()
     file_bytes = nzbfile_bytes = 0;
 }
 
+NzbHandler::~NzbHandler()
+{
+}
+
 bool NzbHandler::startDocument()
 {
     return true;
@@ -79,7 +83,6 @@ bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*l
     }
 
     if( qName == "nzb" ){
-        m_nzbfile = new NzbFile( nzbfile_bytes, m_filename );
         nzbfile_bytes = 0;
     }
 
@@ -103,5 +106,5 @@ bool NzbHandler::fatalError( const QXmlParseException& exception )
 
 NzbFile* NzbHandler::nzbFile()
 {
-    return m_nzbfile;
+    return &files;
 }

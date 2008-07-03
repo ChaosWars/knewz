@@ -31,9 +31,9 @@
 
 #include <QtXml>
 #include <QStringList>
+#include "nzbfile.h"
 
 class File;
-class NzbFile;
 
 /**
  *  Class implementing QXmlDefaultHandler in order to parse *.nzb files.
@@ -44,6 +44,11 @@ class NzbHandler : public QXmlDefaultHandler{
          *  Default constructor
          */
         NzbHandler();
+
+        /**
+         * Default destructor
+         */
+        ~NzbHandler();
 
         /**
          *  Reimplemented virtual function from QXmlDefaultHandler.
@@ -136,8 +141,7 @@ class NzbHandler : public QXmlDefaultHandler{
         QString currentSubject, currentBytes, currentNumber, currentText, m_filename;
         QStringList groups;
         File *currentFile;
-        QList<File*> files;
-        NzbFile* m_nzbfile;
+        NzbFile files;
         quint32 file_bytes, nzbfile_bytes;
 };
 

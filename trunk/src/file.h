@@ -30,6 +30,7 @@
 
 #include <QtCore>
 
+class NzbFile;
 class Segment;
 
 /**
@@ -45,7 +46,7 @@ class File : public QList<Segment*>
          * @param groups
          * @param subject
          */
-        File( const quint32 &bytes = 0, const QStringList &groups = QStringList(), const QString &subject = QString() );
+        File( NzbFile *parent = NULL, const quint32 &bytes = 0, const QStringList &groups = QStringList(), const QString &subject = QString() );
 
         /**
          * Default destructor
@@ -57,7 +58,7 @@ class File : public QList<Segment*>
          *  @return
          *      the size of the file in bytes.
          */
-        const quint32 bytes(){ return m_bytes; }
+        quint32 bytes(){ return m_bytes; }
 
         /**
          *  Sets the size of the file in bytes.
@@ -76,9 +77,23 @@ class File : public QList<Segment*>
         /**
          *  Sets the groups for the file.
          *  @param bytes
-         *      the groups where the file can be downloaded.
+         *      The groups where the file can be downloaded.
          */
         void setGroups( const QStringList groups ){ m_groups = groups; }
+
+        /**
+         * Access function for the NZB file the file belongs to
+         * @return
+         *      The parent of the file.
+         */
+        NzbFile* parent(){ return m_parent; }
+
+        /**
+         * Sets the parent of the file
+         * @param parent
+         *      The parent of the file.
+         */
+        void setParent( NzbFile *parent ){ m_parent = parent; }
 
         /**
          *  Access function for the subject of the file.
@@ -95,6 +110,7 @@ class File : public QList<Segment*>
         void setSubject( const QString subject ){ m_subject = subject; }
 
     private:
+        NzbFile *m_parent;
         quint32 m_bytes;
         QStringList m_groups;
         QString m_subject;

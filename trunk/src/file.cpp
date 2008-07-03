@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "file.h"
 
-File::File( const quint32 &bytes, const QStringList &groups, const QString &subject )
-    : m_bytes( bytes ), m_groups( groups ), m_subject( subject )
+File::File( NzbFile *parent, const quint32 &bytes, const QStringList &groups, const QString &subject )
+    : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
 {
 }
 
