@@ -4,7 +4,6 @@ INCLUDE_DIRECTORIES( ${KDE4_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURREN
 SET( SRC main.cpp
         knewz.cpp
         downloadqueue.cpp
-        downloadqueueobject.cpp
         segment.cpp
         file.cpp
         mainmodel.cpp

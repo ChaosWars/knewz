@@ -35,7 +35,7 @@ class MainModel : public QAbstractItemModel{
 
     public:
 
-        MainModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles );
+        MainModel( QTreeView *parent );
         ~MainModel();
         int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;

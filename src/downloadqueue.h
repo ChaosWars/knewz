@@ -21,21 +21,23 @@
 #define DOWNLOADQUEUE_H
 
 #include <QList>
+#include <QMutex>
 
 class NzbFile;
 
 /**
-	@author Lawrence Lee <valheru@facticius.net>
-*/
+ *  @author Lawrence Lee <valheru@facticius.net>
+ */
 class DownloadQueue{
     public:
         DownloadQueue();
         ~DownloadQueue();
-        static void append( NzbFile *nzbfile );
         static QList<NzbFile*> queue(){ return m_queue; }
+        static QMutex& mutex(){ return m_mutex; }
 
     private:
         static QList<NzbFile*> m_queue;
+        static QMutex m_mutex;
 };
 
 #endif
