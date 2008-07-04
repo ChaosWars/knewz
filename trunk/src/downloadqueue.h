@@ -22,6 +22,7 @@
 
 #include <QList>
 #include <QMutex>
+#include <QDebug>
 
 class NzbFile;
 
@@ -33,6 +34,7 @@ class DownloadQueue{
         DownloadQueue();
         ~DownloadQueue();
         static QList<NzbFile*> queue(){ return m_queue; }
+        static void append( const QList<NzbFile*> &nzbFiles );
         static QMutex& mutex(){ return m_mutex; }
 
     private:
