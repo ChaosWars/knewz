@@ -26,7 +26,7 @@
 MainModel::MainModel( QTreeView *parent )
     : QAbstractItemModel( parent ), view( parent )
 {
-    rootItem << "Subject" << "Size" << "Status";
+    rootItem << tr( "Subject" ) << ( "Size (MiB)" ) << ( "Status" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
 }
 
@@ -66,7 +66,7 @@ QVariant MainModel::data( const QModelIndex &index, int role ) const
                 return DownloadQueue::queue().at( index.row() )->filename();
                 break;
             case 1:
-                return DownloadQueue::queue().at( index.row() )->bytes();
+                return QString().setNum( DownloadQueue::queue().at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             default:
                 break;
@@ -79,7 +79,7 @@ QVariant MainModel::data( const QModelIndex &index, int role ) const
                 return DownloadQueue::queue().at( parentIndex.row() )->at( index.row() )->subject();
                 break;
             case 1:
-                return DownloadQueue::queue().at( parentIndex.row() )->at( index.row() )->bytes();
+                return QString().setNum( DownloadQueue::queue().at( parentIndex.row() )->at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             default:
                 return QVariant();

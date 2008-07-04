@@ -17,28 +17,28 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <KDE/KFileDialog>
-#include <KDE/KConfig>
-#include <KDE/KUrl>
-#include <KDE/KEditToolBar>
 #include <KDE/KAction>
-#include <KDE/KStandardAction>
-#include <KDE/KRecentFilesAction>
 #include <KDE/KActionCollection>
+#include <KDE/KConfig>
+#include <KDE/KEditToolBar>
+#include <KDE/KFileDialog>
+#include <KDE/KGlobal>
+#include <KDE/KLocale>
+#include <KDE/KMessageBox>
 #include <KDE/KPluginLoader>
 #include <KDE/KPluginFactory>
-#include <KDE/KMessageBox>
+#include <KDE/KRecentFilesAction>
+#include <KDE/KStandardAction>
 #include <KDE/KStatusBar>
-#include <KDE/KLocale>
-#include <KDE/KGlobal>
+#include <KDE/KUrl>
 #include <QTreeView>
-#include "knewz.h"
-#include "nzbreader.h"
-#include "nzbwidget.h"
 #include "downloadqueue.h"
 #include "file.h"
-#include "segment.h"
+#include "knewz.h"
 #include "mainmodel.h"
+#include "nzbdialog.h"
+#include "nzbreader.h"
+#include "segment.h"
 
 KNewz::KNewz( QWidget *parent ) : KXmlGuiWindow( parent )
 {
@@ -81,7 +81,10 @@ void KNewz::openUrl( const KUrl& url )
 {
     addRecentFile( url );
     NzbReader reader;
-//     DownloadQueue::append( reader.parseData( url.url() ) );
+    QList<NzbFile*> nzbFile;
+    nzbFile.append( reader.parseData( url.url() ) );
+    DownloadQueue::append( nzbFile );
+    model->changed();
 }
 
 void KNewz::optionsConfigureKeys()
@@ -148,61 +151,14 @@ void KNewz::urlOpen()
             nzbFiles.append( reader.parseData( files.at( i ) ) );
         }
 
-//         for( int i = 0, size = nzbFiles.size(); i < size; i++ ){
-//             NzbFile *nzbFile = nzbFiles.at( i );
-//             qDebug() << "file :" << nzbFile->filename();
-//             qDebug() << "size :" << nzbFile->bytes();
-//             qDebug() << "files :";
-// 
-//             for( int j = 0, jsize = nzbFile->size(); j < jsize; j++ ){
-//                 File *file = nzbFile->at( j );
-//                 qDebug() << "\n file :";
-//                 qDebug() << "   subject :" << file->subject();
-//                 qDebug() << "   bytes :" << file->bytes();
-//                 qDebug() << "   groups :" << file->groups();
-// 
-//                 for( int k = 0, ksize = file->size(); k < ksize; k++ ){
-//                     Segment *segment = file->at( k );
-//                     qDebug() << "\n     segment :";
-//                     qDebug() << "       nr :" << segment->nr();
-//                     qDebug() << "       id :" << segment->id();
-//                     qDebug() << "       bytes :" << segment->bytes();
-//                 }
-//             }
-//         }
+        NzbDialog *nzbDialog = new NzbDialog( this, nzbFiles );
+        nzbDialog->exec();
 
-//         qDebug() << DownloadQueue::queue();
-//         qDebug() << DownloadQueue::queue().size();
-        DownloadQueue::append( nzbFiles );
-        model->changed();
-//         qDebug() << DownloadQueue::queue();
-//         qDebug() << DownloadQueue::queue().size();
+        if( nzbDialog->result() == QDialog::Accepted ){
+            DownloadQueue::append( nzbFiles );
+            model->changed();
+        }
 
-//         for( int i = 0, size = DownloadQueue::queue().size(); i < size; i++ ){
-//             NzbFile *nzbFile = DownloadQueue::queue().at( i );
-//             qDebug() << "file :" << nzbFile->filename();
-//             qDebug() << "size :" << nzbFile->bytes();
-//             qDebug() << "files :";
-// 
-//             for( int j = 0, jsize = nzbFile->size(); j < jsize; j++ ){
-//                 File *file = nzbFile->at( j );
-//                 qDebug() << "\n file :";
-//                 qDebug() << "   subject :" << file->subject();
-//                 qDebug() << "   bytes :" << file->bytes();
-//                 qDebug() << "   groups :" << file->groups();
-// 
-//                 for( int k = 0, ksize = file->size(); k < ksize; k++ ){
-//                     Segment *segment = file->at( k );
-//                     qDebug() << "\n     segment :";
-//                     qDebug() << "       nr :" << segment->nr();
-//                     qDebug() << "       id :" << segment->id();
-//                     qDebug() << "       bytes :" << segment->bytes();
-//                 }
-//             }
-//         }
-
-        NzbWidget *nzbWidget = new NzbWidget( nzbFiles );
-        nzbWidget->show();
     }
 }
 
