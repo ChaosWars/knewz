@@ -52,7 +52,6 @@ class MainModel : public QAbstractItemModel{
     private:
         QTreeView *view;
         QStringList rootItem;
-        QList<NzbFile*> m_nzbFiles;
 };
 
 #endif

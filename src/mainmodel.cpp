@@ -21,6 +21,7 @@
 #include "mainmodel.h"
 #include "nzbfile.h"
 #include "file.h"
+#include "downloadqueue.h"
 
 MainModel::MainModel( QTreeView *parent )
     : QAbstractItemModel( parent ), view( parent )
@@ -57,10 +58,10 @@ QVariant MainModel::data( const QModelIndex &index, int role ) const
 
         switch( index.column() ){
             case 0:
-                return m_nzbFiles.at( index.row() )->filename();
+                return DownloadQueue::queue().at( index.row() )->filename();
                 break;
             case 1:
-                return m_nzbFiles.at( index.row() )->bytes();
+                return DownloadQueue::queue().at( index.row() )->bytes();
                 break;
             default:
                 break;
@@ -70,10 +71,10 @@ QVariant MainModel::data( const QModelIndex &index, int role ) const
 
         switch( index.column() ){
             case 0:
-                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
+                return DownloadQueue::queue().at( parentIndex.row() )->at( index.row() )->subject();
                 break;
             case 1:
-                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->bytes();
+                return DownloadQueue::queue().at( parentIndex.row() )->at( index.row() )->bytes();
                 break;
             default:
                 return QVariant();
@@ -107,7 +108,7 @@ QModelIndex MainModel::index( int row, int column, const QModelIndex &parent ) c
         return QModelIndex();
 
     if( !parent.isValid() )
-        return createIndex( row, column, m_nzbFiles.at( row ) );
+        return createIndex( row, column, DownloadQueue::queue().at( row ) );
 
     BaseType *base = static_cast< BaseType* >( parent.internalPointer() );
     NzbFile *nzbFile;
@@ -141,7 +142,7 @@ QModelIndex MainModel::parent( const QModelIndex &index ) const
     }
 
     NzbFile *nzbFile = file->parent();
-    return createIndex( m_nzbFiles.indexOf( nzbFile ), 0, nzbFile );
+    return createIndex( DownloadQueue::queue().indexOf( nzbFile ), 0, nzbFile );
 }
 
 int MainModel::rowCount( const QModelIndex &parent ) const
@@ -150,10 +151,10 @@ int MainModel::rowCount( const QModelIndex &parent ) const
         return 0;
 
     if ( !parent.isValid() )
-        return m_nzbFiles.size();
+        return DownloadQueue::queue().size();
 
     if( !parent.parent().isValid() )
-        return m_nzbFiles.at( parent.row() )->size();
+        return DownloadQueue::queue().at( parent.row() )->size();
 
     return 0;
 }
@@ -169,11 +170,9 @@ void MainModel::clicked( const QModelIndex& index )
     if( base->type() == "NzbFile" ){
 
         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
-        int parentRow = m_nzbFiles.indexOf( nzbFile );
 
         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
             nzbFile->at( i )->setState( checkstate );
-            qDebug() << index.child( i, 0 );
             view->update( index.child( i, 0 ) );
         }
 

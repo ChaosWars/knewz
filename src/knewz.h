@@ -27,6 +27,7 @@ class KAction;
 class KRecentFilesAction;
 class KToggleAction;
 class QTreeView;
+class MainModel;
 
 class KNewz : public KXmlGuiWindow
 {
@@ -55,6 +56,7 @@ class KNewz : public KXmlGuiWindow
         KRecentFilesAction *recentFiles;
         KAction *configureAction;
         QTreeView *view;
+        MainModel *model;
         void setupAccel();
         void setupActions();
 };
