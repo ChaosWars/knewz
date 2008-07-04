@@ -37,7 +37,7 @@ class Segment;
 /**
  *  Class implementing a QList of Segment that represents a file entry in a *.nzb file.
  */
-class File : public QList<Segment*>, BaseType
+class File : public QList<Segment*>, public BaseType
 {
     public:
 
