@@ -171,12 +171,12 @@ void KNewz::urlOpen()
 //             }
 //         }
 
-        qDebug() << DownloadQueue::queue();
-        qDebug() << DownloadQueue::queue().size();
+//         qDebug() << DownloadQueue::queue();
+//         qDebug() << DownloadQueue::queue().size();
         DownloadQueue::append( nzbFiles );
-        view->update();
-        qDebug() << DownloadQueue::queue();
-        qDebug() << DownloadQueue::queue().size();
+        model->changed();
+//         qDebug() << DownloadQueue::queue();
+//         qDebug() << DownloadQueue::queue().size();
 
 //         for( int i = 0, size = DownloadQueue::queue().size(); i < size; i++ ){
 //             NzbFile *nzbFile = DownloadQueue::queue().at( i );
