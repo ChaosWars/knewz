@@ -25,7 +25,7 @@
 NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
     : QAbstractItemModel( parent ), view( parent ), m_nzbFiles( nzbfiles )
 {
-    rootItem << "Subject" << "Size (MB)";
+    rootItem << tr( "Subject" ) << tr( "Size (MiB)" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );
 }
 

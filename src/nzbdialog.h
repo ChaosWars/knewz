@@ -17,28 +17,44 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include <QTreeView>
-#include <QVBoxLayout>
-#include "nzbwidget.h"
-#include "nzbfile.h"
-#include "nzbmodel.h"
+#ifndef NZBDIALOG_H
+#define NZBDIALOG_H
 
-NzbWidget::NzbWidget( const QList<NzbFile*> &nzbfiles )
+#include <QDialog>
+
+class NzbFile;
+class NzbModel;
+class QTreeView;
+class QVBoxLayout;
+class QHBoxLayout;
+class QPushButton;
+class QButtonGroup;
+
+/**
+	@author 
+*/
+class NzbDialog : public QDialog
 {
-    layout = new QVBoxLayout();
-    view = new QTreeView( this );
-    model = new NzbModel( view, nzbfiles );
-    view->setModel( model );
-    layout->addWidget( view );
-    setLayout( layout );
-}
+    Q_OBJECT
 
+    public:
+        NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
+        ~NzbDialog();
 
-NzbWidget::~NzbWidget()
-{
-    delete model;
-    delete view;
-    delete layout;
-}
+    private:
+        NzbModel *model;
+        QTreeView *view;
+        QVBoxLayout *layout;
+        QHBoxLayout *buttonLayout;
+        QButtonGroup *defaultButtonGroup;
+        QButtonGroup *selectButtonGroup;
+        QPushButton *ok;
+        QPushButton *cancel;
+        QPushButton *checkSelected;
+        QPushButton *uncheckSelected;
+        QPushButton *checkAll;
+        QPushButton *checkNone;
+        QPushButton *invertSelection;
+};
 
-#include "nzbwidget.moc"
+#endif

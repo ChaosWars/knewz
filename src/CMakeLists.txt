@@ -1,17 +1,17 @@
 FIND_PACKAGE( KDE4 REQUIRED )
 INCLUDE( KDE4Defaults )
 INCLUDE_DIRECTORIES( ${KDE4_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
-SET( SRC main.cpp
-        knewz.cpp
-        downloadqueue.cpp
-        segment.cpp
+SET( SRC downloadqueue.cpp
         file.cpp
+        knewz.cpp
+        main.cpp
         mainmodel.cpp
         nzbfile.cpp
         nzbhandler.cpp
         nzbreader.cpp
         nzbmodel.cpp
-        nzbwidget.cpp )
+        nzbdialog.cpp
+        segment.cpp )
 ADD_DEFINITIONS( ${KDE4_DEFINITIONS} ${QT_DEFINITIONS} )
 KDE4_ADD_EXECUTABLE( knewz ${SRC} )
 LINK_DIRECTORIES( knewz ${KDE4_LIB_DIR} )

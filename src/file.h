@@ -19,10 +19,8 @@
  ***************************************************************************/
 
 /**
- *  @file
- *      This file defines the class File.
- *  @author
- *      Lawrence Lee
+ *  \file
+ *      file.h
  */
 
 #ifndef FILE_H
@@ -35,7 +33,10 @@ class NzbFile;
 class Segment;
 
 /**
- *  Class implementing a QList of Segment that represents a file entry in a *.nzb file.
+ *  File implements a QList of type Segment that represents a file entry in a *.nzb file.
+ *
+ *  @author
+ *      Lawrence Lee
  */
 class File : public QList<Segment*>, public BaseType
 {
