@@ -27,7 +27,7 @@ NzbWidget::NzbWidget( const QList<NzbFile*> &nzbfiles )
 {
     layout = new QVBoxLayout();
     view = new QTreeView( this );
-    model = new NzbModel( this, nzbfiles );
+    model = new NzbModel( view, nzbfiles );
     view->setModel( model );
     layout->addWidget( view );
     setLayout( layout );
@@ -36,8 +36,8 @@ NzbWidget::NzbWidget( const QList<NzbFile*> &nzbfiles )
 
 NzbWidget::~NzbWidget()
 {
-    delete view;
     delete model;
+    delete view;
     delete layout;
 }
 

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Lawrence Lee   *
- *   valheru@facticius.net   *
+ *   Copyright (C) 2007 by Lawrence Lee                                    *
+ *   valheru@facticius.net                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,27 +18,27 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include <QTreeView>
-#include "nzbmodel.h"
+#include "mainmodel.h"
 #include "nzbfile.h"
 #include "file.h"
 
-NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
+MainModel::MainModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
     : QAbstractItemModel( parent ), view( parent ), m_nzbFiles( nzbfiles )
 {
     rootItem << "Subject" << "Size";
-    connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );
+    connect( parent, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
 }
 
-NzbModel::~NzbModel()
+MainModel::~MainModel()
 {
 }
 
-int NzbModel::columnCount( const QModelIndex &/*parent*/ ) const
+int MainModel::columnCount( const QModelIndex &/*parent*/ ) const
 {
     return 2;
 }
 
-QVariant NzbModel::data( const QModelIndex &index, int role ) const
+QVariant MainModel::data( const QModelIndex &index, int role ) const
 {
     if ( !index.isValid() )
         return QVariant();
@@ -85,7 +85,7 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-Qt::ItemFlags NzbModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags MainModel::flags( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
         return 0;
@@ -93,7 +93,7 @@ Qt::ItemFlags NzbModel::flags( const QModelIndex &index ) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant NzbModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant MainModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
     if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
         return rootItem.at( section );
@@ -101,7 +101,7 @@ QVariant NzbModel::headerData( int section, Qt::Orientation orientation, int rol
     return QVariant();
 }
 
-QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex MainModel::index( int row, int column, const QModelIndex &parent ) const
 {
     if( !hasIndex( row, column, parent ) )
         return QModelIndex();
@@ -126,7 +126,7 @@ QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) co
     return createIndex( row, column, file );
 }
 
-QModelIndex NzbModel::parent( const QModelIndex &index ) const
+QModelIndex MainModel::parent( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
         return QModelIndex();
@@ -144,7 +144,7 @@ QModelIndex NzbModel::parent( const QModelIndex &index ) const
     return createIndex( m_nzbFiles.indexOf( nzbFile ), 0, nzbFile );
 }
 
-int NzbModel::rowCount( const QModelIndex &parent ) const
+int MainModel::rowCount( const QModelIndex &parent ) const
 {
     if( parent.column() > 1 )
         return 0;
@@ -158,7 +158,7 @@ int NzbModel::rowCount( const QModelIndex &parent ) const
     return 0;
 }
 
-void NzbModel::clicked( const QModelIndex& index )
+void MainModel::clicked( const QModelIndex& index )
 {
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     Qt::CheckState checkstate;
@@ -181,4 +181,4 @@ void NzbModel::clicked( const QModelIndex& index )
 
 }
 
-#include "nzbmodel.moc"
+#include "mainmodel.moc"

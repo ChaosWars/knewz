@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Lawrence Lee   *
- *   valheru@facticius.net   *
+ *   Copyright (C) 2007 by Lawrence Lee                                    *
+ *   valheru@facticius.net                                                 *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,8 +17,8 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _MODELTESTMODEL_H_
-#define _MODELTESTMODEL_H_
+#ifndef MAINMODEL_H
+#define MAINMODEL_H
 
 #include <QAbstractItemModel>
 #include <QStringList>
@@ -26,13 +26,17 @@
 class QTreeView;
 class NzbFile;
 
-class NzbModel : public QAbstractItemModel
-{
+/**
+ *  @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ */
+class MainModel : public QAbstractItemModel{
+
     Q_OBJECT
 
     public:
-        NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles );
-        ~NzbModel();
+
+        MainModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles );
+        ~MainModel();
         int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
         Qt::ItemFlags flags( const QModelIndex &index ) const;

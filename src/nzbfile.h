@@ -28,7 +28,7 @@ class File;
 /**
 	@author Lawrence Lee <valheru@facticius.net>
 */
-class NzbFile : public QList<File*>, BaseType
+class NzbFile : public QList<File*>, public BaseType
 {
     public:
 
