@@ -30,7 +30,7 @@ DownloadQueue::~DownloadQueue()
 void DownloadQueue::append( const QList<NzbFile*> &nzbFiles )
 {
     QMutexLocker lock( &m_mutex );
-    m_queue = nzbFiles;
+    m_queue += nzbFiles;
 }
 
 QList<NzbFile*> DownloadQueue::m_queue;

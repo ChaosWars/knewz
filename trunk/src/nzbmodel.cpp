@@ -25,7 +25,7 @@
 NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
     : QAbstractItemModel( parent ), view( parent ), m_nzbFiles( nzbfiles )
 {
-    rootItem << "Subject" << "Size";
+    rootItem << "Subject" << "Size (MB)";
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );
 }
 
@@ -60,7 +60,7 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
                 return m_nzbFiles.at( index.row() )->filename();
                 break;
             case 1:
-                return m_nzbFiles.at( index.row() )->bytes();
+                return QString().setNum( m_nzbFiles.at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             default:
                 break;
@@ -73,7 +73,7 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
                 return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
                 break;
             case 1:
-                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->bytes();
+                return QString().setNum( m_nzbFiles.at( parentIndex.row() )->at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             default:
                 return QVariant();
@@ -160,6 +160,9 @@ int NzbModel::rowCount( const QModelIndex &parent ) const
 
 void NzbModel::clicked( const QModelIndex& index )
 {
+    if( !( index.column() == 0 ) )
+        return;
+
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     Qt::CheckState checkstate;
     base->state() == Qt::Checked ? checkstate = Qt::Unchecked : checkstate = Qt::Checked;

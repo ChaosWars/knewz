@@ -26,7 +26,7 @@
 MainModel::MainModel( QTreeView *parent )
     : QAbstractItemModel( parent ), view( parent )
 {
-    rootItem << "Subject" << "Size";
+    rootItem << "Subject" << "Size" << "Status";
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
 }
 
@@ -34,9 +34,14 @@ MainModel::~MainModel()
 {
 }
 
+void MainModel::changed()
+{
+    emit layoutChanged();
+}
+
 int MainModel::columnCount( const QModelIndex &/*parent*/ ) const
 {
-    return 2;
+    return 3;
 }
 
 QVariant MainModel::data( const QModelIndex &index, int role ) const
@@ -127,6 +132,12 @@ QModelIndex MainModel::index( int row, int column, const QModelIndex &parent ) c
     return createIndex( row, column, file );
 }
 
+// bool MainModel::insertRows( int row, int count, const QModelIndex &parent )
+// {
+//     beginInsertRows( parent, row, row + ( count - 1 ) );
+//     endInsertRows();
+// }
+
 QModelIndex MainModel::parent( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
@@ -145,6 +156,12 @@ QModelIndex MainModel::parent( const QModelIndex &index ) const
     return createIndex( DownloadQueue::queue().indexOf( nzbFile ), 0, nzbFile );
 }
 
+// bool MainModel::removeRows( int row, int count, const QModelIndex &parent )
+// {
+//     beginRemoveRows( parent, row, row + ( count - 1 ) );
+//     endRemoveRows();
+// }
+
 int MainModel::rowCount( const QModelIndex &parent ) const
 {
     if( parent.column() > 1 )
@@ -161,6 +178,9 @@ int MainModel::rowCount( const QModelIndex &parent ) const
 
 void MainModel::clicked( const QModelIndex& index )
 {
+    if( !( index.column() == 0 ) )
+        return;
+
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     Qt::CheckState checkstate;
     base->state() == Qt::Checked ? checkstate = Qt::Unchecked : checkstate = Qt::Checked;
