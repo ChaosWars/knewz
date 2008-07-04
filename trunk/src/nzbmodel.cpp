@@ -25,7 +25,7 @@
 NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
     : QAbstractItemModel( parent ), view( parent ), m_nzbFiles( nzbfiles )
 {
-    rootItem << tr( "Subject" ) << tr( "Size (MiB)" );
+    rootItem << "" << tr( "Subject" ) << tr( "Size (MiB)" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );
 }
 
@@ -35,7 +35,7 @@ NzbModel::~NzbModel()
 
 int NzbModel::columnCount( const QModelIndex &/*parent*/ ) const
 {
-    return 2;
+    return 3;
 }
 
 QVariant NzbModel::data( const QModelIndex &index, int role ) const
@@ -57,9 +57,11 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
 
         switch( index.column() ){
             case 0:
-                return m_nzbFiles.at( index.row() )->filename();
                 break;
             case 1:
+                return m_nzbFiles.at( index.row() )->filename();
+                break;
+            case 2:
                 return QString().setNum( m_nzbFiles.at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             default:
@@ -70,9 +72,11 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
 
         switch( index.column() ){
             case 0:
-                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
                 break;
             case 1:
+                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
+                break;
+            case 2:
                 return QString().setNum( m_nzbFiles.at( parentIndex.row() )->at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             default:
@@ -165,7 +169,18 @@ void NzbModel::clicked( const QModelIndex& index )
 
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     Qt::CheckState checkstate;
-    base->state() == Qt::Checked ? checkstate = Qt::Unchecked : checkstate = Qt::Checked;
+
+    switch( base->state() ){
+        case Qt::Checked:
+            checkstate = Qt::Unchecked;
+            break;
+        case Qt::Unchecked:
+        case Qt::PartiallyChecked:
+        default:
+            checkstate = Qt::Checked;
+            break;
+    }
+
     base->setState( checkstate );
     view->update( index );
 
@@ -178,6 +193,23 @@ void NzbModel::clicked( const QModelIndex& index )
             view->update( index.child( i, 0 ) );
         }
 
+    }else{
+        NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
+
+        if( nzbFile->state() != Qt::PartiallyChecked ){
+            nzbFile->setState( Qt::PartiallyChecked );
+        }else{
+            Qt::CheckState state = nzbFile->first()->state();
+
+            for( int i = 1, size = nzbFile->size(); i < size; i++ ){
+                if( nzbFile->at( i )->state() != state  )
+                    break;
+            }
+
+            nzbFile->setState( state );
+        }
+
+        view->update( index.parent() );
     }
 
 }
