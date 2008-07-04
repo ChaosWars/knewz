@@ -27,10 +27,4 @@ DownloadQueue::~DownloadQueue()
 {
 }
 
-void DownloadQueue::append( NzbFile *file )
-{
-    m_queue.append( file );
-}
-
-// const QList<NzbFile*> DownloadQueue::queue();
 QList<NzbFile*> DownloadQueue::m_queue;

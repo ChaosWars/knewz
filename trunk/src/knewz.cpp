@@ -76,7 +76,7 @@ void KNewz::openUrl( const KUrl& url )
 {
     addRecentFile( url );
     NzbReader reader;
-    DownloadQueue::append( reader.parseData( url.url() ) );
+//     DownloadQueue::append( reader.parseData( url.url() ) );
 }
 
 void KNewz::optionsConfigureKeys()

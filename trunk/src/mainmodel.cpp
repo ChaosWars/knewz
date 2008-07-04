@@ -22,8 +22,8 @@
 #include "nzbfile.h"
 #include "file.h"
 
-MainModel::MainModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
-    : QAbstractItemModel( parent ), view( parent ), m_nzbFiles( nzbfiles )
+MainModel::MainModel( QTreeView *parent )
+    : QAbstractItemModel( parent ), view( parent )
 {
     rootItem << "Subject" << "Size";
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
