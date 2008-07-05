@@ -82,7 +82,7 @@ bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*l
     }
 
     if( qName == "segment" ){
-        currentFile->append( new Segment( currentText, currentNumber.toInt(), currentBytes.toULong() ) );
+        currentFile->append( new Segment( currentFile, currentText, currentNumber.toInt(), currentBytes.toULong() ) );
         currentText.clear();
     }
 

@@ -21,20 +21,26 @@
 #define SEGMENT_H
 
 #include <QtCore>
+#include "basetype.h"
+
+class File;
 
 /**
  *  Class that represents a part of a file entry in a *.nzb file.
  */
-class Segment
+class Segment : public BaseType
 {
     public:
-        Segment( const QString &id, const int &nr, const quint32 &bytes );
+        Segment( File *parent, const QString &id, int nr, quint32 bytes );
         ~Segment();
+        quint32 bytes(){ return m_bytes; }
         const QString id(){ return m_id; }
         int nr(){ return m_nr; }
-        quint32 bytes(){ return m_bytes; }
+        File *parent() const{ return m_parent; }
+        const QString type() const{ return QString( "Segment" ); }
 
     private:
+        File *m_parent;
         QString m_id;
         int m_nr;
         quint32 m_bytes;
