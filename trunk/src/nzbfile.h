@@ -70,6 +70,13 @@ class NzbFile : public QList<File*>, public BaseType
          */
         quint32 bytes() const{ return m_bytes; }
 
+        /**
+         * Returns the type of the object.
+         *
+         * @return
+         *      The type of the object. This is the same as the name of the class,
+         *      in this case "NzbFile"
+         */
         const QString type() const{ return QString( "NzbFile" ); }
 
     private:

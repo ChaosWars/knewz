@@ -19,8 +19,8 @@
  ***************************************************************************/
 #include "segment.h"
 
-Segment::Segment( const QString &id, const int &nr, const quint32 &bytes )
-    : m_id( id ), m_nr( nr ), m_bytes( bytes )
+Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
+    : m_parent( parent ), m_id( id ), m_nr( nr ), m_bytes( bytes )
 {
 }
 
