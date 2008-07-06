@@ -19,8 +19,7 @@
  ***************************************************************************/
 
 /**
- *  \file
- *      file.h
+ *  \class File file.h
  */
 
 #ifndef FILE_H
@@ -33,10 +32,12 @@ class NzbFile;
 class Segment;
 
 /**
- *  File implements a QList of type Segment that represents a file entry in a *.nzb file.
+ *  \brief The segments in a file entry in a NZB file.
  *
- *  @author
- *      Lawrence Lee
+ * Implements a QList of type Segment that represents the segments in a file
+ * entry in a NZB file.
+ *
+ *  \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class File : public QList<Segment*>, public BaseType
 {
@@ -46,78 +47,94 @@ class File : public QList<Segment*>, public BaseType
          * The default constructor.
          *
          * @param parent
+         *      The NzbFile this File belongs to.
+         *
          * @param bytes
+         *      The size of the File.
+         *
          * @param groups
+         *      The groups where this file can be downloaded.
+         *
          * @param subject
+         *      The subject of the file.
          */
-        File( NzbFile *parent = NULL, quint32 bytes = 0, const QStringList &groups = QStringList(), const QString &subject = QString() );
+        File( NzbFile *parent = NULL, quint32 bytes = 0, const QStringList &groups = QStringList(),
+              const QString &subject = QString() );
+
+        ~File(){};
 
         /**
-         * Default destructor
-         */
-        ~File();
-
-        /**
-         *  Access function for the size of the file.
+         *  The size of the file.
+         *
          *  @return
-         *      the size of the file in bytes.
+         *      The size of the file in bytes.
          */
         quint32 bytes() const{ return m_bytes; }
 
         /**
-         *  Sets the size of the file in bytes.
-         *  @param bytes
-         *      the size of the file in bytes.
-         */
-        void setBytes( quint32 bytes ){ m_bytes = bytes; }
-
-        /**
-         *  Access function for the groups of the file.
+         *  The groups of the file.
+         *
          *  @return
          *      The groups where the file can be downloaded.
          */
         const QStringList groups() const{ return m_groups; }
 
         /**
-         *  Sets the groups for the file.
-         *  @param bytes
-         *      The groups where the file can be downloaded.
-         */
-        void setGroups( const QStringList &groups ){ m_groups = groups; }
-
-        /**
-         * Access function for the NZB file the file belongs to
+         * The NZB file the file belongs to.
          * @return
          *      The parent of the file.
          */
         NzbFile* parent(){ return m_parent; }
 
         /**
-         * Sets the parent of the file
-         * @param parent
-         *      The parent of the file.
-         */
-        void setParent( NzbFile *parent ){ m_parent = parent; }
-
-        /**
-         *  Access function for the subject of the file.
+         *  The subject of the file.
+         *
          *  @return
          *      The subject of the file.
          */
         const QString subject() const{ return m_subject; }
 
         /**
-         *  Sets the subject of the file.
-         *  @param subject
-         *      the subject of the file.
+         * Set the file size.
+         *
+         * @param bytes
+         *      The file size in bytes.
+         */
+        void setBytes( quint32 bytes ){ m_bytes = bytes; }
+
+        /**
+         * Set the groups that the file can be downloaded from.
+         *
+         * @param groups
+         *      The list of groups.
+         */
+        void setGroups( const QStringList &groups ){ m_groups = groups; }
+
+        /**
+         * The NZB file that the file belongs to.
+         *
+         * @param parent
+         *      The parent of the file.
+         *
+         * \see NzbFile
+         */
+        void setParent( NzbFile *parent ){ m_parent = parent; }
+
+        /**
+         * The subject of the file found in the NZB file.
+         *
+         * @param subject
+         *      The subject of the file.
          */
         void setSubject( const QString &subject ){ m_subject = subject; }
 
         /**
-         * The type of the object. This is the implementation of the inherited function from
-         * the base class BaseType.
+         * Returns the type of the object.
+         *
          * @return
-         *      The type File.
+         *      The string "File".
+         *
+         * \see NzbFile, Segment
          */
         const QString type() const{ return QString( "File" ); };
 

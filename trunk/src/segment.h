@@ -17,6 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+/**
+ * \class Segment segment.h
+ */
+
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
@@ -26,17 +31,52 @@
 class File;
 
 /**
- *  Class that represents a part of a file entry in a *.nzb file.
+ * \brief Represents a segment of a file entry in a *.nzb file.
+ *
+ * \author Lawrence Lee <valher.ashen.shugar@gmail.com>
  */
 class Segment : public BaseType
 {
     public:
+
+        /**
+         * 
+         * @param parent 
+         * @param id 
+         * @param nr 
+         * @param bytes 
+         */
         Segment( File *parent, const QString &id, int nr, quint32 bytes );
         ~Segment();
+
+        /**
+         * 
+         * @return 
+         */
         quint32 bytes(){ return m_bytes; }
+
+        /**
+         * 
+         * @return 
+         */
         const QString id(){ return m_id; }
+
+        /**
+         * 
+         * @return 
+         */
         int nr(){ return m_nr; }
+
+        /**
+         * 
+         * @return 
+         */
         File *parent() const{ return m_parent; }
+
+        /**
+         * 
+         * @return 
+         */
         const QString type() const{ return QString( "Segment" ); }
 
     private:

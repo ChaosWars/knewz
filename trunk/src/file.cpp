@@ -23,7 +23,3 @@ File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QSt
     : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
 {
 }
-
-File::~File()
-{
-}

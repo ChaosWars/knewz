@@ -17,14 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+ /**
+ * \class BaseType basetype.h
+  */
+
 #ifndef BASETYPE_H
 #define BASETYPE_H
 
 #include <QtCore>
 
 /**
- * \class BaseType basetype.h
- *
  * \brief The base class for objects specific to the NZB file
  *
  * The objects that an NZB file is made up of, ie. the segments, files and
@@ -33,10 +36,10 @@
  * level the object they are displaying resides in the file. The models can
  * as use it to track the toggled state of an object for download purposes.
  *
- * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class BaseType{
-
+class BaseType
+{
     public:
 
         /**

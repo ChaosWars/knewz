@@ -17,6 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+ /**
+  * \class NzbDialog nzbdialog.h
+  */
+
 #ifndef NZBDIALOG_H
 #define NZBDIALOG_H
 
@@ -31,13 +36,21 @@ class QPushButton;
 class QButtonGroup;
 
 /**
-	@author 
-*/
+ * \brief Dialog for displaying the contents of an NZB file.
+ *
+ * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ */
 class NzbDialog : public QDialog
 {
     Q_OBJECT
 
     public:
+
+        /**
+         * 
+         * @param parent 
+         * @param nzbfiles 
+         */
         NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
         ~NzbDialog();
 

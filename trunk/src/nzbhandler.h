@@ -19,11 +19,7 @@
  ***************************************************************************/
 
 /**
- *   @file
- *       This file defines the class NzbHandler, for the purpose of parsing
- *       *.nzb files.
- *   @author
- *       Lawrence Lee
+ *   \class NzbHandler nzbhandler.h
  */
 
 #ifndef _NZBHANDLER_H
@@ -36,18 +32,15 @@
 class File;
 
 /**
- *  Class implementing QXmlDefaultHandler in order to parse *.nzb files.
+ * \brief Class implementing QXmlDefaultHandler in order to parse *.nzb files.
+ *
+ * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class NzbHandler : public QXmlDefaultHandler{
+class NzbHandler : public QXmlDefaultHandler
+{
     public:
-        /**
-         *  Default constructor
-         */
-        NzbHandler();
 
-        /**
-         * Default destructor
-         */
+        NzbHandler();
         ~NzbHandler();
 
         /**

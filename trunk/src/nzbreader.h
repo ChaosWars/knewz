@@ -19,11 +19,7 @@
  ***************************************************************************/
 
 /**
- *  @file
- *      This file defines the class NzbReader, which handles the setup neccessary
- *      to be able to parse *.nzb files.
- *  @author
- *      Lawrence Lee
+ *  \class NzbReader nzbreader.h
  */
 
 #ifndef _NZBREADER_H_
@@ -35,25 +31,22 @@
 class NzbFile;
 
 /**
- *  Class responsible for performing the setup up a QXmlSimpleReader and
- *  a QXmlInputSource in order to read a xml file - in this case, a *.nzb file.
+ * \brief Xml reader which handles the setup neccessary to read a NZB file.
+ *
+ * Performs the setup up of QXmlSimpleReader and QXmlInputSource in order to
+ * parse a xml file - in this case, a *.nzb file.
+ *
+ * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class NzbReader
 {
     public:
 
-        /**
-         *  Default constructor.
-         */
         NzbReader();
-
-        /**
-         * Default destructor.
-         */
         ~NzbReader();
 
         /**
-         *  Function that returns a QList\<QFile*\> that contain the data read from the *.nzb file.
+         *  Returns a QList\<QFile*\> that contain the data read from the *.nzb file.
          *
          *  @return
          *      The data read from the *.nzb file. The data consists of a QList\<File*\>.
