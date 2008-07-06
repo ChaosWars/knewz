@@ -1,6 +1,6 @@
 /***************************************************************************
  *   Copyright (C) 2007 by Lawrence Lee                                    *
- *   valheru@facticius.net                                                 *
+ *   valheru.ashen.shugar@gmail.com                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,6 @@
 /**
  * \class MainModel mainmodel.h
  */
-
 #ifndef MAINMODEL_H
 #define MAINMODEL_H
 
