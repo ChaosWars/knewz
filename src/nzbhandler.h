@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Lawrence Lee   *
- *   valheru@facticius.net   *
+ *   Copyright (C) 2007 by Lawrence Lee                                    *
+ *   valheru.ashen.shugar@gmail.com                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -35,7 +35,7 @@ class File;
  * \brief Class implementing QXmlDefaultHandler in order to parse *.nzb files.
  *
  * Parses an NZB file, scanning it for files and their segments (in the case of multipart
- * binaries ). After creating an instance of this class, the function setFilename() must
+ * binaries ). After creating an instance of this class, the function setFilename must
  * be called with the path of the file to be parsed before calling parse().
  *
  * \see NzbReader

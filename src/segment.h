@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2006 by Lawrence Lee   *
- *   valheru@facticius.net   *
+ *   Copyright (C) 2006 by Lawrence Lee                                    *
+ *   valheru.ashen.shugar@gmail.com                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,7 +21,6 @@
 /**
  * \class Segment segment.h
  */
-
 #ifndef SEGMENT_H
 #define SEGMENT_H
 
@@ -33,7 +32,7 @@ class File;
 /**
  * \brief Represents a segment of a file entry in a *.nzb file.
  *
- * \author Lawrence Lee <valher.ashen.shugar@gmail.com>
+ * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class Segment : public BaseType
 {

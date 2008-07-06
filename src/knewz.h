@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2007 by Lawrence Lee   *
- *   valheru@facticius.net   *
+ *   Copyright (C) 2007 by Lawrence Lee                                    *
+ *   valheru.ashen.shugar@gmail.com                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,6 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+/**
+ * \class KNewz knewz.h
+ *
+ * \mainpage KNewz
+ *      A program for downloading the contents of NZB files for KDE4.
+ */
 #ifndef KNEWZ_H
 #define KNEWZ_H
 
@@ -29,6 +36,8 @@ class KToggleAction;
 class QTreeView;
 class MainModel;
 
+/**
+ */
 class KNewz : public KXmlGuiWindow
 {
     Q_OBJECT
