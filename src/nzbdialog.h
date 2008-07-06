@@ -47,9 +47,13 @@ class NzbDialog : public QDialog
     public:
 
         /**
-         * 
-         * @param parent 
-         * @param nzbfiles 
+         * Constructor
+         *
+         * @param parent
+         *      Parent widget.
+         *
+         * @param nzbfiles
+         *      List of nzb files that the user wants to open.
          */
         NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
         ~NzbDialog();

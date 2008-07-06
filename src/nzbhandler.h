@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- *   \class NzbHandler nzbhandler.h
+ * \class NzbHandler nzbhandler.h
  */
 
 #ifndef _NZBHANDLER_H
@@ -34,6 +34,12 @@ class File;
 /**
  * \brief Class implementing QXmlDefaultHandler in order to parse *.nzb files.
  *
+ * Parses an NZB file, scanning it for files and their segments (in the case of multipart
+ * binaries ). After creating an instance of this class, the function setFilename() must
+ * be called with the path of the file to be parsed before calling parse().
+ *
+ * \see NzbReader
+ *
  * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class NzbHandler : public QXmlDefaultHandler
@@ -44,31 +50,35 @@ class NzbHandler : public QXmlDefaultHandler
         ~NzbHandler();
 
         /**
-         *  Reimplemented virtual function from QXmlDefaultHandler.
-         *  @return @c true
-         *      if the beginning of a valid xml document was encountered.
+         * Reimplemented virtual function from QXmlDefaultHandler.
+         *
+         * \return
+         * \c true if the beginning of a valid xml document was encountered,
+         * \c false if the filename was empty or not set prior to calling parse().
          */
         bool startDocument();
 
         /**
          *  Reimplemented virtual function from QXmlDefaultHandler.
-         *  @return @c true
-         *      if the end of a valid xml document was encountered.
+         *
+         *  \return \c true
+         *      If the end of a valid xml document was encountered.
          */
         bool endDocument();
 
         /**
          *  Reimplemented virtual function from QXmlDefaultHandler.
          *  None of the paramaters are used by the function internally.
-         *  @param namespaceURI
+         *
+         *  \param namespaceURI
          *      namespace URI
-         *  @param localName
+         *  \param localName
          *      local name
-         *  @param qName
+         *  \param qName
          *      qualified name
-         *  @param atts
+         *  \param atts
          *      attributes
-         *  @return @c true
+         *  \return \c true
          *      if the beginning of an element is encountered.
          */
         bool startElement ( const QString &namespaceURI, const QString &localName,
@@ -77,23 +87,25 @@ class NzbHandler : public QXmlDefaultHandler
         /**
          *  Reimplemented virtual function from QXmlDefaultHandler.
          *  None of the paramaters are used by the function internally.
-         *  @param namespaceURI
+         *
+         *  \param namespaceURI
          *      namespace URI
-         *  @param localName
+         *  \param localName
          *      local name
-         *  @param qName
+         *  \param qName
          *      qualified name
-         *  @return @c true
-         *      if the beginning of an element is encountered.
+         *  \return \c true
+         *      if the end of an element is encountered.
          */
         bool endElement ( const QString &namespaceURI, const QString &localName, const QString &qName );
 
         /**
          *  Reimplemented virtual function from QXmlDefaultHandler.
          *  Reads the characters being read from the current element.
-         *  @param ch
+         *
+         *  \param ch
          *      the variable to set to the characters of the current element.
-         *  @return
+         *  \return
          *      true when finished reading the characters of the current element.
          */
         bool characters ( const QString &ch );
@@ -101,9 +113,10 @@ class NzbHandler : public QXmlDefaultHandler
         /**
          *  Reimplemented from QXmlErrorHandler.
          *  Function is called when the handler wants to report a fatal error.
-         *  @param exception
+         *
+         *  \param exception
          *      details about the error are stored here.
-         *  @return @c false
+         *  \return \c false
          *      since the errors cause this file to be called are such that the
          *      handler is unable to continue parsing the file.
          */
@@ -113,7 +126,7 @@ class NzbHandler : public QXmlDefaultHandler
          *  Function that provides a QList of overloaded QList\< QStringLists\> that
          *  contain the data read from the *.nzb file.
          *
-         *  @return
+         *  \return
          *      The data read from the *.nzb file. The data consists of a QList
          *      that contains overloaded QList\< QStringList \>. Each QStringList represents
          *      a "part" that a binary file is often split into, and each QList\< QStringList\>
@@ -123,9 +136,9 @@ class NzbHandler : public QXmlDefaultHandler
         NzbFile* nzbFile(){ return nzbFiles; }
 
         /**
-         * Set the file to be processed. It is absolutely imperative that you call this function
-         * before processing a file.
-         * @param file
+         * Set the file to be processed. You must call this function before processing a file.
+         *
+         * \param filename
          *      The file that is to be processed.
          */
         void setFilename( const QString &filename ){ m_filename = filename; }
