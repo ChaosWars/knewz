@@ -17,6 +17,11 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+/**
+ * \class NzbFile nzbfile.h
+ */
+
 #ifndef NZBFILE_H
 #define NZBFILE_H
 
@@ -26,20 +31,20 @@
 class File;
 
 /**
-	@author Lawrence Lee <valheru@facticius.net>
-*/
+ * \brief Container for the contents of an NZB file.
+ *
+ * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ */
 class NzbFile : public QList<File*>, public BaseType
 {
     public:
 
         /**
-         * Default constructor
+         * 
+         * @param filename 
+         * @param bytes 
          */
         NzbFile( const QString &filename = QString(), quint32 bytes = 0 );
-
-        /**
-         * Default destructor
-         */
         ~NzbFile();
 
         /**
