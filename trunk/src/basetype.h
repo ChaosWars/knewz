@@ -36,6 +36,10 @@
  * level the object they are displaying resides in the file. The models can
  * as use it to track the toggled state of an object for download purposes.
  *
+ * Classes inheriting from this class must reimplement the function type at
+ * the very least. Convention is that the function returns the name of the
+ * inheriting class as a QString.
+ *
  * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class BaseType
