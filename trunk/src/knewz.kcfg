@@ -12,14 +12,14 @@
 	    <label>Server port</label>
 	    <default>119</default>
     </entry>
-    <entry name="authenticate" type="Bool">
+    <entry name="authentication" type="Bool">
 	    <label>Server requires authentication</label>
 	    <default>false</default>
     </entry>
     <entry name="username" type="String">
 	    <label>Username</label>
     </entry>
-    <entry name="Password" type="String">
+    <entry name="password" type="String">
 	    <label>Password</label>
     </entry>
   </group>

@@ -30,9 +30,7 @@
 #include <KDE/KXmlGuiWindow>
 #include <KDE/KUrl>
 
-class KAction;
 class KRecentFilesAction;
-class KToggleAction;
 class QTreeView;
 class KNewzModel;
 
@@ -43,32 +41,31 @@ class KNewz : public KXmlGuiWindow
     Q_OBJECT
 
     public:
-        KNewz( QWidget *parent = NULL );
+        KNewz( QWidget *parent = 0 );
         virtual ~KNewz();
 
     protected:
         void openUrl( const KUrl& url );
-        void readProperties( const KConfigGroup &config );
-        void saveProperties( KConfigGroup &config );
+//         void readProperties( const KConfigGroup &config );
+//         void saveProperties( KConfigGroup &config );
 
     private Q_SLOTS:
 //         void applyNewToolbarConfig();
-        void addRecentFile( const KUrl &url );
-        void openRecentFile( const KUrl &url );
+//         void addRecentFile( const KUrl &url );
 //         void optionsConfigureKeys();
 //         void optionsConfigureSettings();
 //         void optionsConfigureToolbars();
+        void openRecentFile( const KUrl &url );
         void optionsPreferences();
         void settingsChanged();
         void urlOpen();
 
     private:
-//         KSharedConfigPtr config;
-//         KRecentFilesAction *recentFiles;
-        KAction *configureAction;
+        KSharedConfigPtr config;
+        KRecentFilesAction *recentFiles;
         QTreeView *view;
         KNewzModel *model;
-        void setupAccel();
+//         void setupAccel();
         void setupActions();
 };
 
