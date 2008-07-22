@@ -1,0 +1,6 @@
+# Code generation options for kconfig_compiler
+File=knewz.kcfg
+ClassName=Settings
+Singleton=true
+Mutators=server,port,authentication,username,password
+# will create the necessary code for setting those variables
