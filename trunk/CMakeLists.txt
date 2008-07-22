@@ -1,7 +1,6 @@
 PROJECT(knewz)
-
-#if you don't want the full compiler output, remove the following line
-SET(CMAKE_VERBOSE_MAKEFILE OFF)
-
-#list all source files here
+FIND_PACKAGE( KDE4 REQUIRED )
+INCLUDE( KDE4Defaults )
+INCLUDE_DIRECTORIES( ${KDE4_INCLUDES} ${QT_INCLUDES} )
+#${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
 ADD_SUBDIRECTORY( src )

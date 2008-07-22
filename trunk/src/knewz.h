@@ -52,17 +52,19 @@ class KNewz : public KXmlGuiWindow
         void saveProperties( KConfigGroup &config );
 
     private Q_SLOTS:
-        void applyNewToolbarConfig();
+//         void applyNewToolbarConfig();
         void addRecentFile( const KUrl &url );
         void openRecentFile( const KUrl &url );
-        void optionsConfigureKeys();
-        void optionsConfigureSettings();
-        void optionsConfigureToolbars();
+//         void optionsConfigureKeys();
+//         void optionsConfigureSettings();
+//         void optionsConfigureToolbars();
+        void optionsPreferences();
+        void settingsChanged();
         void urlOpen();
 
     private:
-        KSharedConfigPtr config;
-        KRecentFilesAction *recentFiles;
+//         KSharedConfigPtr config;
+//         KRecentFilesAction *recentFiles;
         KAction *configureAction;
         QTreeView *view;
         KNewzModel *model;
