@@ -26,9 +26,6 @@
 #include <KDE/KFileDialog>
 #include <KDE/KGlobal>
 #include <KDE/KLocale>
-#include <KDE/KMessageBox>
-#include <KDE/KPluginLoader>
-#include <KDE/KPluginFactory>
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
 #include <KDE/KStatusBar>
@@ -53,17 +50,18 @@ KNewz::KNewz( QWidget *parent )
     setupActions();
     statusBar()->show();
     setupGUI();
+    config = KGlobal::config();
+    KConfigGroup configGroup( config, "RecentFiles" );
+    recentFiles->loadEntries( configGroup );
 //     setupAccel();
-//     config = KGlobal::config();
-//     createGUI( "knewz/knewzui.rc" );
-//     setAutoSaveSettings();
+    setAutoSaveSettings();
 }
 
 KNewz::~KNewz()
 {
     //Save the recent files entries
-//     KConfigGroup configGroup( config, "RecentFiles" );
-//     recentFiles->saveEntries( configGroup );
+    KConfigGroup configGroup( config, "RecentFiles" );
+    recentFiles->saveEntries( configGroup );
     delete model;
     delete view;
 }
@@ -73,19 +71,28 @@ KNewz::~KNewz()
 //     applyMainWindowSettings( KConfigGroup( KGlobal::config(), autoSaveGroup() ) );
 // }
 
-void KNewz::addRecentFile( const KUrl &url )
-{
+// void KNewz::addRecentFile( const KUrl &url )
+// {
 //     recentFiles->addUrl( url );
-}
+// }
 
 void KNewz::openRecentFile( const KUrl &url )
 {
-    openUrl( url );
+    NzbReader reader;
+    QList<NzbFile*> nzbFile;
+    nzbFile.append( reader.parseData( url.path() ) );
+    NzbDialog *nzbDialog = new NzbDialog( this, nzbFile );
+    nzbDialog->exec();
+
+    if( nzbDialog->result() == QDialog::Accepted ){
+        DownloadQueue::append( nzbFile );
+        model->changed();
+    }
 }
 
 void KNewz::openUrl( const KUrl& url )
 {
-    addRecentFile( url );
+    recentFiles->addUrl( KUrl( url ) );
     NzbReader reader;
     QList<NzbFile*> nzbFile;
     nzbFile.append( reader.parseData( url.url() ) );
@@ -101,8 +108,8 @@ void KNewz::optionsPreferences()
 
     KConfigDialog *dialog = new KConfigDialog(this, "settings", Settings::self());
     QWidget *generalSettingsDlg = new QWidget;
-    ServerWidget *sw = new ServerWidget( generalSettingsDlg );
-    dialog->addPage(generalSettingsDlg, i18n( "General" ), "package_setting");
+    new ServerWidget( generalSettingsDlg );
+    dialog->addPage(generalSettingsDlg, i18n( "Server" ), "preferences-system-network");
     connect(dialog, SIGNAL(settingsChanged(QString)), this, SLOT(settingsChanged()));
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->show();
@@ -133,20 +140,21 @@ void KNewz::optionsPreferences()
 //     dlg.exec();
 // }
 
-void KNewz::readProperties( const KConfigGroup &config )
-{
-}
-
-void KNewz::saveProperties( KConfigGroup &config )
-{
-}
-
-void KNewz::setupAccel()
-{
-}
+// void KNewz::readProperties( const KConfigGroup &config )
+// {
+// }
+// 
+// void KNewz::saveProperties( KConfigGroup &config )
+// {
+// }
+// 
+// void KNewz::setupAccel()
+// {
+// }
 
 void KNewz::settingsChanged()
 {
+    kDebug() << "Settings changed";
 }
 
 void KNewz::setupActions()
@@ -164,6 +172,7 @@ void KNewz::setupActions()
 //     connect( configureAction, SIGNAL( triggered( bool ) ), this, SLOT( optionsConfigureSettings() ) );
 
     KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
+    recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
     KStandardAction::quit( qApp, SLOT( closeAllWindows() ), actionCollection() );
     KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
 }
@@ -177,7 +186,9 @@ void KNewz::urlOpen()
         QList<NzbFile*> nzbFiles;
 
         for( int i = 0, size = files.size(); i < size; i++ ){
-            nzbFiles.append( reader.parseData( files.at( i ) ) );
+            QString file( files.at( i ) );
+            recentFiles->addUrl( KUrl( file ) );
+            nzbFiles.append( reader.parseData( file ) );
         }
 
         NzbDialog *nzbDialog = new NzbDialog( this, nzbFiles );
