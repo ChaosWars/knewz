@@ -57,6 +57,13 @@ class NzbDialog : public QDialog
         NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
         ~NzbDialog();
 
+    private Q_SLOTS:
+        void checkAllSlot();
+        void checkNoneSlot();
+        void checkSelectedSlot();
+        void uncheckSelectedSlot();
+        void invertSelectionSlot();
+
     private:
         NzbModel *model;
         QTreeView *view;
@@ -64,13 +71,13 @@ class NzbDialog : public QDialog
         QHBoxLayout *buttonLayout;
         QButtonGroup *defaultButtonGroup;
         QButtonGroup *selectButtonGroup;
-        QPushButton *ok;
-        QPushButton *cancel;
-        QPushButton *checkSelected;
-        QPushButton *uncheckSelected;
         QPushButton *checkAll;
         QPushButton *checkNone;
+        QPushButton *checkSelected;
+        QPushButton *uncheckSelected;
         QPushButton *invertSelection;
+        QPushButton *ok;
+        QPushButton *cancel;
 };
 
 #endif

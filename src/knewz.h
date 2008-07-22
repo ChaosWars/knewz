@@ -34,7 +34,7 @@ class KAction;
 class KRecentFilesAction;
 class KToggleAction;
 class QTreeView;
-class MainModel;
+class KNewzModel;
 
 /**
  */
@@ -44,7 +44,7 @@ class KNewz : public KXmlGuiWindow
 
     public:
         KNewz( QWidget *parent = NULL );
-        ~KNewz();
+        virtual ~KNewz();
 
     protected:
         void openUrl( const KUrl& url );
@@ -65,7 +65,7 @@ class KNewz : public KXmlGuiWindow
         KRecentFilesAction *recentFiles;
         KAction *configureAction;
         QTreeView *view;
-        MainModel *model;
+        KNewzModel *model;
         void setupAccel();
         void setupActions();
 };

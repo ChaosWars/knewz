@@ -5,7 +5,7 @@ SET( SRC downloadqueue.cpp
         file.cpp
         knewz.cpp
         main.cpp
-        mainmodel.cpp
+        knewzmodel.cpp
         nzbfile.cpp
         nzbhandler.cpp
         nzbreader.cpp

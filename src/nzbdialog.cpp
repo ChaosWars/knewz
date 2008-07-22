@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <KDE/KLocalizedString>
+#include <KDE/KIcon>
 #include <QButtonGroup>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -49,17 +50,17 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles )
     selectButtonGroup->addButton( invertSelection );
     //Set up the default button group
     defaultButtonGroup = new QButtonGroup( this );
-    ok = new QPushButton( QIcon( "ok" ), "&OK", this );
+    ok = new QPushButton( KIcon( "dialog-ok" ), "&OK", this );
     defaultButtonGroup->addButton( ok );
-    cancel = new QPushButton( QIcon( "cancel" ), "&Cancel", this );
+    cancel = new QPushButton( KIcon( "dialog-cancel" ), "&Cancel", this );
     defaultButtonGroup->addButton( cancel );
     //Set up the button layout
     buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget( checkSelected );
     buttonLayout->addWidget( uncheckSelected );
+    buttonLayout->addWidget( checkSelected );
+    buttonLayout->addWidget( invertSelection );
     buttonLayout->addWidget( checkAll );
     buttonLayout->addWidget( checkNone );
-    buttonLayout->addWidget( invertSelection );
     buttonLayout->addStretch();
     buttonLayout->addWidget( ok );
     buttonLayout->addWidget( cancel );
@@ -71,6 +72,10 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles )
     //Set up the signals
     connect( ok, SIGNAL( clicked() ), SLOT( accept() ) );
     connect( cancel, SIGNAL( clicked() ), SLOT( reject() ) );
+    connect( checkAll, SIGNAL( clicked() ), SLOT( checkAllSlot() ) );
+    connect( checkNone, SIGNAL( clicked() ), SLOT( checkNoneSlot() ) );
+    connect( uncheckSelected, SIGNAL( clicked() ), SLOT( uncheckSelectedSlot() ) );
+    connect( invertSelection, SIGNAL( clicked() ), SLOT( invertSelectionSlot() ) );
 }
 
 
@@ -82,6 +87,26 @@ NzbDialog::~NzbDialog()
     delete defaultButtonGroup;
     delete buttonLayout;
     delete layout;
+}
+
+void NzbDialog::checkAllSlot()
+{
+}
+
+void NzbDialog::checkNoneSlot()
+{
+}
+
+void NzbDialog::checkSelectedSlot()
+{
+}
+
+void NzbDialog::uncheckSelectedSlot()
+{
+}
+
+void NzbDialog::invertSelectionSlot()
+{
 }
 
 #include "nzbdialog.moc"
