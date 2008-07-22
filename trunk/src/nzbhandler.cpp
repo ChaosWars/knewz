@@ -34,7 +34,7 @@ NzbHandler::~NzbHandler()
 
 bool NzbHandler::startDocument()
 {
-    if( filename.isEmpty() || filename.isNull() )
+    if( m_filename.isEmpty() || m_filename.isNull() )
         return false;
 
     return true;

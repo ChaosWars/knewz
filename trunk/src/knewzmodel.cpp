@@ -19,33 +19,33 @@
  ***************************************************************************/
 
 #include <QTreeView>
-#include "mainmodel.h"
+#include "knewzmodel.h"
 #include "nzbfile.h"
 #include "file.h"
 #include "downloadqueue.h"
 
-MainModel::MainModel( QTreeView *parent )
+KNewzModel::KNewzModel( QTreeView *parent )
     : QAbstractItemModel( parent ), view( parent )
 {
     rootItem << "" << tr( "Subject" ) << ( "Size (MiB)" ) << ( "Status" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
 }
 
-MainModel::~MainModel()
+KNewzModel::~KNewzModel()
 {
 }
 
-void MainModel::changed()
+void KNewzModel::changed()
 {
     emit layoutChanged();
 }
 
-int MainModel::columnCount( const QModelIndex &/*parent*/ ) const
+int KNewzModel::columnCount( const QModelIndex &/*parent*/ ) const
 {
     return 4;
 }
 
-QVariant MainModel::data( const QModelIndex &index, int role ) const
+QVariant KNewzModel::data( const QModelIndex &index, int role ) const
 {
     if ( !index.isValid() )
         return QVariant();
@@ -100,7 +100,7 @@ QVariant MainModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-Qt::ItemFlags MainModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags KNewzModel::flags( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
         return 0;
@@ -108,7 +108,7 @@ Qt::ItemFlags MainModel::flags( const QModelIndex &index ) const
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant MainModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant KNewzModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
     if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
         return rootItem.at( section );
@@ -116,7 +116,7 @@ QVariant MainModel::headerData( int section, Qt::Orientation orientation, int ro
     return QVariant();
 }
 
-QModelIndex MainModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) const
 {
     if( !hasIndex( row, column, parent ) )
         return QModelIndex();
@@ -141,13 +141,13 @@ QModelIndex MainModel::index( int row, int column, const QModelIndex &parent ) c
     return createIndex( row, column, file );
 }
 
-// bool MainModel::insertRows( int row, int count, const QModelIndex &parent )
+// bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
 // {
 //     beginInsertRows( parent, row, row + ( count - 1 ) );
 //     endInsertRows();
 // }
 
-QModelIndex MainModel::parent( const QModelIndex &index ) const
+QModelIndex KNewzModel::parent( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
         return QModelIndex();
@@ -165,13 +165,13 @@ QModelIndex MainModel::parent( const QModelIndex &index ) const
     return createIndex( DownloadQueue::queue().indexOf( nzbFile ), 0, nzbFile );
 }
 
-// bool MainModel::removeRows( int row, int count, const QModelIndex &parent )
+// bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
 // {
 //     beginRemoveRows( parent, row, row + ( count - 1 ) );
 //     endRemoveRows();
 // }
 
-int MainModel::rowCount( const QModelIndex &parent ) const
+int KNewzModel::rowCount( const QModelIndex &parent ) const
 {
     if( parent.column() > 1 )
         return 0;
@@ -185,14 +185,45 @@ int MainModel::rowCount( const QModelIndex &parent ) const
     return 0;
 }
 
-void MainModel::clicked( const QModelIndex& index )
+void KNewzModel::clicked( const QModelIndex& index )
 {
+//     if( !( index.column() == 0 ) )
+//         return;
+// 
+//     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+//     Qt::CheckState checkstate;
+//     base->state() == Qt::Checked ? checkstate = Qt::Unchecked : checkstate = Qt::Checked;
+//     base->setState( checkstate );
+//     view->update( index );
+// 
+//     if( base->type() == "NzbFile" ){
+// 
+//         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
+// 
+//         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+//             nzbFile->at( i )->setState( checkstate );
+//             view->update( index.child( i, 0 ) );
+//         }
+// 
+//     }
+
     if( !( index.column() == 0 ) )
         return;
 
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     Qt::CheckState checkstate;
-    base->state() == Qt::Checked ? checkstate = Qt::Unchecked : checkstate = Qt::Checked;
+
+    switch( base->state() ){
+        case Qt::Checked:
+            checkstate = Qt::Unchecked;
+            break;
+        case Qt::Unchecked:
+        case Qt::PartiallyChecked:
+        default:
+            checkstate = Qt::Checked;
+            break;
+    }
+
     base->setState( checkstate );
     view->update( index );
 
@@ -205,8 +236,25 @@ void MainModel::clicked( const QModelIndex& index )
             view->update( index.child( i, 0 ) );
         }
 
+    }else{
+        NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
+
+        if( nzbFile->state() != Qt::PartiallyChecked ){
+            nzbFile->setState( Qt::PartiallyChecked );
+        }else{
+            Qt::CheckState state = nzbFile->first()->state();
+
+            for( int i = 1, size = nzbFile->size(); i < size; i++ ){
+                if( nzbFile->at( i )->state() != state  )
+                    break;
+            }
+
+            nzbFile->setState( state );
+        }
+
+        view->update( index.parent() );
     }
 
 }
 
-#include "mainmodel.moc"
+#include "knewzmodel.moc"

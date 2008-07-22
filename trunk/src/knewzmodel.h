@@ -19,10 +19,10 @@
  ***************************************************************************/
 
 /**
- * \class MainModel mainmodel.h
+ * \class KNewzModel mainmodel.h
  */
-#ifndef MAINMODEL_H
-#define MAINMODEL_H
+#ifndef KNEWZMODEL_H
+#define KNEWZMODEL_H
 
 #include <QAbstractItemModel>
 #include <QStringList>
@@ -39,14 +39,14 @@ class NzbFile;
  *
  *  \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class MainModel : public QAbstractItemModel
+class KNewzModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
 
-        MainModel( QTreeView *parent );
-        ~MainModel();
+        KNewzModel( QTreeView *parent );
+        ~KNewzModel();
 
         /**
          * 

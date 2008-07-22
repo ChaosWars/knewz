@@ -36,15 +36,14 @@
 #include "downloadqueue.h"
 #include "file.h"
 #include "knewz.h"
-#include "mainmodel.h"
+#include "knewzmodel.h"
 #include "nzbdialog.h"
 #include "nzbreader.h"
 #include "segment.h"
 
-KNewz::KNewz( QWidget *parent ) : KXmlGuiWindow( parent )
+KNewz::KNewz( QWidget *parent )
+    : KXmlGuiWindow( parent ), view( new QTreeView( this ) ), model( new KNewzModel( view ) )
 {
-    view = new QTreeView( this );
-    model = new MainModel( view );
     view->setModel( model );
     setCentralWidget( view );
     setupActions();
