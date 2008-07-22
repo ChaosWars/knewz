@@ -1,6 +1,6 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
 <kpartgui name="knewz" version="1">
-    <MenuBar>
+    <!-- MenuBar>
         <Menu noMerge="1" name="file"><text>&amp;Action</text>
             <Merge/>
             <Action name="file_open"/>
@@ -14,11 +14,11 @@
             <Separator/>
             <Action name="options_configure_keybinding"/>
             <Action name="options_configure_toolbars"/>
-            <Action name="options_configure"/>
+            <Action name="options_preferences"/>
         </Menu>
     </MenuBar>
     <ToolBar noMerge="1" name="mainToolBar"><text>Main Toolbar</text>
         <Action name="file_open"/>
         <Merge/>
-    </ToolBar>
+    </ToolBar -->
 </kpartgui>

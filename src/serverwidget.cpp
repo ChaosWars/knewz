@@ -17,31 +17,16 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "serverwidget.h"
 
-#include <KDE/KLocalizedString>
-#include <KDE/KAboutData>
-#include <KDE/KCmdLineArgs>
-#include <KDE/KUniqueApplication>
-#include "knewz.h"
-
-static const char description[] = I18N_NOOP( "A program for downloading the contents of NZB files from newsgroups for KDE4" );
-static const char version[] = "1.0";
-
-int main( int argc, char **argv )
+ServerWidget::ServerWidget( QWidget *parent )
 {
-    KCmdLineOptions options;
-    options.add( "+files", ki18n( "NZB files to open. You can list multiple files here." ) );
-    KAboutData about( "knewz", QByteArray(), ki18n( "KNewz" ), version, ki18n( description ),
-                        KAboutData::License_GPL, ki18n( "(C) 2007 Lawrence Lee" ), KLocalizedString(), 0, "valheru@facticius.net" );
-    about.addAuthor( ki18n( "Lawrence Lee" ), ki18n( "Lead programmer" ), "valheru@facticius.net", "knewz.googlecode.com" );
-    KCmdLineArgs::init( argc, argv, &about );
-    KCmdLineArgs::addCmdLineOptions( options );
-    KCmdLineArgs::addTempFileOption();
-    KUniqueApplication::addCmdLineOptions();
-
-    KUniqueApplication app;
-    KNewz *m = new KNewz();
-    m->show();
-    return app.exec();
-
+    ui_serversettings.setupUi( parent );
 }
+
+
+ServerWidget::~ServerWidget()
+{
+}
+
+#include "serverwidget.moc"

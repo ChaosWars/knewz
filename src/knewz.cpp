@@ -21,6 +21,7 @@
 #include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfig>
+#include <KDE/KConfigDialog>
 #include <KDE/KEditToolBar>
 #include <KDE/KFileDialog>
 #include <KDE/KGlobal>
@@ -40,36 +41,41 @@
 #include "nzbdialog.h"
 #include "nzbreader.h"
 #include "segment.h"
+#include "serverwidget.h"
+#include "settings.h"
 
 KNewz::KNewz( QWidget *parent )
     : KXmlGuiWindow( parent ), view( new QTreeView( this ) ), model( new KNewzModel( view ) )
 {
+    setAcceptDrops(true);
     view->setModel( model );
     setCentralWidget( view );
     setupActions();
-    setupAccel();
-    config = KGlobal::config();
-    createGUI( "knewz/knewzui.rc" );
-    setAutoSaveSettings();
+    statusBar()->show();
+    setupGUI();
+//     setupAccel();
+//     config = KGlobal::config();
+//     createGUI( "knewz/knewzui.rc" );
+//     setAutoSaveSettings();
 }
 
 KNewz::~KNewz()
 {
     //Save the recent files entries
-    KConfigGroup configGroup( config, "RecentFiles" );
-    recentFiles->saveEntries( configGroup );
+//     KConfigGroup configGroup( config, "RecentFiles" );
+//     recentFiles->saveEntries( configGroup );
     delete model;
     delete view;
 }
 
-void KNewz::applyNewToolbarConfig()
-{
-    applyMainWindowSettings( KConfigGroup( KGlobal::config(), autoSaveGroup() ) );
-}
+// void KNewz::applyNewToolbarConfig()
+// {
+//     applyMainWindowSettings( KConfigGroup( KGlobal::config(), autoSaveGroup() ) );
+// }
 
 void KNewz::addRecentFile( const KUrl &url )
 {
-    recentFiles->addUrl( url );
+//     recentFiles->addUrl( url );
 }
 
 void KNewz::openRecentFile( const KUrl &url )
@@ -87,12 +93,27 @@ void KNewz::openUrl( const KUrl& url )
     model->changed();
 }
 
-void KNewz::optionsConfigureKeys()
+void KNewz::optionsPreferences()
 {
+    if ( KConfigDialog::showDialog( "settings" ) )  {
+        return;
+    }
+
+    KConfigDialog *dialog = new KConfigDialog(this, "settings", Settings::self());
+    QWidget *generalSettingsDlg = new QWidget;
+    ServerWidget *sw = new ServerWidget( generalSettingsDlg );
+    dialog->addPage(generalSettingsDlg, i18n( "General" ), "package_setting");
+    connect(dialog, SIGNAL(settingsChanged(QString)), this, SLOT(settingsChanged()));
+    dialog->setAttribute( Qt::WA_DeleteOnClose );
+    dialog->show();
 }
 
-void KNewz::optionsConfigureSettings()
-{
+// void KNewz::optionsConfigureKeys()
+// {
+// }
+
+// void KNewz::optionsConfigureSettings()
+// {
 //     if( KConfigDialog::showDialog( "settings" ) )
 //         return;
     //
@@ -100,17 +121,17 @@ void KNewz::optionsConfigureSettings()
 //     connect( settings, SIGNAL( settingsChanged() ), this, SLOT( readSettings() ) );
 //     settings->show();
 
-}
+// }
 
-void KNewz::optionsConfigureToolbars()
-{
-    saveMainWindowSettings( KConfigGroup( KGlobal::config(), autoSaveGroup() ) );
-
-    // use the standard toolbar editor
-    KEditToolBar dlg(factory());
-    connect( &dlg, SIGNAL( newToolbarConfig() ), this, SLOT( applyNewToolbarConfig() ) );
-    dlg.exec();
-}
+// void KNewz::optionsConfigureToolbars()
+// {
+//     saveMainWindowSettings( KConfigGroup( KGlobal::config(), autoSaveGroup() ) );
+// 
+//     // use the standard toolbar editor
+//     KEditToolBar dlg(factory());
+//     connect( &dlg, SIGNAL( newToolbarConfig() ), this, SLOT( applyNewToolbarConfig() ) );
+//     dlg.exec();
+// }
 
 void KNewz::readProperties( const KConfigGroup &config )
 {
@@ -124,19 +145,27 @@ void KNewz::setupAccel()
 {
 }
 
+void KNewz::settingsChanged()
+{
+}
+
 void KNewz::setupActions()
 {
-    setStandardToolBarMenuEnabled( true );
-    createStandardStatusBarAction();
-    KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
-    KStandardAction::quit( this, SLOT( close() ), actionCollection() );
-    KStandardAction::keyBindings( this, SLOT( optionsConfigureKeys() ), actionCollection() );
-    KStandardAction::configureToolbars( this, SLOT( optionsConfigureToolbars() ), actionCollection() );
-    recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( const KUrl& ) ), actionCollection() );
+//     setStandardToolBarMenuEnabled( true );
+//     createStandardStatusBarAction();
+//     KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
+//     KStandardAction::quit( this, SLOT( close() ), actionCollection() );
+//     KStandardAction::keyBindings( this, SLOT( optionsConfigureKeys() ), actionCollection() );
+//     KStandardAction::configureToolbars( this, SLOT( optionsConfigureToolbars() ), actionCollection() );
+//     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( const KUrl& ) ), actionCollection() );
+// 
+//     configureAction = new KAction( KIcon( "configure" ), i18n( "&Configure KNewz..." ), actionCollection() );
+//     actionCollection()->addAction( "options_configure", configureAction );
+//     connect( configureAction, SIGNAL( triggered( bool ) ), this, SLOT( optionsConfigureSettings() ) );
 
-    configureAction = new KAction( KIcon( "configure" ), i18n( "&Configure KNewz..." ), actionCollection() );
-    actionCollection()->addAction( "options_configure", configureAction );
-    connect( configureAction, SIGNAL( triggered( bool ) ), this, SLOT( optionsConfigureSettings() ) );
+    KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
+    KStandardAction::quit( qApp, SLOT( closeAllWindows() ), actionCollection() );
+    KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
 }
 
 void KNewz::urlOpen()
