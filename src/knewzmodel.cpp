@@ -28,7 +28,7 @@
 KNewzModel::KNewzModel( QTreeView *parent )
     : QAbstractItemModel( parent ), view( parent )
 {
-    rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" ) << i18n( "Status" );
+    rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" ) << i18n( "Status" ) << i18n( "ETA" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
 }
 
@@ -43,7 +43,7 @@ void KNewzModel::changed()
 
 int KNewzModel::columnCount( const QModelIndex &/*parent*/ ) const
 {
-    return 4;
+    return 5;
 }
 
 QVariant KNewzModel::data( const QModelIndex &index, int role ) const
@@ -74,7 +74,10 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
                 break;
             case 3:
                 break;
+            case 4:
+                break;
             default:
+                return QVariant();
                 break;
         }
 
@@ -90,6 +93,8 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
                 return QString().setNum( DownloadQueue::queue().at( parentIndex.row() )->at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             case 3:
+                break;
+            case 4:
                 break;
             default:
                 return QVariant();

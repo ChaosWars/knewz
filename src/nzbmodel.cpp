@@ -67,6 +67,7 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
                 return QString().setNum( m_nzbFiles.at( index.row() )->bytes() /1048576.00, 'f', 2 );
                 break;
             default:
+                return QVariant();
                 break;
         }
 

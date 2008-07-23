@@ -23,10 +23,10 @@
 #include <KDE/KLocalizedString>
 #include <QButtonGroup>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QPushButton>
 #include <QTreeView>
 #include <QVBoxLayout>
-#include "knewzexception.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 #include "nzbmodel.h"
@@ -34,14 +34,11 @@
 NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     : QDialog( parent ), view( new QTreeView( this ) )
 {
-    if( nzbFiles.size() == 0 ){
-        throw ConstructionException();
-    }
-
     // Set up the model/view
     model = new NzbModel( view, nzbFiles );
     view->setSelectionMode( QAbstractItemView::ExtendedSelection );
     view->setModel( model );
+    view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     //Set up the selection button group
     selectButtonGroup = new QButtonGroup( this );
     checkSelected = new QPushButton( "Check &Selected", this );
