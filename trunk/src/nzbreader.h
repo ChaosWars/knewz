@@ -45,12 +45,14 @@ class NzbReader
         ~NzbReader();
 
         /**
-         *  Returns a QList\<QFile*\> that contain the data read from the *.nzb file.
+         *  Returns a QList\<File*\> that contain the data read from the *.nzb file.
          *
          *  @return
          *      The data read from the *.nzb file. The data consists of a QList\<File*\>.
          *      Each File is a QList\<Segment*\> and represents a "part" that a binary file is often split into
          *      that is made up of one or more parts. The whole represents the total contents of a *.nzb file.
+         *      If the parsing fails, the returned list will be empty. The size of the returned list should
+         *      therefore always be checked and acted upon accordingly.
          */
         NzbFile* parseData( const QString &path );
 

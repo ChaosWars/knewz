@@ -18,23 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <KDE/KLocalizedString>
+#include <KDE/KDebug>
 #include <KDE/KIcon>
+#include <KDE/KLocalizedString>
 #include <QButtonGroup>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include "knewzexception.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 #include "nzbmodel.h"
 
-NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles )
-    : QDialog( parent )
+NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
+    : QDialog( parent ), view( new QTreeView( this ) )
 {
+    if( nzbFiles.size() == 0 ){
+        throw ConstructionException();
+    }
+
     // Set up the model/view
-    view = new QTreeView( this );
-    model = new NzbModel( view, nzbfiles );
+    model = new NzbModel( view, nzbFiles );
+    view->setSelectionMode( QAbstractItemView::ExtendedSelection );
     view->setModel( model );
     //Set up the selection button group
     selectButtonGroup = new QButtonGroup( this );
@@ -72,10 +78,11 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles )
     //Set up the signals
     connect( ok, SIGNAL( clicked() ), SLOT( accept() ) );
     connect( cancel, SIGNAL( clicked() ), SLOT( reject() ) );
-    connect( checkAll, SIGNAL( clicked() ), SLOT( checkAllSlot() ) );
-    connect( checkNone, SIGNAL( clicked() ), SLOT( checkNoneSlot() ) );
-    connect( uncheckSelected, SIGNAL( clicked() ), SLOT( uncheckSelectedSlot() ) );
-    connect( invertSelection, SIGNAL( clicked() ), SLOT( invertSelectionSlot() ) );
+    connect( checkAll, SIGNAL( clicked() ), model, SLOT( checkAll() ) );
+    connect( checkNone, SIGNAL( clicked() ), model, SLOT( checkNone() ) );
+    connect( checkSelected, SIGNAL( clicked() ), model, SLOT( checkSelected() ) );
+    connect( uncheckSelected, SIGNAL( clicked() ), model, SLOT( uncheckSelected() ) );
+    connect( invertSelection, SIGNAL( clicked() ), model, SLOT( invertSelection() ) );
 }
 
 
@@ -87,26 +94,6 @@ NzbDialog::~NzbDialog()
     delete defaultButtonGroup;
     delete buttonLayout;
     delete layout;
-}
-
-void NzbDialog::checkAllSlot()
-{
-}
-
-void NzbDialog::checkNoneSlot()
-{
-}
-
-void NzbDialog::checkSelectedSlot()
-{
-}
-
-void NzbDialog::uncheckSelectedSlot()
-{
-}
-
-void NzbDialog::invertSelectionSlot()
-{
 }
 
 #include "nzbdialog.moc"

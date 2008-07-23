@@ -32,8 +32,8 @@ int main( int argc, char **argv )
     KCmdLineOptions options;
     options.add( "+files", ki18n( "NZB files to open. You can list multiple files here." ) );
     KAboutData about( "knewz", QByteArray(), ki18n( "KNewz" ), version, ki18n( description ),
-                        KAboutData::License_GPL, ki18n( "(C) 2007 Lawrence Lee" ), KLocalizedString(), 0, "valheru@facticius.net" );
-    about.addAuthor( ki18n( "Lawrence Lee" ), ki18n( "Lead programmer" ), "valheru@facticius.net", "knewz.googlecode.com" );
+                        KAboutData::License_GPL, ki18n( "(C) 2007 Lawrence Lee" ), KLocalizedString(), 0, "valheru.ashen.shugar@gmail.com" );
+    about.addAuthor( ki18n( "Lawrence Lee" ), ki18n( "Lead programmer" ), "valheru.ashen.shugar@gmail.com", "http://knewz.googlecode.com" );
     KCmdLineArgs::init( argc, argv, &about );
     KCmdLineArgs::addCmdLineOptions( options );
     KCmdLineArgs::addTempFileOption();

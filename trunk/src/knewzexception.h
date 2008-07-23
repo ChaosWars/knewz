@@ -17,20 +17,19 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef SERVERWIDGET_H
-#define SERVERWIDGET_H
+#ifndef KNEWZ_EXCEPTION
+#define KNEWZ_EXCEPTION
 
-#include <QtGui/QWidget>
-#include <ui_serversettings.h>
+// using namespace QtConcurrent;
+#include <QtCore>
 
-/**
-	@author Lawrence Lee
-*/
-class ServerWidget : public QWidget, public Ui::ServerSettings
-{
+class ConstructionException : public QtConcurrent::Exception{
+
     public:
-        ServerWidget( QWidget *parent = 0 );
-        virtual ~ServerWidget();
+//         ConstructionException( QString classname ) : c( classname ){}
+//         virtual ~ConstructionException() throw(){}
+        void raise() const{ throw *this; }
+        ConstructionException* clone() const{ return new ConstructionException( *this ); }
 };
 
 #endif

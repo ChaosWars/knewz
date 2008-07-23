@@ -2,5 +2,5 @@
 File=knewz.kcfg
 ClassName=Settings
 Singleton=true
-Mutators=server,port,authentication,username,password
+Mutators=server,port,ssl,authentication,username,password
 # will create the necessary code for setting those variables

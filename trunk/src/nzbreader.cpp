@@ -37,6 +37,10 @@ NzbFile* NzbReader::parseData( const QString &path )
     handler.setFilename( p );
     QFile file( path );
     QXmlInputSource source( &file );
-    reader.parse( &source );
-    return handler.nzbFile();
+
+    if( reader.parse( &source ) ){
+        return handler.nzbFile();
+    }else{
+        return new NzbFile();
+    }
 }

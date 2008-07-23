@@ -12,6 +12,10 @@
 	    <label>Server port</label>
 	    <default>119</default>
     </entry>
+    <entry name="ssl" type="Bool">
+	    <label>Connect to the server using SSL</label>
+	    <default>false</default>
+    </entry>
     <entry name="authentication" type="Bool">
 	    <label>Server requires authentication</label>
 	    <default>false</default>
