@@ -20,14 +20,11 @@
 #ifndef KNEWZ_EXCEPTION
 #define KNEWZ_EXCEPTION
 
-// using namespace QtConcurrent;
 #include <QtCore>
 
 class ConstructionException : public QtConcurrent::Exception{
 
     public:
-//         ConstructionException( QString classname ) : c( classname ){}
-//         virtual ~ConstructionException() throw(){}
         void raise() const{ throw *this; }
         ConstructionException* clone() const{ return new ConstructionException( *this ); }
 };

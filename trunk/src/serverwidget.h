@@ -28,6 +28,8 @@
 */
 class ServerWidget : public QWidget, public Ui::ServerSettings
 {
+    Q_OBJECT
+
     public:
         ServerWidget( QWidget *parent = 0 );
         virtual ~ServerWidget();

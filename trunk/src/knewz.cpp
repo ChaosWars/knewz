@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <KDE/KActionCollection>
+#include <KDE/KApplication>
 #include <KDE/KCmdLineArgs>
 #include <KDE/KConfig>
 #include <KDE/KConfigDialog>
@@ -28,6 +29,7 @@
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
 #include <KDE/KSystemTrayIcon>
+#include <QHeaderView>
 #include <QTreeView>
 #include "downloadqueue.h"
 #include "file.h"
@@ -45,6 +47,7 @@ KNewz::KNewz( QWidget *parent )
 {
     setAcceptDrops(true);
     view->setModel( model );
+    view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     setCentralWidget( view );
     setupActions();
     setupGUI();
@@ -53,6 +56,7 @@ KNewz::KNewz( QWidget *parent )
     KConfigGroup configGroup( config, "RecentFiles" );
     recentFiles->loadEntries( configGroup );
     trayIcon = new KSystemTrayIcon( "applications-internet", this );
+    connect( trayIcon, SIGNAL( quitSelected() ), this, SLOT( exit() ) );
     trayIcon->show();
 }
 
@@ -111,7 +115,7 @@ void KNewz::setupActions()
     createStandardStatusBarAction();
     KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
-    KStandardAction::quit( qApp, SLOT( closeAllWindows() ), actionCollection() );
+    KStandardAction::quit( this, SLOT( exit() ), actionCollection() );
     KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
 }
 
@@ -124,24 +128,17 @@ void KNewz::showFileOpenDialog( const QString &file, bool addToRecentFiles )
     if( nzbFile->size() > 0 ){
         nzbFiles.append( nzbFile );
         NzbDialog *nzbDialog;
+        nzbDialog = new NzbDialog( this, nzbFiles );
+        nzbDialog->exec();
 
-        try{
-            nzbDialog = new NzbDialog( this, nzbFiles );
-            nzbDialog->exec();
+        if( nzbDialog->result() == QDialog::Accepted ){
 
-            if( nzbDialog->result() == QDialog::Accepted ){
-
-                if( addToRecentFiles ){
-                    recentFiles->addUrl( KUrl( file ) );
-                }
-
-                DownloadQueue::append( nzbFiles );
-                model->changed();
+            if( addToRecentFiles ){
+                recentFiles->addUrl( KUrl( file ) );
             }
 
-        }catch( ConstructionException &e ){
-            kDebug() << e.what();
-            delete nzbDialog;
+            DownloadQueue::append( nzbFiles );
+            model->changed();
         }
     }
 }
@@ -169,18 +166,12 @@ void KNewz::showFileOpenDialog( const QStringList &files )
     if( nzbFiles.size() > 0 ){
 
         NzbDialog *nzbDialog;
-        try{
-            nzbDialog = new NzbDialog( this, nzbFiles );
-            nzbDialog->exec();
+        nzbDialog = new NzbDialog( this, nzbFiles );
+        nzbDialog->exec();
 
-            if( nzbDialog->result() == QDialog::Accepted ){
-                DownloadQueue::append( nzbFiles );
-                model->changed();
-            }
-
-        }catch( ConstructionException &e ){
-            kDebug() << e.what();
-            delete nzbDialog;
+        if( nzbDialog->result() == QDialog::Accepted ){
+            DownloadQueue::append( nzbFiles );
+            model->changed();
         }
     }
 }
