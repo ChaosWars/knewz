@@ -31,9 +31,9 @@
 #include <KDE/KUrl>
 
 class KRecentFilesAction;
-class QTreeView;
 class KNewzModel;
-
+class KSystemTrayIcon;
+class QTreeView;
 /**
  * \brief The main window of the program.
  *
@@ -51,19 +51,24 @@ class KNewz : public KXmlGuiWindow
         virtual ~KNewz();
 
     protected:
-        void openUrl( const KUrl& url );
+//         void openUrl( const KUrl& url );
+        virtual bool queryClose();
+        virtual bool queryExit();
 
     private Q_SLOTS:
         void openRecentFile( const KUrl &url );
         void optionsPreferences();
         void settingsChanged();
         void urlOpen();
+        void exit();
 
     private:
-        KSharedConfigPtr config;
-        KRecentFilesAction *recentFiles;
         QTreeView *view;
         KNewzModel *model;
+        KSharedConfigPtr config;
+        KSystemTrayIcon *trayIcon;
+        KRecentFilesAction *recentFiles;
+        bool ok_to_close;
         void setupActions();
         void showFileOpenDialog( const QString &file, bool addToRecentFiles = true );
         void showFileOpenDialog( const QStringList &files);

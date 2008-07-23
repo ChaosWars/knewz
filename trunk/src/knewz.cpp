@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <KDE/KActionCollection>
+#include <KDE/KCmdLineArgs>
 #include <KDE/KConfig>
 #include <KDE/KConfigDialog>
 #include <KDE/KFileDialog>
@@ -26,6 +27,7 @@
 #include <KDE/KLocale>
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
+#include <KDE/KSystemTrayIcon>
 #include <QTreeView>
 #include "downloadqueue.h"
 #include "file.h"
@@ -39,7 +41,7 @@
 #include "settings.h"
 
 KNewz::KNewz( QWidget *parent )
-    : KXmlGuiWindow( parent ), view( new QTreeView( this ) ), model( new KNewzModel( view ) )
+    : KXmlGuiWindow( parent ), view( new QTreeView( this ) ), model( new KNewzModel( view ) ), ok_to_close( false )
 {
     setAcceptDrops(true);
     view->setModel( model );
@@ -50,6 +52,8 @@ KNewz::KNewz( QWidget *parent )
     config = KGlobal::config();
     KConfigGroup configGroup( config, "RecentFiles" );
     recentFiles->loadEntries( configGroup );
+    trayIcon = new KSystemTrayIcon( "applications-internet", this );
+    trayIcon->show();
 }
 
 KNewz::~KNewz()
@@ -66,21 +70,21 @@ void KNewz::openRecentFile( const KUrl &url )
     showFileOpenDialog( url.path(), false );
 }
 
-void KNewz::openUrl( const KUrl& url )
-{
-    NzbReader reader;
-    QList<NzbFile*> nzbFiles;
-    NzbFile *nzbFile = reader.parseData( url.url() );
-
-    if( nzbFile->size() > 0 ){
-        recentFiles->addUrl( KUrl( url ) );
-        nzbFiles.append( nzbFile );
-        DownloadQueue::append( nzbFiles );
-        model->changed();
-    }else{
-        delete nzbFile;
-    }
-}
+// void KNewz::openUrl( const KUrl& url )
+// {
+//     NzbReader reader;
+//     QList<NzbFile*> nzbFiles;
+//     NzbFile *nzbFile = reader.parseData( url.url() );
+// 
+//     if( nzbFile->size() > 0 ){
+//         recentFiles->addUrl( KUrl( url ) );
+//         nzbFiles.append( nzbFile );
+//         DownloadQueue::append( nzbFiles );
+//         model->changed();
+//     }else{
+//         delete nzbFile;
+//     }
+// }
 
 void KNewz::optionsPreferences()
 {
@@ -188,6 +192,26 @@ void KNewz::urlOpen()
     if( files.size() > 0 ){
         showFileOpenDialog( files );
     }
+}
+
+bool KNewz::queryClose()
+{
+    if( !ok_to_close ){
+        hide();
+    }
+
+    return ok_to_close;
+}
+
+bool KNewz::queryExit()
+{
+    return true;
+}
+
+void KNewz::exit()
+{
+    ok_to_close = true;
+    close();
 }
 
 #include "knewz.moc"

@@ -21,6 +21,7 @@
 #include <KDE/KLocalizedString>
 #include <KDE/KAboutData>
 #include <KDE/KCmdLineArgs>
+#include <KDE/KDebug>
 #include <KDE/KUniqueApplication>
 #include "knewz.h"
 
@@ -39,9 +40,22 @@ int main( int argc, char **argv )
     KCmdLineArgs::addTempFileOption();
     KUniqueApplication::addCmdLineOptions();
 
+    if( !KUniqueApplication::start() ){
+        kDebug() << i18n( "KNewz is already running!" ) << endl;
+        exit( EXIT_FAILURE );
+    }
+
     KUniqueApplication app;
+    app.setQuitOnLastWindowClosed( false );
     KNewz *m = new KNewz();
-    m->show();
+
+    if (app.isSessionRestored())
+    {
+        RESTORE(KNewz);
+    }else{
+        m->show();
+    }
+
     return app.exec();
 
 }

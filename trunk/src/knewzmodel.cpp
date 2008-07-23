@@ -207,20 +207,16 @@ void KNewzModel::clicked( const QModelIndex& index )
 
     }else{
         NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
+        Qt::CheckState state = nzbFile->first()->state();
+        int counter = 0;
 
-        if( nzbFile->state() != Qt::PartiallyChecked ){
-            nzbFile->setState( Qt::PartiallyChecked );
-        }else{
-            Qt::CheckState state = nzbFile->first()->state();
-
-            for( int i = 1, size = nzbFile->size(); i < size; i++ ){
-                if( nzbFile->at( i )->state() != state  )
-                    break;
+        foreach( File *file, *nzbFile ){
+            if( file->state() == state  ){
+                counter++;
             }
-
-            nzbFile->setState( state );
         }
 
+        counter == nzbFile->size() ? nzbFile->setState( state ) : nzbFile->setState( Qt::PartiallyChecked );
         view->update( index.parent() );
     }
 
