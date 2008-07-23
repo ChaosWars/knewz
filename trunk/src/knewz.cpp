@@ -48,6 +48,10 @@ KNewz::KNewz( QWidget *parent )
     setAcceptDrops(true);
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+    view->setDragEnabled( true );
+    view->setAcceptDrops( true );
+    view->setDropIndicatorShown( true );
+    view->setSelectionMode( QAbstractItemView::ExtendedSelection );
     setCentralWidget( view );
     setupActions();
     setupGUI();
