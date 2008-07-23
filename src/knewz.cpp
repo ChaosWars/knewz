@@ -18,22 +18,19 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KConfig>
 #include <KDE/KConfigDialog>
-#include <KDE/KEditToolBar>
 #include <KDE/KFileDialog>
 #include <KDE/KGlobal>
 #include <KDE/KLocale>
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
-#include <KDE/KStatusBar>
-#include <KDE/KUrl>
 #include <QTreeView>
 #include "downloadqueue.h"
 #include "file.h"
 #include "knewz.h"
+#include "knewzexception.h"
 #include "knewzmodel.h"
 #include "nzbdialog.h"
 #include "nzbreader.h"
@@ -48,13 +45,11 @@ KNewz::KNewz( QWidget *parent )
     view->setModel( model );
     setCentralWidget( view );
     setupActions();
-    statusBar()->show();
     setupGUI();
+    setAutoSaveSettings();
     config = KGlobal::config();
     KConfigGroup configGroup( config, "RecentFiles" );
     recentFiles->loadEntries( configGroup );
-//     setupAccel();
-    setAutoSaveSettings();
 }
 
 KNewz::~KNewz()
@@ -66,38 +61,25 @@ KNewz::~KNewz()
     delete view;
 }
 
-// void KNewz::applyNewToolbarConfig()
-// {
-//     applyMainWindowSettings( KConfigGroup( KGlobal::config(), autoSaveGroup() ) );
-// }
-
-// void KNewz::addRecentFile( const KUrl &url )
-// {
-//     recentFiles->addUrl( url );
-// }
-
 void KNewz::openRecentFile( const KUrl &url )
 {
-    NzbReader reader;
-    QList<NzbFile*> nzbFile;
-    nzbFile.append( reader.parseData( url.path() ) );
-    NzbDialog *nzbDialog = new NzbDialog( this, nzbFile );
-    nzbDialog->exec();
-
-    if( nzbDialog->result() == QDialog::Accepted ){
-        DownloadQueue::append( nzbFile );
-        model->changed();
-    }
+    showFileOpenDialog( url.path(), false );
 }
 
 void KNewz::openUrl( const KUrl& url )
 {
-    recentFiles->addUrl( KUrl( url ) );
     NzbReader reader;
-    QList<NzbFile*> nzbFile;
-    nzbFile.append( reader.parseData( url.url() ) );
-    DownloadQueue::append( nzbFile );
-    model->changed();
+    QList<NzbFile*> nzbFiles;
+    NzbFile *nzbFile = reader.parseData( url.url() );
+
+    if( nzbFile->size() > 0 ){
+        recentFiles->addUrl( KUrl( url ) );
+        nzbFiles.append( nzbFile );
+        DownloadQueue::append( nzbFiles );
+        model->changed();
+    }else{
+        delete nzbFile;
+    }
 }
 
 void KNewz::optionsPreferences()
@@ -106,99 +88,105 @@ void KNewz::optionsPreferences()
         return;
     }
 
-    KConfigDialog *dialog = new KConfigDialog(this, "settings", Settings::self());
-    QWidget *generalSettingsDlg = new QWidget;
+    KConfigDialog *dialog = new KConfigDialog( this, "settings", Settings::self() );
+    QWidget *generalSettingsDlg = new QWidget();
     new ServerWidget( generalSettingsDlg );
-    dialog->addPage(generalSettingsDlg, i18n( "Server" ), "preferences-system-network");
-    connect(dialog, SIGNAL(settingsChanged(QString)), this, SLOT(settingsChanged()));
+    dialog->addPage( generalSettingsDlg, i18n( "Server" ), "preferences-system-network" );
+    connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( settingsChanged() ) );
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     dialog->show();
 }
 
-// void KNewz::optionsConfigureKeys()
-// {
-// }
-
-// void KNewz::optionsConfigureSettings()
-// {
-//     if( KConfigDialog::showDialog( "settings" ) )
-//         return;
-    //
-//     settings = new Settings( m_widget, "settings", config );
-//     connect( settings, SIGNAL( settingsChanged() ), this, SLOT( readSettings() ) );
-//     settings->show();
-
-// }
-
-// void KNewz::optionsConfigureToolbars()
-// {
-//     saveMainWindowSettings( KConfigGroup( KGlobal::config(), autoSaveGroup() ) );
-// 
-//     // use the standard toolbar editor
-//     KEditToolBar dlg(factory());
-//     connect( &dlg, SIGNAL( newToolbarConfig() ), this, SLOT( applyNewToolbarConfig() ) );
-//     dlg.exec();
-// }
-
-// void KNewz::readProperties( const KConfigGroup &config )
-// {
-// }
-// 
-// void KNewz::saveProperties( KConfigGroup &config )
-// {
-// }
-// 
-// void KNewz::setupAccel()
-// {
-// }
-
 void KNewz::settingsChanged()
 {
-    kDebug() << "Settings changed";
 }
 
 void KNewz::setupActions()
 {
-//     setStandardToolBarMenuEnabled( true );
-//     createStandardStatusBarAction();
-//     KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
-//     KStandardAction::quit( this, SLOT( close() ), actionCollection() );
-//     KStandardAction::keyBindings( this, SLOT( optionsConfigureKeys() ), actionCollection() );
-//     KStandardAction::configureToolbars( this, SLOT( optionsConfigureToolbars() ), actionCollection() );
-//     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( const KUrl& ) ), actionCollection() );
-// 
-//     configureAction = new KAction( KIcon( "configure" ), i18n( "&Configure KNewz..." ), actionCollection() );
-//     actionCollection()->addAction( "options_configure", configureAction );
-//     connect( configureAction, SIGNAL( triggered( bool ) ), this, SLOT( optionsConfigureSettings() ) );
-
+    setStandardToolBarMenuEnabled( true );
+    createStandardStatusBarAction();
     KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
     KStandardAction::quit( qApp, SLOT( closeAllWindows() ), actionCollection() );
     KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
 }
 
+void KNewz::showFileOpenDialog( const QString &file, bool addToRecentFiles )
+{
+    NzbReader reader;
+    QList<NzbFile*> nzbFiles;
+    NzbFile *nzbFile = reader.parseData( file );
+
+    if( nzbFile->size() > 0 ){
+        nzbFiles.append( nzbFile );
+        NzbDialog *nzbDialog;
+
+        try{
+            nzbDialog = new NzbDialog( this, nzbFiles );
+            nzbDialog->exec();
+
+            if( nzbDialog->result() == QDialog::Accepted ){
+
+                if( addToRecentFiles ){
+                    recentFiles->addUrl( KUrl( file ) );
+                }
+
+                DownloadQueue::append( nzbFiles );
+                model->changed();
+            }
+
+        }catch( ConstructionException &e ){
+            kDebug() << e.what();
+            delete nzbDialog;
+        }
+    }
+}
+
+void KNewz::showFileOpenDialog( const QStringList &files )
+{
+    NzbReader reader;
+    QList<NzbFile*> nzbFiles;
+
+    for( int i = 0, size = files.size(); i < size; i++ ){
+
+        if( files.at( i ).size() > 0 ){
+            QString file( files.at( i ) );
+
+            NzbFile *nzbFile = reader.parseData( file );
+
+            if( nzbFile->size() > 0 ){
+                recentFiles->addUrl( KUrl( file ) );
+                nzbFiles.append( nzbFile );
+            }
+        }
+
+    }
+
+    if( nzbFiles.size() > 0 ){
+
+        NzbDialog *nzbDialog;
+        try{
+            nzbDialog = new NzbDialog( this, nzbFiles );
+            nzbDialog->exec();
+
+            if( nzbDialog->result() == QDialog::Accepted ){
+                DownloadQueue::append( nzbFiles );
+                model->changed();
+            }
+
+        }catch( ConstructionException &e ){
+            kDebug() << e.what();
+            delete nzbDialog;
+        }
+    }
+}
+
 void KNewz::urlOpen()
 {
-    QStringList files =  KFileDialog::getOpenFileNames( KUrl(), "*.nzb *.NZB |NZB Files", this, "Open NZB File" );
+    QStringList files =  KFileDialog::getOpenFileNames( KUrl(), "*.nzb *.NZB |NZB Files", this, i18n( "Open NZB File" ) );
 
     if( files.size() > 0 ){
-        NzbReader reader;
-        QList<NzbFile*> nzbFiles;
-
-        for( int i = 0, size = files.size(); i < size; i++ ){
-            QString file( files.at( i ) );
-            recentFiles->addUrl( KUrl( file ) );
-            nzbFiles.append( reader.parseData( file ) );
-        }
-
-        NzbDialog *nzbDialog = new NzbDialog( this, nzbFiles );
-        nzbDialog->exec();
-
-        if( nzbDialog->result() == QDialog::Accepted ){
-            DownloadQueue::append( nzbFiles );
-            model->changed();
-        }
-
+        showFileOpenDialog( files );
     }
 }
 

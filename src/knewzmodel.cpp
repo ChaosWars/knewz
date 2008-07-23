@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KLocalizedString>
 #include <QTreeView>
 #include "knewzmodel.h"
 #include "nzbfile.h"
@@ -27,7 +28,7 @@
 KNewzModel::KNewzModel( QTreeView *parent )
     : QAbstractItemModel( parent ), view( parent )
 {
-    rootItem << "" << tr( "Subject" ) << ( "Size (MiB)" ) << ( "Status" );
+    rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" ) << i18n( "Status" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
 }
 
@@ -187,43 +188,11 @@ int KNewzModel::rowCount( const QModelIndex &parent ) const
 
 void KNewzModel::clicked( const QModelIndex& index )
 {
-//     if( !( index.column() == 0 ) )
-//         return;
-// 
-//     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-//     Qt::CheckState checkstate;
-//     base->state() == Qt::Checked ? checkstate = Qt::Unchecked : checkstate = Qt::Checked;
-//     base->setState( checkstate );
-//     view->update( index );
-// 
-//     if( base->type() == "NzbFile" ){
-// 
-//         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
-// 
-//         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-//             nzbFile->at( i )->setState( checkstate );
-//             view->update( index.child( i, 0 ) );
-//         }
-// 
-//     }
-
     if( !( index.column() == 0 ) )
         return;
 
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-    Qt::CheckState checkstate;
-
-    switch( base->state() ){
-        case Qt::Checked:
-            checkstate = Qt::Unchecked;
-            break;
-        case Qt::Unchecked:
-        case Qt::PartiallyChecked:
-        default:
-            checkstate = Qt::Checked;
-            break;
-    }
-
+    Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
     base->setState( checkstate );
     view->update( index );
 

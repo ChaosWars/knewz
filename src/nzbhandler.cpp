@@ -23,7 +23,7 @@
 #include "nzbfile.h"
 #include "segment.h"
 
-NzbHandler::NzbHandler()
+NzbHandler::NzbHandler() : nzbFiles( NULL )
 {
     file_bytes = nzbfile_bytes = 0;
 }
@@ -42,6 +42,9 @@ bool NzbHandler::startDocument()
 
 bool NzbHandler::endDocument()
 {
+    if( nzbFiles->size() == 0 || groups.size() == 0 )
+        return false;
+
     return true;
 }
 
@@ -50,30 +53,39 @@ bool NzbHandler::startElement( const QString &/*namespaceURI*/, const QString &/
 {
     if( qName == "nzb" ){
         nzbFiles = new NzbFile( m_filename );
+        return true;
     }
 
     if( qName == "file" ){
         currentFile = new File();
         currentSubject = atts.value( "subject" );
         currentFile->setSubject( currentSubject );
+        return true;
     }
 
     if( qName == "segment" ){
         currentBytes = atts.value( "bytes" );
         file_bytes += atts.value( "bytes" ).toULong();
         currentNumber = atts.value( "number" );
+        return true;
     }
 
-    return true;
+    if( qName == "groups" || qName == "group" || qName == "segments" ){
+        return true;
+    }
+
+    return false;
 }
 
 bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*localName*/, const QString &qName )
 {
     if( qName == "group" ){
-        if( !groups.contains( currentText ) )
+        if( !groups.contains( currentText ) ){
             groups.append( currentText );
+        }
 
         currentText.clear();
+        return true;
     }
 
     if( qName == "file" ){
@@ -83,11 +95,13 @@ bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*l
         nzbfile_bytes += file_bytes;
         currentText.clear();
         file_bytes = 0;
+        return true;
     }
 
     if( qName == "segment" ){
         currentFile->append( new Segment( currentFile, currentText, currentNumber.toInt(), currentBytes.toULong() ) );
         currentText.clear();
+        return true;
     }
 
     if( qName == "nzb" ){
@@ -97,9 +111,15 @@ bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*l
         for( int i = 0, size = nzbFiles->size(); i < size; i++ ){
             nzbFiles->at( i )->setParent( nzbFiles );
         }
+
+        return true;
     }
 
-    return true;
+    if( qName == "groups" || qName == "segments" ){
+        return true;
+    }
+
+    return false;
 }
 
 bool NzbHandler::characters ( const QString &ch )

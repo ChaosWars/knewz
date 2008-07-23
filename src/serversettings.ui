@@ -71,6 +71,19 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="kcfg_ssl" >
+       <property name="toolTip" >
+        <string>Use Secure Socket Layer for connection.</string>
+       </property>
+       <property name="whatsThis" >
+        <string>Use SSL encryption to connect to the server.</string>
+       </property>
+       <property name="text" >
+        <string>Use SSL</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QSpinBox" name="kcfg_port" >
        <property name="toolTip" >
         <string>Server port</string>

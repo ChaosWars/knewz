@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KLocalizedString>
 #include <QTreeView>
 #include "nzbmodel.h"
 #include "nzbfile.h"
@@ -26,7 +27,7 @@
 NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
     : QAbstractItemModel( parent ), view( parent ), m_nzbFiles( nzbfiles )
 {
-    rootItem << "" << tr( "Subject" ) << tr( "Size (MiB)" );
+    rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );
 }
 
@@ -169,19 +170,7 @@ void NzbModel::clicked( const QModelIndex& index )
         return;
 
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-    Qt::CheckState checkstate;
-
-    switch( base->state() ){
-        case Qt::Checked:
-            checkstate = Qt::Unchecked;
-            break;
-        case Qt::Unchecked:
-        case Qt::PartiallyChecked:
-        default:
-            checkstate = Qt::Checked;
-            break;
-    }
-
+    Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
     base->setState( checkstate );
     view->update( index );
 
@@ -196,23 +185,75 @@ void NzbModel::clicked( const QModelIndex& index )
 
     }else{
         NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
+        Qt::CheckState state = nzbFile->first()->state();
+        int counter = 0;
 
-        if( nzbFile->state() != Qt::PartiallyChecked ){
-            nzbFile->setState( Qt::PartiallyChecked );
-        }else{
-            Qt::CheckState state = nzbFile->first()->state();
-
-            for( int i = 1, size = nzbFile->size(); i < size; i++ ){
-                if( nzbFile->at( i )->state() != state  )
-                    break;
+        foreach( File *file, *nzbFile ){
+            if( file->state() == state  ){
+                counter++;
             }
-
-            nzbFile->setState( state );
         }
 
+        counter == nzbFile->size() ? nzbFile->setState( state ) : nzbFile->setState( Qt::PartiallyChecked );
         view->update( index.parent() );
     }
 
+}
+
+void NzbModel::checkAll()
+{
+    for( int file = 0, size = rowCount(); file < size; file++ ){
+        QModelIndex fileIndex = index( file, 0 );
+        NzbFile *nzbFile = static_cast< NzbFile* >( fileIndex.internalPointer() );
+        nzbFile->setState( Qt::Checked );
+        view->update( fileIndex );
+
+        for( int part = 0, size = rowCount( fileIndex ); part < size; part++ ){
+            nzbFile->at( part )->setState( Qt::Checked );
+            view->update( index( part, 0, fileIndex ) );
+        }
+    }
+}
+
+void NzbModel::checkNone()
+{
+    for( int file = 0, size = rowCount(); file < size; file++ ){
+        QModelIndex fileIndex = index( file, 0 );
+        NzbFile *nzbFile = static_cast< NzbFile* >( fileIndex.internalPointer() );
+        nzbFile->setState( Qt::Unchecked );
+        view->update( fileIndex );
+
+        for( int part = 0, size = rowCount( fileIndex ); part < size; part++ ){
+            nzbFile->at( part )->setState( Qt::Unchecked );
+            view->update( index( part, 0, fileIndex ) );
+        }
+    }
+}
+
+void NzbModel::checkSelected()
+{
+    QModelIndexList selection = view->selectionModel()->selectedRows();
+
+    for( int selected = 0, size = selection.size(); selected < size; selected++ ){
+        QModelIndex index = selection.at( selected );
+        static_cast< BaseType* >( index.internalPointer() )->setState( Qt::Checked );
+        view->update( index );
+    }
+}
+
+void NzbModel::uncheckSelected()
+{
+    QModelIndexList selection = view->selectionModel()->selectedRows();
+
+    for( int selected = 0, size = selection.size(); selected < size; selected++ ){
+        QModelIndex index = selection.at( selected );
+        static_cast< BaseType* >( index.internalPointer() )->setState( Qt::Unchecked );
+        view->update( index );
+    }
+}
+
+void NzbModel::invertSelection()
+{
 }
 
 #include "nzbmodel.moc"

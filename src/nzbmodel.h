@@ -74,6 +74,16 @@ class NzbModel : public QAbstractItemModel
          */
         void clicked( const QModelIndex &index );
 
+        void checkAll();
+
+        void checkNone();
+
+        void checkSelected();
+
+        void uncheckSelected();
+
+        void invertSelection();
+
     private:
         QTreeView *view;
         QStringList rootItem;

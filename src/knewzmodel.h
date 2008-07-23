@@ -36,6 +36,8 @@ class NzbFile;
  * This is the main model for the main view of the program. Here the information
  * of the current download queue is represented, giving an overview of the state
  * and progress of the loaded NZB files.
+ * See the Qt documentation for QAbstractItemModel for documentation of the
+ * implemented functions.
  *
  *  \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
@@ -45,79 +47,32 @@ class KNewzModel : public QAbstractItemModel
 
     public:
 
+        /**
+         * Constructor
+         *
+         * @param parent
+         *      The tree view parent of the model.
+         */
         KNewzModel( QTreeView *parent );
         ~KNewzModel();
 
         /**
-         * 
+         * Called when information has been added to or removed from the model.
+         * Emits the layoutChanged() signal.
          */
         void changed();
-
-        /**
-         * 
-         * @param parent 
-         * @return 
-         */
         int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-
-        /**
-         * 
-         * @param index 
-         * @param role 
-         * @return 
-         */
         QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-
-        /**
-         * 
-         * @param index 
-         * @return 
-         */
         Qt::ItemFlags flags( const QModelIndex &index ) const;
-
-        /**
-         * 
-         * @param section 
-         * @param orientation 
-         * @param role 
-         * @return 
-         */
         QVariant headerData( int section, Qt::Orientation orientation,
                              int role = Qt::DisplayRole ) const;
-
-        /**
-         * 
-         * @param row 
-         * @param column 
-         * @param parent 
-         * @return 
-         */
         QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-
 //         bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-
-        /**
-         * 
-         * @param index 
-         * @return 
-         */
         QModelIndex parent( const QModelIndex &index ) const;
-
 //         bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-
-        /**
-         * 
-         * @param parent 
-         * @return 
-         */
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
     public Q_SLOTS:
-
-        /**
-         * 
-         * @param index 
-         */
         void clicked( const QModelIndex &index );
 
     private:

@@ -37,6 +37,10 @@ class QButtonGroup;
 /**
  * \brief Dialog for displaying the contents of an NZB file.
  *
+ * Displays the contents of multiple NZB files, providing the user with a
+ * way to interact with the contents of the files in a manner that enables
+ * him to choose which of the contents he wishes to download.
+ *
  * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class NzbDialog : public QDialog
@@ -57,16 +61,9 @@ class NzbDialog : public QDialog
         NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
         ~NzbDialog();
 
-    private Q_SLOTS:
-        void checkAllSlot();
-        void checkNoneSlot();
-        void checkSelectedSlot();
-        void uncheckSelectedSlot();
-        void invertSelectionSlot();
-
     private:
-        NzbModel *model;
         QTreeView *view;
+        NzbModel *model;
         QVBoxLayout *layout;
         QHBoxLayout *buttonLayout;
         QButtonGroup *defaultButtonGroup;

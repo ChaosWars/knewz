@@ -21,7 +21,7 @@
 
 ServerWidget::ServerWidget( QWidget *parent )
 {
-    ui_serversettings.setupUi( parent );
+    setupUi( parent );
 }
 
 

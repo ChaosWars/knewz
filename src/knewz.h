@@ -35,6 +35,12 @@ class QTreeView;
 class KNewzModel;
 
 /**
+ * \brief The main window of the program.
+ *
+ * Provides a main window for the program, using KXmlGuiWindow to set up and
+ * track changes to the menubar and toolbar.
+ *
+ * \author Lawrence Lee <valheru.ashen.shugar@gmail.com
  */
 class KNewz : public KXmlGuiWindow
 {
@@ -46,15 +52,8 @@ class KNewz : public KXmlGuiWindow
 
     protected:
         void openUrl( const KUrl& url );
-//         void readProperties( const KConfigGroup &config );
-//         void saveProperties( KConfigGroup &config );
 
     private Q_SLOTS:
-//         void applyNewToolbarConfig();
-//         void addRecentFile( const KUrl &url );
-//         void optionsConfigureKeys();
-//         void optionsConfigureSettings();
-//         void optionsConfigureToolbars();
         void openRecentFile( const KUrl &url );
         void optionsPreferences();
         void settingsChanged();
@@ -65,8 +64,9 @@ class KNewz : public KXmlGuiWindow
         KRecentFilesAction *recentFiles;
         QTreeView *view;
         KNewzModel *model;
-//         void setupAccel();
         void setupActions();
+        void showFileOpenDialog( const QString &file, bool addToRecentFiles = true );
+        void showFileOpenDialog( const QStringList &files);
 };
 
 #endif
