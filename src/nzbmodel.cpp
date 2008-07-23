@@ -236,9 +236,19 @@ void NzbModel::checkSelected()
     QModelIndexList selection = view->selectionModel()->selectedRows();
 
     for( int selected = 0, size = selection.size(); selected < size; selected++ ){
-        QModelIndex index = selection.at( selected );
-        static_cast< BaseType* >( index.internalPointer() )->setState( Qt::Checked );
-        view->update( index );
+        QModelIndex idx = selection.at( selected );
+        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+        base->setState( Qt::Checked );
+        view->update( idx );
+
+        if( base->type() == "NzbFile" ){
+            NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
+
+            for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+                nzbFile->at( i )->setState( Qt::Checked );
+                view->update( index( i, 0, idx ) );
+            }
+        }
     }
 }
 
@@ -247,9 +257,19 @@ void NzbModel::uncheckSelected()
     QModelIndexList selection = view->selectionModel()->selectedRows();
 
     for( int selected = 0, size = selection.size(); selected < size; selected++ ){
-        QModelIndex index = selection.at( selected );
-        static_cast< BaseType* >( index.internalPointer() )->setState( Qt::Unchecked );
-        view->update( index );
+        QModelIndex idx = selection.at( selected );
+        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+        base->setState( Qt::Unchecked );
+        view->update( idx );
+
+        if( base->type() == "NzbFile" ){
+            NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
+
+            for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+                nzbFile->at( i )->setState( Qt::Unchecked );
+                view->update( index( i, 0, idx ) );
+            }
+        }
     }
 }
 

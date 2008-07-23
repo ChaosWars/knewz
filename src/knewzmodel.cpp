@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include <KDE/KLocalizedString>
 #include <QTreeView>
 #include "knewzmodel.h"
@@ -106,12 +107,25 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
+bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+{
+    kDebug() << "data" << data->formats();
+    kDebug() << "action" << action;
+    kDebug() << "row" << row;
+    kDebug() << "column" << column;
+    kDebug() << "parent" << parent;
+    return true;
+}
+
 Qt::ItemFlags KNewzModel::flags( const QModelIndex &index ) const
 {
-    if ( !index.isValid() )
-        return 0;
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags( index );
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if ( index.isValid() ){
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+    }
+
+    return Qt::ItemIsDropEnabled | defaultFlags;
 }
 
 QVariant KNewzModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -147,11 +161,36 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
     return createIndex( row, column, file );
 }
 
-// bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
-// {
-//     beginInsertRows( parent, row, row + ( count - 1 ) );
-//     endInsertRows();
-// }
+bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
+{
+    beginInsertRows( parent, row, row + ( count - 1 ) );
+    endInsertRows();
+}
+
+QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
+{
+    kDebug() << "mimeData()";
+    QMimeData *mimedata = new QMimeData();
+    NzbFile nzbFiles;
+
+    foreach( QModelIndex index, indexes ){
+
+        if( index.isValid() ){
+        }
+    }
+
+//     mimedata->setData( "text/x-nzb" );
+    return mimedata;
+}
+
+QStringList KNewzModel::mimeTypes() const
+{
+    kDebug() << "mimeTypes()";
+    QStringList mimetypes;
+    mimetypes << "text/x-nzb";
+    mimetypes << "text/uri-list";
+    return mimetypes;
+}
 
 QModelIndex KNewzModel::parent( const QModelIndex &index ) const
 {
@@ -171,11 +210,11 @@ QModelIndex KNewzModel::parent( const QModelIndex &index ) const
     return createIndex( DownloadQueue::queue().indexOf( nzbFile ), 0, nzbFile );
 }
 
-// bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
-// {
-//     beginRemoveRows( parent, row, row + ( count - 1 ) );
-//     endRemoveRows();
-// }
+bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+    beginRemoveRows( parent, row, row + ( count - 1 ) );
+    endRemoveRows();
+}
 
 int KNewzModel::rowCount( const QModelIndex &parent ) const
 {
@@ -189,6 +228,18 @@ int KNewzModel::rowCount( const QModelIndex &parent ) const
         return DownloadQueue::queue().at( parent.row() )->size();
 
     return 0;
+}
+
+Qt::DropActions KNewzModel::supportedDragActions() const
+{
+    kDebug() << "supportedDragActions()";
+    return Qt::CopyAction | Qt::MoveAction;
+}
+
+Qt::DropActions KNewzModel::supportedDropActions() const
+{
+    kDebug() << "supportedDropActions()";
+    return Qt::CopyAction | Qt::MoveAction;
 }
 
 void KNewzModel::clicked( const QModelIndex& index )
