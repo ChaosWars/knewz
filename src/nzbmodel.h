@@ -28,6 +28,7 @@
 #include <QStringList>
 
 class QTreeView;
+class DownloadQueue;
 class NzbFile;
 
 /**

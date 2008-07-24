@@ -20,5 +20,15 @@
 
 #include "downloadqueue.h"
 
-QList<NzbFile*> DownloadQueue::m_queue;
+DownloadQueue* DownloadQueue::m_instance = NULL;
+
+DownloadQueue* DownloadQueue::Instance()
+{
+    if( !m_instance ){
+        m_instance = new DownloadQueue();
+    }
+
+    return m_instance;
+}
+
 QMutex DownloadQueue::m_mutex;

@@ -28,6 +28,7 @@
 #include <QStringList>
 
 class QTreeView;
+class DownloadQueue;
 class NzbFile;
 
 /**
@@ -69,12 +70,10 @@ class KNewzModel : public QAbstractItemModel
                              int role = Qt::DisplayRole ) const;
         QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
         bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-        QMimeData* mimeData(const QModelIndexList &indexes) const;
         QStringList mimeTypes() const;
         QModelIndex parent( const QModelIndex &index ) const;
         bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-        Qt::DropActions supportedDragActions () const;
         Qt::DropActions supportedDropActions() const;
 
     public Q_SLOTS:
@@ -82,6 +81,7 @@ class KNewzModel : public QAbstractItemModel
 
     private:
         QTreeView *view;
+        DownloadQueue *downloadqueue;
         QStringList rootItem;
 };
 
