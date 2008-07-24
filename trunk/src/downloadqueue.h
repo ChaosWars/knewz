@@ -23,7 +23,6 @@
 
 #include <QList>
 #include <QMutex>
-#include <QDebug>
 
 class NzbFile;
 
@@ -33,34 +32,20 @@ class NzbFile;
  * \brief Provides a download queue for the application
  *
  * Provides a static mechanism for accessing the download queue.
- * This obviates the need for passing an instance of the download queue to all
- * classes that need to either read from it or append files to it.
+ * Create a pointer to the class in every class you wish to access the queue,
+ * and then initialize the pointer to the Instance() function.
  *
  *  @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class DownloadQueue{
+class DownloadQueue : public QList< NzbFile* >{
     public:
-        DownloadQueue(){}
-        ~DownloadQueue(){}
 
         /**
-         * Returns the download queue.
-         * @return
-         *      The download queue.
-         */
-        static QList<NzbFile*> queue(){ return m_queue; }
-
-        /**
-         * Appends a list of NzbFiles to the download queue. In a multithreaded
-         * program, any attempts to add files to the download queue using this
-         * method should aquire a lock in the mutex provided by mutex() beforehand.
+         * Obtains a pointer the in singleton instance of the download queue.
          *
-         * \see mutex
-         *
-         * @param nzbFiles
-         *      The list of NzbFiles to append to the download queue.
+         * @returns The singleton instance of the download queue.
          */
-        static void append( const QList<NzbFile*> &nzbFiles ){ m_queue += nzbFiles; }
+        static DownloadQueue* Instance();
 
         /**
          * Returns the internal mutex that should be used to obtain a lock on the
@@ -71,9 +56,33 @@ class DownloadQueue{
          */
         static QMutex& mutex(){ return m_mutex; }
 
+    protected:
+        DownloadQueue(){}
+        ~DownloadQueue(){}
+
+        /*
+         * Returns the download queue.
+         * @return
+         *      The download queue.
+         */
+//         static QList<NzbFile*> queue(){ return m_queue; }
+
+        /*
+         * Appends a list of NzbFiles to the download queue. In a multithreaded
+         * program, any attempts to add files to the download queue using this
+         * method should aquire a lock in the mutex provided by mutex() beforehand.
+         *
+         * \see mutex
+         *
+         * @param nzbFiles
+         *      The list of NzbFiles to append to the download queue.
+         */
+//         static void append( const QList<NzbFile*> &nzbFiles ){ m_queue += nzbFiles; }
+
     private:
-        static QList<NzbFile*> m_queue;
+//         static QList<NzbFile*> m_queue;
         static QMutex m_mutex;
+        static DownloadQueue* m_instance;
 };
 
 #endif

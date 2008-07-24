@@ -20,12 +20,14 @@
 
 #include <KDE/KLocalizedString>
 #include <QTreeView>
-#include "nzbmodel.h"
-#include "nzbfile.h"
 #include "file.h"
+#include "nzbfile.h"
+#include "nzbmodel.h"
 
 NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
-    : QAbstractItemModel( parent ), view( parent ), m_nzbFiles( nzbfiles )
+    : QAbstractItemModel( parent ),
+      view( parent ),
+      m_nzbFiles( nzbfiles )
 {
     rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );

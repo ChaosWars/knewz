@@ -34,6 +34,7 @@ class KRecentFilesAction;
 class KNewzModel;
 class KSystemTrayIcon;
 class QTreeView;
+class DownloadQueue;
 /**
  * \brief The main window of the program.
  *
@@ -62,16 +63,18 @@ class KNewz : public KXmlGuiWindow
         void urlOpen();
         void exit();
 
+    public Q_SLOTS:
+        void showFileOpenDialog( const QStringList &files);
+
     private:
         QTreeView *view;
         KNewzModel *model;
+        DownloadQueue *downloadqueue;
         KSharedConfigPtr config;
         KSystemTrayIcon *trayIcon;
         KRecentFilesAction *recentFiles;
         bool ok_to_close;
         void setupActions();
-        void showFileOpenDialog( const QString &file, bool addToRecentFiles = true );
-        void showFileOpenDialog( const QStringList &files);
 };
 
 #endif

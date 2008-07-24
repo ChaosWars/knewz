@@ -43,9 +43,12 @@
 #include "settings.h"
 
 KNewz::KNewz( QWidget *parent )
-    : KXmlGuiWindow( parent ), view( new QTreeView( this ) ), model( new KNewzModel( view ) ), ok_to_close( false )
+    : KXmlGuiWindow( parent ),
+      view( new QTreeView( this ) ),
+      model( new KNewzModel( view ) ),
+      ok_to_close( false ),
+      downloadqueue( DownloadQueue::Instance() )
 {
-    setAcceptDrops(true);
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     view->setDragEnabled( true );
@@ -60,7 +63,7 @@ KNewz::KNewz( QWidget *parent )
     KConfigGroup configGroup( config, "RecentFiles" );
     recentFiles->loadEntries( configGroup );
     trayIcon = new KSystemTrayIcon( "applications-internet", this );
-    connect( trayIcon, SIGNAL( quitSelected() ), this, SLOT( exit() ) );
+    connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
     trayIcon->show();
 }
 
@@ -75,7 +78,27 @@ KNewz::~KNewz()
 
 void KNewz::openRecentFile( const KUrl &url )
 {
-    showFileOpenDialog( url.path(), false );
+    NzbReader reader;
+    QList<NzbFile*> nzbFiles;
+    NzbFile *nzbFile = reader.parseData( url.path() );
+
+    if( nzbFile->size() > 0 ){
+        nzbFiles.append( nzbFile );
+        NzbDialog *nzbDialog;
+        nzbDialog = new NzbDialog( this, nzbFiles );
+        nzbDialog->exec();
+
+        if( nzbDialog->result() == QDialog::Accepted ){
+            downloadqueue->mutex().lock();
+
+            foreach( NzbFile *nzbFile, nzbFiles ){
+                downloadqueue->append( nzbFile );
+            }
+
+            downloadqueue->mutex().unlock();
+            model->changed();
+        }
+    }
 }
 
 // void KNewz::openUrl( const KUrl& url )
@@ -123,30 +146,6 @@ void KNewz::setupActions()
     KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
 }
 
-void KNewz::showFileOpenDialog( const QString &file, bool addToRecentFiles )
-{
-    NzbReader reader;
-    QList<NzbFile*> nzbFiles;
-    NzbFile *nzbFile = reader.parseData( file );
-
-    if( nzbFile->size() > 0 ){
-        nzbFiles.append( nzbFile );
-        NzbDialog *nzbDialog;
-        nzbDialog = new NzbDialog( this, nzbFiles );
-        nzbDialog->exec();
-
-        if( nzbDialog->result() == QDialog::Accepted ){
-
-            if( addToRecentFiles ){
-                recentFiles->addUrl( KUrl( file ) );
-            }
-
-            DownloadQueue::append( nzbFiles );
-            model->changed();
-        }
-    }
-}
-
 void KNewz::showFileOpenDialog( const QStringList &files )
 {
     NzbReader reader;
@@ -174,7 +173,13 @@ void KNewz::showFileOpenDialog( const QStringList &files )
         nzbDialog->exec();
 
         if( nzbDialog->result() == QDialog::Accepted ){
-            DownloadQueue::append( nzbFiles );
+            downloadqueue->mutex().lock();
+
+            foreach( NzbFile *nzbFile, nzbFiles ){
+                downloadqueue->append( nzbFile );
+            }
+
+            downloadqueue->mutex().unlock();
             model->changed();
         }
     }
