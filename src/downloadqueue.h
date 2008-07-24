@@ -34,6 +34,7 @@ class NzbFile;
  * Provides a static mechanism for accessing the download queue.
  * Create a pointer to the class in every class you wish to access the queue,
  * and then initialize the pointer to the Instance() function.
+ * This class is thread safe.
  *
  *  @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
