@@ -25,7 +25,12 @@ DownloadQueue* DownloadQueue::m_instance = NULL;
 DownloadQueue* DownloadQueue::Instance()
 {
     if( !m_instance ){
-        m_instance = new DownloadQueue();
+        QMutexLocker mutexLock( &m_mutex );
+        /* Make sure that the instance wasn't created while we were
+        waiting for the lock */
+        if( !m_instance ){
+            m_instance = new DownloadQueue();
+        }
     }
 
     return m_instance;
