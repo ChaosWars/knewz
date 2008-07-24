@@ -30,12 +30,12 @@
 #include <KDE/KStandardAction>
 #include <KDE/KSystemTrayIcon>
 #include <QHeaderView>
-#include <QTreeView>
 #include "downloadqueue.h"
 #include "file.h"
 #include "knewz.h"
 #include "knewzexception.h"
 #include "knewzmodel.h"
+#include "knewzview.h"
 #include "nzbdialog.h"
 #include "nzbreader.h"
 #include "segment.h"
@@ -44,7 +44,7 @@
 
 KNewz::KNewz( QWidget *parent )
     : KXmlGuiWindow( parent ),
-      view( new QTreeView( this ) ),
+      view( new KNewzView( this ) ),
       model( new KNewzModel( view ) ),
       ok_to_close( false ),
       downloadqueue( DownloadQueue::Instance() )
@@ -100,22 +100,6 @@ void KNewz::openRecentFile( const KUrl &url )
         }
     }
 }
-
-// void KNewz::openUrl( const KUrl& url )
-// {
-//     NzbReader reader;
-//     QList<NzbFile*> nzbFiles;
-//     NzbFile *nzbFile = reader.parseData( url.url() );
-// 
-//     if( nzbFile->size() > 0 ){
-//         recentFiles->addUrl( KUrl( url ) );
-//         nzbFiles.append( nzbFile );
-//         DownloadQueue::append( nzbFiles );
-//         model->changed();
-//     }else{
-//         delete nzbFile;
-//     }
-// }
 
 void KNewz::optionsPreferences()
 {

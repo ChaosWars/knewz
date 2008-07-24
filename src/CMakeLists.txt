@@ -3,6 +3,7 @@ SET( SRC downloadqueue.cpp
         knewz.cpp
         main.cpp
         knewzmodel.cpp
+        knewzview.cpp
         nzbfile.cpp
         nzbhandler.cpp
         nzbreader.cpp

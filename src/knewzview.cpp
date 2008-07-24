@@ -17,64 +17,16 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "knewzview.h"
 
-/**
- * \class KNewz knewz.h
- *
- * \mainpage KNewz
- *      A program for downloading the contents of NZB files for KDE4.
- */
-#ifndef KNEWZ_H
-#define KNEWZ_H
-
-#include <KDE/KXmlGuiWindow>
-#include <KDE/KUrl>
-
-class KRecentFilesAction;
-class KNewzModel;
-class KSystemTrayIcon;
-class QTreeView;
-class DownloadQueue;
-/**
- * \brief The main window of the program.
- *
- * Provides a main window for the program, using KXmlGuiWindow to set up and
- * track changes to the menubar and toolbar.
- *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com
- */
-class KNewz : public KXmlGuiWindow
+KNewzView::KNewzView( QWidget *parent )
+ : QTreeView( parent )
 {
-    Q_OBJECT
+}
 
-    public:
-        KNewz( QWidget *parent = 0 );
-        virtual ~KNewz();
 
-    protected:
-        virtual bool queryClose();
-        virtual bool queryExit();
+KNewzView::~KNewzView()
+{
+}
 
-    private Q_SLOTS:
-        void openRecentFile( const KUrl &url );
-        void optionsPreferences();
-        void settingsChanged();
-        void urlOpen();
-        void exit();
-
-    public Q_SLOTS:
-        void showFileOpenDialog( const QStringList &files);
-
-    private:
-        QTreeView *view;
-        KNewzModel *model;
-        DownloadQueue *downloadqueue;
-        KSharedConfigPtr config;
-        KSystemTrayIcon *trayIcon;
-        KRecentFilesAction *recentFiles;
-        bool ok_to_close;
-        void setupActions();
-};
-
-#endif
-
+#include "knewzview.moc"
