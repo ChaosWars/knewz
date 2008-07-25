@@ -113,12 +113,6 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
 
 bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
-    kDebug() << data;
-    kDebug() << action;
-    kDebug() << "row" << row;
-    kDebug() << "column" << column;
-    kDebug() << parent;
-
     if( data->hasFormat( "text/uri-list" ) ){
 
         if( data->hasUrls() ){
@@ -235,9 +229,6 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
 
 bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-    kDebug() << "row" << row;
-    kDebug() << "count" << count;
-    kDebug() << parent;
     beginInsertRows( parent, row, row + ( count - 1 ) );
     endInsertRows();
     return true;
@@ -324,6 +315,8 @@ void KNewzModel::clicked( const QModelIndex& index )
         QListIterator<File*> it( *nzbFile );
 
         while( it.hasNext() ){
+
+            File *file = it.next();
             if( file->state() == state  ){
                 counter++;
             }
