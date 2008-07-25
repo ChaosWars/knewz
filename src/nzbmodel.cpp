@@ -18,7 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include <KDE/KLocalizedString>
+#include <QMutableListIterator>
 #include <QTreeView>
 #include "file.h"
 #include "nzbfile.h"
@@ -96,10 +98,12 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
 
 Qt::ItemFlags NzbModel::flags( const QModelIndex &index ) const
 {
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags( index );
+
     if ( !index.isValid() )
         return 0;
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    return defaultFlags;
 }
 
 QVariant NzbModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -167,6 +171,34 @@ int NzbModel::rowCount( const QModelIndex &parent ) const
     return 0;
 }
 
+void NzbModel::trimNzbFiles()
+{
+    QMutableListIterator< NzbFile* > it( m_nzbFiles );
+    while( it.hasNext() ){
+
+        NzbFile *nzbFile = it.next();
+        if( nzbFile->state() != Qt::Checked ){
+
+            QMutableListIterator< File* > its( *nzbFile );
+            while( its.hasNext() ){
+
+                File *file = its.next();
+                if( file->state() == Qt::Unchecked ){
+                    its.remove();
+                }
+            }
+
+        }
+
+        if( nzbFile->state() == Qt::Unchecked ){
+            it.remove();
+        }else if( nzbFile->state() == Qt::PartiallyChecked ){
+            nzbFile->setState( Qt::Checked );
+        }
+
+    }
+}
+
 void NzbModel::clicked( const QModelIndex& index )
 {
     if( !( index.column() == 0 ) )
@@ -190,8 +222,11 @@ void NzbModel::clicked( const QModelIndex& index )
         NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
         Qt::CheckState state = nzbFile->first()->state();
         int counter = 0;
+        QListIterator<File*> it( *nzbFile );
 
-        foreach( File *file, *nzbFile ){
+        while( it.hasNext() ){
+
+            File *file = it.next();
             if( file->state() == state  ){
                 counter++;
             }

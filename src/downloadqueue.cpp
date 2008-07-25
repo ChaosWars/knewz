@@ -36,4 +36,10 @@ DownloadQueue* DownloadQueue::Instance()
     return m_instance;
 }
 
+DownloadQueue::~DownloadQueue()
+{
+    qDeleteAll( begin(), end() );
+    clear();
+}
+
 QMutex DownloadQueue::m_mutex;

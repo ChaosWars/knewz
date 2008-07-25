@@ -73,7 +73,7 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     layout->addLayout( buttonLayout );
     setLayout( layout );
     //Set up the signals
-    connect( ok, SIGNAL( clicked() ), SLOT( accept() ) );
+    connect( ok, SIGNAL( clicked() ), SLOT( okSlot() ) );
     connect( cancel, SIGNAL( clicked() ), SLOT( reject() ) );
     connect( checkAll, SIGNAL( clicked() ), model, SLOT( checkAll() ) );
     connect( checkNone, SIGNAL( clicked() ), model, SLOT( checkNone() ) );
@@ -91,6 +91,12 @@ NzbDialog::~NzbDialog()
     delete defaultButtonGroup;
     delete buttonLayout;
     delete layout;
+}
+
+void NzbDialog::okSlot()
+{
+    model->trimNzbFiles();
+    emit accept();
 }
 
 #include "nzbdialog.moc"

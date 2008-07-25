@@ -60,7 +60,7 @@ class File : public QList<Segment*>, public BaseType
         File( NzbFile *parent = NULL, quint32 bytes = 0, const QStringList &groups = QStringList(),
               const QString &subject = QString() );
 
-        ~File(){};
+        ~File();
 
         /**
          *  The size of the file.
@@ -135,7 +135,7 @@ class File : public QList<Segment*>, public BaseType
          *
          * \see NzbFile, Segment
          */
-        const QString type() const{ return QString( "File" ); };
+        const QString type() const{ return QString( "File" ); }
 
     private:
         NzbFile *m_parent;

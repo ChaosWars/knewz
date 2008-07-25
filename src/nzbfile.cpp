@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include "nzbfile.h"
 
 NzbFile::NzbFile( const QString &filename, quint32 bytes )
@@ -27,4 +28,7 @@ NzbFile::NzbFile( const QString &filename, quint32 bytes )
 
 NzbFile::~NzbFile()
 {
+    kDebug() << "Destructor called";
+    qDeleteAll( begin(), end() );
+    clear();
 }

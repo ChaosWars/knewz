@@ -59,29 +59,9 @@ class DownloadQueue : public QList< NzbFile* >{
 
     protected:
         DownloadQueue(){}
-        ~DownloadQueue(){}
-
-        /*
-         * Returns the download queue.
-         * @return
-         *      The download queue.
-         */
-//         static QList<NzbFile*> queue(){ return m_queue; }
-
-        /*
-         * Appends a list of NzbFiles to the download queue. In a multithreaded
-         * program, any attempts to add files to the download queue using this
-         * method should aquire a lock in the mutex provided by mutex() beforehand.
-         *
-         * \see mutex
-         *
-         * @param nzbFiles
-         *      The list of NzbFiles to append to the download queue.
-         */
-//         static void append( const QList<NzbFile*> &nzbFiles ){ m_queue += nzbFiles; }
+        ~DownloadQueue();
 
     private:
-//         static QList<NzbFile*> m_queue;
         static QMutex m_mutex;
         static DownloadQueue* m_instance;
 };

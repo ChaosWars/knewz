@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include "segment.h"
 
 Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
@@ -27,4 +28,5 @@ Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
 
 Segment::~Segment()
 {
+    kDebug() << "Destructor called";
 }
