@@ -29,7 +29,6 @@
 #include <QVBoxLayout>
 #include "nzbdialog.h"
 #include "nzbfile.h"
-#include "nzbmodel.h"
 
 NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     : QDialog( parent ), view( new QTreeView( this ) )

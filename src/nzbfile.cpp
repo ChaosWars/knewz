@@ -29,6 +29,6 @@ NzbFile::NzbFile( const QString &filename, quint32 bytes )
 NzbFile::~NzbFile()
 {
     kDebug() << "Destructor called";
-    qDeleteAll( begin(), end() );
-    clear();
+//     qDeleteAll( begin(), end() );
+//     clear();
 }

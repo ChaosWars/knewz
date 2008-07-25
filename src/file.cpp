@@ -29,6 +29,6 @@ File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QSt
 File::~File()
 {
     kDebug() << "Destructor called";
-    qDeleteAll( begin(), end() );
-    clear();
+//     qDeleteAll( begin(), end() );
+//     clear();
 }
