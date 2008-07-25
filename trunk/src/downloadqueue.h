@@ -58,7 +58,7 @@ class DownloadQueue : public QList< NzbFile* >{
         static QMutex& mutex(){ return m_mutex; }
 
     protected:
-        DownloadQueue(){}
+        DownloadQueue();
         ~DownloadQueue();
 
     private:

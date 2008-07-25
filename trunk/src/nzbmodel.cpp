@@ -139,6 +139,10 @@ QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) co
     return createIndex( row, column, file );
 }
 
+bool NzbModel::insertRows( int row, int count, const QModelIndex &parent )
+{
+}
+
 QModelIndex NzbModel::parent( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
@@ -155,6 +159,36 @@ QModelIndex NzbModel::parent( const QModelIndex &index ) const
 
     NzbFile *nzbFile = file->parent();
     return createIndex( m_nzbFiles.indexOf( nzbFile ), 0, nzbFile );
+}
+
+bool NzbModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+    int rows = row + count - 1;
+    beginRemoveRows( parent, row, rows );
+
+    if( parent.isValid() ){
+        NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
+
+        while( row <= rows ){
+            nzbFile->removeAt( row );
+            rows--;
+        }
+    }else{
+
+        while( row <= rows ){
+            QMutableListIterator< File* > it( *(m_nzbFiles[row] ) );
+
+            while( it.hasNext() ){
+                it.next();
+                it.remove();
+            }
+
+            m_nzbFiles.removeAt( row );
+            rows--;
+        }
+    }
+
+    endRemoveRows();
 }
 
 int NzbModel::rowCount( const QModelIndex &parent ) const
@@ -185,6 +219,7 @@ void NzbModel::trimNzbFiles()
                 File *file = its.next();
                 if( file->state() == Qt::Unchecked ){
                     its.remove();
+//                     delete file;
                 }
             }
 
@@ -192,6 +227,7 @@ void NzbModel::trimNzbFiles()
 
         if( nzbFile->state() == Qt::Unchecked ){
             it.remove();
+//             delete nzbFile;
         }else if( nzbFile->state() == Qt::PartiallyChecked ){
             nzbFile->setState( Qt::Checked );
         }
@@ -206,34 +242,7 @@ void NzbModel::clicked( const QModelIndex& index )
 
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
-    base->setState( checkstate );
-    view->update( index );
-
-    if( base->type() == "NzbFile" ){
-
-        NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
-
-        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-            nzbFile->at( i )->setState( checkstate );
-            view->update( index.child( i, 0 ) );
-        }
-
-    }else{
-        NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
-        Qt::CheckState state = nzbFile->first()->state();
-        int counter = 0;
-
-        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-
-            if( nzbFile->at( i )->state() == state  ){
-                counter++;
-            }
-        }
-
-        counter == nzbFile->size() ? nzbFile->setState( state ) : nzbFile->setState( Qt::PartiallyChecked );
-        view->update( index.parent() );
-    }
-
+    changeCheckState( index, checkstate, base );
 }
 
 void NzbModel::checkAll()
@@ -272,18 +281,7 @@ void NzbModel::checkSelected()
 
     for( int selected = 0, size = selection.size(); selected < size; selected++ ){
         QModelIndex idx = selection.at( selected );
-        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
-        base->setState( Qt::Checked );
-        view->update( idx );
-
-        if( base->type() == "NzbFile" ){
-            NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
-
-            for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-                nzbFile->at( i )->setState( Qt::Checked );
-                view->update( index( i, 0, idx ) );
-            }
-        }
+        changeCheckState( idx, Qt::Checked );
     }
 }
 
@@ -293,23 +291,44 @@ void NzbModel::uncheckSelected()
 
     for( int selected = 0, size = selection.size(); selected < size; selected++ ){
         QModelIndex idx = selection.at( selected );
-        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
-        base->setState( Qt::Unchecked );
-        view->update( idx );
-
-        if( base->type() == "NzbFile" ){
-            NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
-
-            for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-                nzbFile->at( i )->setState( Qt::Unchecked );
-                view->update( index( i, 0, idx ) );
-            }
-        }
+        changeCheckState( idx, Qt::Unchecked );
     }
 }
 
 void NzbModel::invertSelection()
 {
+}
+
+void NzbModel::changeCheckState( const QModelIndex &idx, Qt::CheckState state, BaseType *base )
+{
+    if( !base )
+        base = static_cast< BaseType* >( idx.internalPointer() );
+
+    base->setState( state );
+    view->update( idx );
+
+    if( base->type() == "NzbFile" ){
+        NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
+
+        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+            nzbFile->at( i )->setState( state );
+            view->update( index( i, 0, idx ) );
+        }
+    }else{
+        NzbFile *nzbFile = static_cast< NzbFile* >( idx.parent().internalPointer() );
+        Qt::CheckState m_state = nzbFile->first()->state();
+        int counter = 0;
+
+        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+
+            if( nzbFile->at( i )->state() == m_state  ){
+                counter++;
+            }
+        }
+
+        counter == nzbFile->size() ? nzbFile->setState( m_state ) : nzbFile->setState( Qt::PartiallyChecked );
+        view->update( idx.parent() );
+    }
 }
 
 #include "nzbmodel.moc"

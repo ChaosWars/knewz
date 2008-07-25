@@ -28,6 +28,7 @@
 #include <QStringList>
 
 class QTreeView;
+class BaseType;
 class DownloadQueue;
 class NzbFile;
 
@@ -62,7 +63,9 @@ class NzbModel : public QAbstractItemModel
         QVariant headerData( int section, Qt::Orientation orientation,
                              int role = Qt::DisplayRole ) const;
         QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+        bool insertRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
         QModelIndex parent( const QModelIndex &index ) const;
+        bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
         /**
@@ -81,34 +84,39 @@ class NzbModel : public QAbstractItemModel
         void clicked( const QModelIndex &index );
 
         /**
-         * 
+         * Check all items.
          */
         void checkAll();
 
         /**
-         * 
+         * Uncheck all items.
          */
         void checkNone();
 
         /**
-         * 
+         * Check the selected items.
          */
         void checkSelected();
 
         /**
-         * 
+         * Uncheck the selected items.
          */
         void uncheckSelected();
 
         /**
-         * 
+         * Invert the checked state of the selected items. If the selected
+         * item is a NZB file, then the checked status of the multiparts
+         * is inverted.
          */
         void invertSelection();
+
+        const QList< NzbFile* >& files(){ return m_nzbFiles; }
 
     private:
         QTreeView *view;
         QStringList rootItem;
         QList< NzbFile* > m_nzbFiles;
+        void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
 };
 
 #endif

@@ -21,6 +21,16 @@
 #include "downloadqueue.h"
 
 DownloadQueue* DownloadQueue::m_instance = NULL;
+QMutex DownloadQueue::m_mutex;
+
+DownloadQueue::DownloadQueue()
+{
+}
+
+DownloadQueue::~DownloadQueue()
+{
+    clear();
+}
 
 DownloadQueue* DownloadQueue::Instance()
 {
@@ -35,11 +45,3 @@ DownloadQueue* DownloadQueue::Instance()
 
     return m_instance;
 }
-
-DownloadQueue::~DownloadQueue()
-{
-    qDeleteAll( begin(), end() );
-    clear();
-}
-
-QMutex DownloadQueue::m_mutex;

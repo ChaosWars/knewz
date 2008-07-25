@@ -25,9 +25,9 @@
 #define NZBDIALOG_H
 
 #include <QDialog>
+#include "nzbmodel.h"
 
 class NzbFile;
-class NzbModel;
 class QTreeView;
 class QVBoxLayout;
 class QHBoxLayout;
@@ -60,6 +60,7 @@ class NzbDialog : public QDialog
          */
         NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
         ~NzbDialog();
+        const QList< NzbFile* >& files(){ return model->files(); }
 
     private:
         QTreeView *view;
