@@ -222,12 +222,10 @@ void NzbModel::clicked( const QModelIndex& index )
         NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
         Qt::CheckState state = nzbFile->first()->state();
         int counter = 0;
-        QListIterator<File*> it( *nzbFile );
 
-        while( it.hasNext() ){
+        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
 
-            File *file = it.next();
-            if( file->state() == state  ){
+            if( nzbFile->at( i )->state() == state  ){
                 counter++;
             }
         }
