@@ -60,6 +60,12 @@ class File : public QList<Segment*>, public BaseType
         File( NzbFile *parent = NULL, quint32 bytes = 0, const QStringList &groups = QStringList(),
               const QString &subject = QString() );
 
+        /**
+         * Overloaded version of the above function.
+         * Note that the parent is set to NULL for this File, and should immediately
+         * be set with setParent() after the File is created.
+         */
+        File( const File &file );
         ~File();
 
         /**

@@ -229,7 +229,7 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
 
 bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-    beginInsertRows( parent, row, row + ( count - 1 ) );
+    beginInsertRows( parent, row, row + count - 1 );
     endInsertRows();
     return true;
 }
@@ -262,10 +262,31 @@ QModelIndex KNewzModel::parent( const QModelIndex &index ) const
 
 bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-    kDebug() << "row" << row;
-    kDebug() << "count" << count;
-    kDebug() << parent;
-    beginRemoveRows( parent, row, row + ( count - 1 ) );
+    int rows = row + count - 1;
+    beginRemoveRows( parent, row, rows );
+
+    if( parent.isValid() ){
+        NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
+
+        while( row <= rows ){
+            nzbFile->removeAt( row );
+            rows--;
+        }
+    }else{
+
+        while( row <= rows ){
+            QMutableListIterator< File* > it( *(*downloadqueue)[row] );
+
+            while( it.hasNext() ){
+                it.next();
+                it.remove();
+            }
+
+            downloadqueue->removeAt( row );
+            rows--;
+        }
+    }
+
     endRemoveRows();
     return true;
 }
