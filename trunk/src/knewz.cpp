@@ -195,6 +195,7 @@ bool KNewz::queryExit()
 void KNewz::exit()
 {
     ok_to_close = true;
+    kapp->setQuitOnLastWindowClosed( true );
     close();
 }
 

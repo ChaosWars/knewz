@@ -75,6 +75,9 @@ class NzbDialog : public QDialog
         QPushButton *invertSelection;
         QPushButton *ok;
         QPushButton *cancel;
+
+    private Q_SLOTS:
+        void okSlot();
 };
 
 #endif

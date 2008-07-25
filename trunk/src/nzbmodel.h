@@ -65,6 +65,11 @@ class NzbModel : public QAbstractItemModel
         QModelIndex parent( const QModelIndex &index ) const;
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
+        /**
+         * 
+         */
+        void trimNzbFiles();
+
     public Q_SLOTS:
 
         /**
@@ -75,14 +80,29 @@ class NzbModel : public QAbstractItemModel
          */
         void clicked( const QModelIndex &index );
 
+        /**
+         * 
+         */
         void checkAll();
 
+        /**
+         * 
+         */
         void checkNone();
 
+        /**
+         * 
+         */
         void checkSelected();
 
+        /**
+         * 
+         */
         void uncheckSelected();
 
+        /**
+         * 
+         */
         void invertSelection();
 
     private:

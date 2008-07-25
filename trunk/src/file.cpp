@@ -18,9 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include "file.h"
 
 File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
     : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
 {
+}
+
+File::~File()
+{
+    kDebug() << "Destructor called";
+    qDeleteAll( begin(), end() );
+    clear();
 }
