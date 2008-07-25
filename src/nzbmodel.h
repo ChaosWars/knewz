@@ -55,7 +55,7 @@ class NzbModel : public QAbstractItemModel
          * @param nzbfiles
          *      The NZB files of which the content should be displayed.
          */
-        NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles );
+        NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles );
         ~NzbModel();
         int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
@@ -63,9 +63,7 @@ class NzbModel : public QAbstractItemModel
         QVariant headerData( int section, Qt::Orientation orientation,
                              int role = Qt::DisplayRole ) const;
         QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-        bool insertRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
         QModelIndex parent( const QModelIndex &index ) const;
-        bool removeRows ( int row, int count, const QModelIndex & parent = QModelIndex() );
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
         /**
@@ -110,12 +108,13 @@ class NzbModel : public QAbstractItemModel
          */
         void invertSelection();
 
-        const QList< NzbFile* >& files(){ return m_nzbFiles; }
+        const QList< NzbFile* >& files(){ return m_files; }
 
     private:
         QTreeView *view;
         QStringList rootItem;
         QList< NzbFile* > m_nzbFiles;
+        QList< NzbFile* > m_files;
         void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
 };
 

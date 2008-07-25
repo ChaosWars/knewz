@@ -20,16 +20,16 @@
 
 #include <KDE/KDebug>
 #include <KDE/KLocalizedString>
-#include <QMutableListIterator>
+#include <QListIterator>
 #include <QTreeView>
 #include "file.h"
 #include "nzbfile.h"
 #include "nzbmodel.h"
 
-NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbfiles )
+NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles )
     : QAbstractItemModel( parent ),
       view( parent ),
-      m_nzbFiles( nzbfiles )
+      m_nzbFiles( nzbFiles )
 {
     rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" );
     connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );
@@ -139,10 +139,6 @@ QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) co
     return createIndex( row, column, file );
 }
 
-bool NzbModel::insertRows( int row, int count, const QModelIndex &parent )
-{
-}
-
 QModelIndex NzbModel::parent( const QModelIndex &index ) const
 {
     if ( !index.isValid() )
@@ -161,36 +157,6 @@ QModelIndex NzbModel::parent( const QModelIndex &index ) const
     return createIndex( m_nzbFiles.indexOf( nzbFile ), 0, nzbFile );
 }
 
-bool NzbModel::removeRows( int row, int count, const QModelIndex &parent )
-{
-    int rows = row + count - 1;
-    beginRemoveRows( parent, row, rows );
-
-    if( parent.isValid() ){
-        NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
-
-        while( row <= rows ){
-            nzbFile->removeAt( row );
-            rows--;
-        }
-    }else{
-
-        while( row <= rows ){
-            QMutableListIterator< File* > it( *(m_nzbFiles[row] ) );
-
-            while( it.hasNext() ){
-                it.next();
-                it.remove();
-            }
-
-            m_nzbFiles.removeAt( row );
-            rows--;
-        }
-    }
-
-    endRemoveRows();
-}
-
 int NzbModel::rowCount( const QModelIndex &parent ) const
 {
     if( parent.column() > 1 )
@@ -207,29 +173,29 @@ int NzbModel::rowCount( const QModelIndex &parent ) const
 
 void NzbModel::trimNzbFiles()
 {
-    QMutableListIterator< NzbFile* > it( m_nzbFiles );
-    while( it.hasNext() ){
+    for( int i = 0, size = m_nzbFiles.size(); i < size; i++ ){
+        NzbFile *currentNzbFile = m_nzbFiles.at( i );
+        NzbFile *nzbFile;
 
-        NzbFile *nzbFile = it.next();
-        if( nzbFile->state() != Qt::Checked ){
+        switch( currentNzbFile->state() ){
+            case Qt::Checked:
+                m_files.append( currentNzbFile );
+                break;
+            case Qt::PartiallyChecked:
+                nzbFile = new NzbFile( currentNzbFile->filename() );
 
-            QMutableListIterator< File* > its( *nzbFile );
-            while( its.hasNext() ){
-
-                File *file = its.next();
-                if( file->state() == Qt::Unchecked ){
-                    its.remove();
-//                     delete file;
+                for( int j = 0, size = currentNzbFile->size(); j < size; j++ ){
+                    File *file = currentNzbFile->at( j );
+                    if( file->state() == Qt::Checked ){
+                        nzbFile->append( new File( *file ) );
+                        nzbFile->last()->setParent( nzbFile );
+                    }
                 }
-            }
 
-        }
-
-        if( nzbFile->state() == Qt::Unchecked ){
-            it.remove();
-//             delete nzbFile;
-        }else if( nzbFile->state() == Qt::PartiallyChecked ){
-            nzbFile->setState( Qt::Checked );
+                m_files.append( nzbFile );
+                break;
+            default:
+                break;
         }
 
     }

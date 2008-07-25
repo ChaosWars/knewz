@@ -91,7 +91,7 @@ void KNewz::openRecentFile( const KUrl &url )
         if( nzbDialog->result() == QDialog::Accepted && nzbDialog->files().size() > 0 ){
             downloadqueue->mutex().lock();
 
-            foreach( NzbFile *nzbFile, nzbFiles ){
+            foreach( NzbFile *nzbFile, nzbDialog->files() ){
                 downloadqueue->append( nzbFile );
             }
 
@@ -156,10 +156,10 @@ void KNewz::showFileOpenDialog( const QStringList &files )
         nzbDialog = new NzbDialog( this, nzbFiles );
         nzbDialog->exec();
 
-        if( nzbDialog->result() == QDialog::Accepted ){
+        if( nzbDialog->result() == QDialog::Accepted && nzbDialog->files().size() > 0 ){
             downloadqueue->mutex().lock();
 
-            foreach( NzbFile *nzbFile, nzbFiles ){
+            foreach( NzbFile *nzbFile, nzbDialog->files() ){
                 downloadqueue->append( nzbFile );
             }
 

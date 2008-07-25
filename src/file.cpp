@@ -20,10 +20,19 @@
 
 #include <KDE/KDebug>
 #include "file.h"
+#include "nzbfile.h"
 
 File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
     : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
 {
+}
+
+File::File( const File &file )
+{
+    m_parent = NULL;
+    m_bytes = file.bytes();
+    m_groups = file.groups();
+    m_subject = file.subject();
 }
 
 File::~File()
