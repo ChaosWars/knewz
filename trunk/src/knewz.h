@@ -30,6 +30,8 @@
 #include <KDE/KXmlGuiWindow>
 #include <KDE/KUrl>
 
+// class KAction;
+class KAction;
 class KRecentFilesAction;
 class KNewzModel;
 class KSystemTrayIcon;
@@ -72,6 +74,7 @@ class KNewz : public KXmlGuiWindow
         KSharedConfigPtr config;
         KSystemTrayIcon *trayIcon;
         KRecentFilesAction *recentFiles;
+        KAction *openFiles, *preferences;
         bool ok_to_close;
         void setupActions();
 };
