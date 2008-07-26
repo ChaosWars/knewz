@@ -17,6 +17,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+/**
+ * @class Segment segment.h
+ */
 #ifndef SERVERWIDGET_H
 #define SERVERWIDGET_H
 
@@ -24,13 +28,25 @@
 #include <ui_serversettings.h>
 
 /**
-	@author Lawrence Lee
-*/
+ * @brief A widget for the NNTP server settings.
+ *
+ * Provides a widget for interacting with the NNTP server settings used by
+ * the program. These settings are saved and loaded using KConfigXT, so no
+ * effort is required by the developer to save and load these settings.
+ *
+ * @author Lawrence Lee
+ */
 class ServerWidget : public QWidget, public Ui::ServerSettings
 {
     Q_OBJECT
 
     public:
+
+        /**
+         * Constructor
+         * @param parent
+         *      Parent widget.
+         */
         ServerWidget( QWidget *parent = 0 );
         virtual ~ServerWidget();
 };

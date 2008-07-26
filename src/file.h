@@ -138,7 +138,7 @@ class File : public QList<Segment*>, public BaseType
         void setSubject( const QString &subject ){ m_subject = subject; }
 
         /**
-         * Returns the type of the object.
+         * Returns the type of the File.
          *
          * @return
          *      The string "File".

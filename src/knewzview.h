@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 /**
- * \class KNewzView knewzview.h
+ * @class KNewzView knewzview.h
  */
 
 #ifndef KNEWZVIEW_H
@@ -27,13 +27,24 @@
 #include <QTreeView>
 
 /**
- *  \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @brief A subclassed QTreeView providing drag and drop support.
+ *
+ * This class implements custom a QMimeType to deal with internal dragging
+ * and dropping of Files and NzbFiles.
+ *
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class KNewzView : public QTreeView
 {
     Q_OBJECT
 
     public:
+
+        /**
+         * Constructor
+         * @param parent
+         *      Parent widget.
+         */
         KNewzView( QWidget *parent );
         ~KNewzView();
 };
