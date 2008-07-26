@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- * \class Segment segment.h
+ * @class Segment segment.h
  */
 #ifndef SEGMENT_H
 #define SEGMENT_H
@@ -30,51 +30,67 @@
 class File;
 
 /**
- * \brief Represents a segment of a file entry in a *.nzb file.
+ * @brief Represents a segment of a file entry in a *.nzb file.
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * This represents a part of a NNTP multipart file.
+ *
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class Segment : public BaseType
 {
     public:
 
         /**
-         * 
-         * @param parent 
-         * @param id 
-         * @param nr 
-         * @param bytes 
+         * Constructor
+         * @param parent
+         *      File parent of the Segment.
+         * @param id
+         *      The string identifying the Segment on the NNTP server.
+         * @param nr
+         *      The part number in the File.
+         * @param bytes
+         *      The size of the Segment.
          */
         Segment( File *parent, const QString &id, int nr, quint32 bytes );
         ~Segment();
 
         /**
-         * 
-         * @return 
+         * Segment size in bytes.
+         * @return
+         *      The size of the segment.
          */
         quint32 bytes(){ return m_bytes; }
 
         /**
-         * 
-         * @return 
+         * The id of the Segment. This corresponds to the parts id on the
+         * NNTP server, and can be used with a GET command to retrieve it.
+         * @return
+         *      The id of the segment.
          */
         const QString id(){ return m_id; }
 
         /**
-         * 
-         * @return 
+         * The number of the segment in the File.
+         * @return
+         *      The number of the segment.
          */
         int nr(){ return m_nr; }
 
         /**
-         * 
-         * @return 
+         * The parent of the Segment. This is the multipart file opf which
+         * this part is a child.
+         * @return
+         *      The parent of the Segment.
          */
         File *parent() const{ return m_parent; }
 
         /**
-         * 
-         * @return 
+         * Returns the type of the Segment.
+         *
+         * @return
+         *      The string "Segment".
+         *
+         * \see NzbFile, File
          */
         const QString type() const{ return QString( "Segment" ); }
 

@@ -48,11 +48,10 @@ class NzbModel : public QAbstractItemModel
 
         /**
          * Constructor
-         *
          * @param parent
          *      The tree view parent of the model.
          *
-         * @param nzbfiles
+         * @param nzbFiles
          *      The NZB files of which the content should be displayed.
          */
         NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles );
