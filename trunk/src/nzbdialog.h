@@ -51,7 +51,6 @@ class NzbDialog : public QDialog
 
         /**
          * Constructor
-         *
          * @param parent
          *      Parent widget.
          *
@@ -60,6 +59,12 @@ class NzbDialog : public QDialog
          */
         NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
         ~NzbDialog();
+
+        /**
+         * Returns the selected files in the model.
+         * @return
+         *      The currently selected files in the model.
+         */
         const QList< NzbFile* >& files(){ return model->files(); }
 
     private:
