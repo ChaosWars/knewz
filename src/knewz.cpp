@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KAction>
 #include <KDE/KActionCollection>
 #include <KDE/KApplication>
 #include <KDE/KCmdLineArgs>
@@ -30,6 +31,7 @@
 #include <KDE/KStandardAction>
 #include <KDE/KSystemTrayIcon>
 #include <QHeaderView>
+#include <QMenu>
 #include "downloadqueue.h"
 #include "file.h"
 #include "knewz.h"
@@ -64,6 +66,9 @@ KNewz::KNewz( QWidget *parent )
     recentFiles->loadEntries( configGroup );
     trayIcon = new KSystemTrayIcon( "applications-internet", this );
     connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
+    trayIcon->contextMenu()->addAction( openFiles );
+    trayIcon->contextMenu()->addAction( recentFiles );
+    trayIcon->contextMenu()->addAction( preferences );
     trayIcon->show();
 }
 
@@ -124,10 +129,10 @@ void KNewz::setupActions()
 {
     setStandardToolBarMenuEnabled( true );
     createStandardStatusBarAction();
-    KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
+    openFiles = KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
     KStandardAction::quit( this, SLOT( exit() ), actionCollection() );
-    KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
+    preferences = KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
 }
 
 void KNewz::showFileOpenDialog( const QStringList &files )
