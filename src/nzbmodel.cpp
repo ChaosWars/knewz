@@ -159,7 +159,7 @@ QModelIndex NzbModel::parent( const QModelIndex &index ) const
 
 int NzbModel::rowCount( const QModelIndex &parent ) const
 {
-    if( parent.column() > 1 )
+    if( parent.column() > 2 )
         return 0;
 
     if ( !parent.isValid() )
