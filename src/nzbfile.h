@@ -39,9 +39,12 @@ class NzbFile : public QList<File*>, public BaseType
     public:
 
         /**
-         * 
-         * @param filename 
-         * @param bytes 
+         * Constructor.
+         * @param filename
+         *      The filename of the NZB file. This is it's name on the
+         *      filesystem.
+         * @param bytes
+         *      The total size of the parts in the NZB file.
          */
         NzbFile( const QString &filename = QString(), quint32 bytes = 0 );
         ~NzbFile();

@@ -43,7 +43,7 @@ class File : public QList<Segment*>, public BaseType
     public:
 
         /**
-         * The default constructor.
+         * Constructor.
          *
          * @param parent
          *      The NzbFile this File belongs to.
@@ -61,11 +61,15 @@ class File : public QList<Segment*>, public BaseType
               const QString &subject = QString() );
 
         /**
-         * Overloaded version of the above function.
-         * Note that the parent is set to NULL for this File, and should immediately
-         * be set with setParent() after the File is created.
+         * Constructs a copy of \c other with a new parent \c parent
+         *
+         * @param file
+         *      The file to construct a copy of.
+         *
+         * @param parent
+         *      The parent of the file.
          */
-        File( const File &file );
+        File( const File &file, NzbFile *parent );
         ~File();
 
         /**

@@ -108,6 +108,11 @@ class NzbModel : public QAbstractItemModel
          */
         void invertSelection();
 
+        /**
+         * Obtains the selected files in the model.
+         * @return
+         *      The selected files in the model.
+         */
         const QList< NzbFile* >& files(){ return m_files; }
 
     private:
