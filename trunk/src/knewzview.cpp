@@ -17,16 +17,48 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
+#include <KDE/KDebug>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
 #include "knewzview.h"
 
 KNewzView::KNewzView( QWidget *parent )
  : QTreeView( parent )
 {
+    setDragEnabled( true );
+    setAcceptDrops( true );
+    setDropIndicatorShown( true );
+    setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
-
 
 KNewzView::~KNewzView()
 {
+}
+
+// void KNewzView::dragEnterEvent( QDragEnterEvent *event )
+// {
+//     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
+//         QTreeView::dragEnterEvent( event );
+//     }
+// }
+
+// void KNewzView::dragMoveEvent( QDragMoveEvent *event )
+// {
+//     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
+//         QTreeView::dragMoveEvent( event );
+//     }
+// }
+
+void KNewzView::dropEvent( QDropEvent *event )
+{
+    if( event->mimeData()->hasFormat( "text/uri-list" ) ){
+        model()->dropMimeData( event->mimeData(), event->proposedAction(), -1, -1, indexAt( event->pos() ) );
+        event->acceptProposedAction();
+    }else if( event->mimeData()->hasFormat( "text/x-nzb" ) ){
+        
+    }
 }
 
 #include "knewzview.moc"

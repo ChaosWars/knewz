@@ -35,7 +35,6 @@
 #include "downloadqueue.h"
 #include "file.h"
 #include "knewz.h"
-#include "knewzexception.h"
 #include "knewzmodel.h"
 #include "knewzview.h"
 #include "nzbdialog.h"
@@ -48,15 +47,11 @@ KNewz::KNewz( QWidget *parent )
     : KXmlGuiWindow( parent ),
       view( new KNewzView( this ) ),
       model( new KNewzModel( view ) ),
-      ok_to_close( false ),
-      downloadqueue( DownloadQueue::Instance() )
+      downloadqueue( DownloadQueue::Instance() ),
+      ok_to_close( false )
 {
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
-    view->setDragEnabled( true );
-    view->setAcceptDrops( true );
-    view->setDropIndicatorShown( true );
-    view->setSelectionMode( QAbstractItemView::ExtendedSelection );
     setCentralWidget( view );
     setupActions();
     setupGUI();

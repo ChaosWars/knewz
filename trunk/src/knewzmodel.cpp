@@ -111,7 +111,7 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction /*action*/, int /*row*/, int /*column*/, const QModelIndex &parent )
 {
     if( data->hasFormat( "text/uri-list" ) ){
 
@@ -262,18 +262,29 @@ QModelIndex KNewzModel::parent( const QModelIndex &index ) const
 
 bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
 {
+    if( row < 0 )
+        return false;
+
     int rows = row + count - 1;
+
+    if( rows < 1 )
+        return false;
+
     beginRemoveRows( parent, row, rows );
 
     if( parent.isValid() ){
         NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
 
+        downloadqueue->mutex().lock();
         while( row <= rows ){
             nzbFile->removeAt( row );
             rows--;
         }
+
+        downloadqueue->mutex().unlock();
     }else{
 
+        downloadqueue->mutex().lock();
         while( row <= rows ){
             QMutableListIterator< File* > it( *(*downloadqueue)[row] );
 
@@ -285,6 +296,8 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
             downloadqueue->removeAt( row );
             rows--;
         }
+
+        downloadqueue->mutex().unlock();
     }
 
     endRemoveRows();
@@ -293,7 +306,7 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
 
 int KNewzModel::rowCount( const QModelIndex &parent ) const
 {
-    if( parent.column() > 1 )
+    if( parent.column() > 4 )
         return 0;
 
     if ( !parent.isValid() )

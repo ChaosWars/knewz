@@ -47,6 +47,11 @@ class KNewzView : public QTreeView
          */
         KNewzView( QWidget *parent );
         ~KNewzView();
+
+    protected:
+//         virtual void dragEnterEvent ( QDragEnterEvent * event );
+//         virtual void dragMoveEvent ( QDragMoveEvent * event );
+        virtual void dropEvent ( QDropEvent * event );
 };
 
 #endif
