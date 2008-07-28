@@ -28,7 +28,14 @@ NzbFile::NzbFile( const QString &filename, quint32 bytes )
 
 NzbFile::~NzbFile()
 {
-    kDebug() << "Destructor called";
-//     qDeleteAll( begin(), end() );
-//     clear();
+}
+
+QDataStream& operator>>( QDataStream &in, NzbFile &data )
+{
+    return in;
+}
+
+QDataStream& operator<<( QDataStream &out, const NzbFile &data )
+{
+    return out;
 }

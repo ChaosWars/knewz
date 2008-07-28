@@ -18,36 +18,36 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include <KDE/KDebug>
-#include "file.h"
-#include "nzbfile.h"
+/**
+ * @class NzbMimeData nzbmimedata.h
+ */
+#ifndef NZBMIMEDATA_H
+#define NZBMIMEDATA_H
 
-File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
-    : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
+#include <QMimeData>
+
+class NzbFile;
+
+/**
+ * @author
+ */
+class NzbMimeData : public QMimeData
 {
-}
+    Q_OBJECT
 
-File::File( const File &file, NzbFile *parent )
-{
-    m_parent = parent;
-    m_bytes = file.bytes();
-    m_groups = file.groups();
-    m_subject = file.subject();
+    public:
+        NzbMimeData();
+        ~NzbMimeData();
+        void setNzbData( const QList< NzbFile* > &data );
+        QList< NzbFile* > getNzbData();
+        virtual QStringList formats() const;
+        virtual bool hasFormat( const QString &mimeType ) const;
 
-    if( parent )
-        parent->setBytes( parent->bytes() + m_bytes );
-}
+//     protected:
+//         virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type) const;
 
-File::~File()
-{
-}
+    private:
+        QList< NzbFile* > m_data;
+};
 
-QDataStream& operator>>( QDataStream &in, File &data )
-{
-    return in;
-}
-
-QDataStream& operator<<( QDataStream &out, const File &data )
-{
-    return out;
-}
+#endif
