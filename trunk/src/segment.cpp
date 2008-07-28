@@ -28,5 +28,4 @@ Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
 
 Segment::~Segment()
 {
-    kDebug() << "Destructor called";
 }

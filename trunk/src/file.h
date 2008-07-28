@@ -147,11 +147,19 @@ class File : public QList<Segment*>, public BaseType
          */
         const QString type() const{ return QString( "File" ); }
 
+        /* QVariant stream operators */
+
+        friend QDataStream& operator>>( QDataStream &in, File &/*data*/ );
+
+        friend QDataStream& operator<<( QDataStream &out, const File &/*data*/ );
+
     private:
         NzbFile *m_parent;
         quint32 m_bytes;
         QStringList m_groups;
         QString m_subject;
 };
+
+Q_DECLARE_METATYPE(File);
 
 #endif

@@ -9,6 +9,7 @@ SET( SRC downloadqueue.cpp
         knewzview.cpp
         nzbfile.cpp
         nzbhandler.cpp
+#         nzbmimedata.cpp
         nzbreader.cpp
         nzbmodel.cpp
         nzbdialog.cpp

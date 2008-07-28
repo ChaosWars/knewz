@@ -19,35 +19,56 @@
  ***************************************************************************/
 
 #include <KDE/KDebug>
-#include "file.h"
+#include "nzbmimedata.h"
 #include "nzbfile.h"
 
-File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
-    : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
+NzbMimeData::NzbMimeData()
+ : QMimeData()
 {
 }
 
-File::File( const File &file, NzbFile *parent )
-{
-    m_parent = parent;
-    m_bytes = file.bytes();
-    m_groups = file.groups();
-    m_subject = file.subject();
-
-    if( parent )
-        parent->setBytes( parent->bytes() + m_bytes );
-}
-
-File::~File()
+NzbMimeData::~NzbMimeData()
 {
 }
 
-QDataStream& operator>>( QDataStream &in, File &data )
+void NzbMimeData::setNzbData( const QList< NzbFile* > &data )
 {
-    return in;
+    m_data = data;
 }
 
-QDataStream& operator<<( QDataStream &out, const File &data )
+QList< NzbFile* > NzbMimeData::getNzbData()
 {
-    return out;
+    return m_data;
 }
+
+QStringList NzbMimeData::formats() const
+{
+    QStringList m_formats;
+    m_formats << "text/x-nzb";
+    return m_formats;
+}
+
+bool NzbMimeData::hasFormat( const QString &mimeType ) const
+{
+    if( mimeType == "text/x-nzb" ){
+        return true;
+    }
+
+    return false;
+}
+
+// QVariant NzbMimeData::retrieveData( const QString &mimeType, QVariant::Type type) const
+// {
+//     kDebug();
+// 
+//     if( mimeType != "text/x-nzb" )
+//         return QVariant();
+// 
+//     if( type != QVariant::UserType )
+//         return QVariant();
+// 
+//     return QVariant();
+// 
+// }
+
+#include "nzbmimedata.moc"

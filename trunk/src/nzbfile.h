@@ -86,9 +86,16 @@ class NzbFile : public QList<File*>, public BaseType
          */
         const QString type() const{ return QString( "NzbFile" ); }
 
+        /* QVariant stream operators */
+        friend QDataStream& operator>>( QDataStream &in, NzbFile &data );
+
+        friend QDataStream& operator<<( QDataStream &out, const NzbFile &data );
+
     private:
         QString m_filename;
         quint32 m_bytes;
 };
+
+Q_DECLARE_METATYPE(NzbFile);
 
 #endif

@@ -24,6 +24,7 @@
 #include <KDE/KDebug>
 #include <KDE/KUniqueApplication>
 #include "knewz.h"
+#include "nzbfile.h"
 
 static const char description[] = I18N_NOOP( "A program for downloading the contents of NZB files from newsgroups for KDE4" );
 static const char version[] = "1.0";
@@ -46,6 +47,10 @@ int main( int argc, char **argv )
     }
 
     KUniqueApplication app;
+//     qRegisterMetaType<NzbFile>( "NzbFile" );
+//     qRegisterMetaType<NzbFile>( "File" );
+    qRegisterMetaTypeStreamOperators<NzbFile>( "NzbFile" );
+    qRegisterMetaTypeStreamOperators<NzbFile>( "File" );
     app.setQuitOnLastWindowClosed( false );
     KNewz *m = new KNewz();
 
