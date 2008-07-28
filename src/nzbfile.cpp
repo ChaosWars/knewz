@@ -32,10 +32,12 @@ NzbFile::~NzbFile()
 
 QDataStream& operator>>( QDataStream &in, NzbFile &data )
 {
+    in >> data;
     return in;
 }
 
 QDataStream& operator<<( QDataStream &out, const NzbFile &data )
 {
+    out << data;
     return out;
 }

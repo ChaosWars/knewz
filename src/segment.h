@@ -51,7 +51,7 @@ class Segment : public BaseType
          * @param bytes
          *      The size of the Segment.
          */
-        Segment( File *parent, const QString &id, int nr, quint32 bytes );
+        Segment( File *parent = NULL, const QString &id = QString(), int nr = 0, quint32 bytes = 0 );
         ~Segment();
 
         /**
@@ -94,11 +94,19 @@ class Segment : public BaseType
          */
         const QString type() const{ return QString( "Segment" ); }
 
+        /* QVariant stream operators */
+
+        friend QDataStream& operator>>( QDataStream &in, Segment &data );
+
+        friend QDataStream& operator<<( QDataStream &out, const Segment &data );
+
     private:
         File *m_parent;
         QString m_id;
         int m_nr;
         quint32 m_bytes;
 };
+
+Q_DECLARE_METATYPE(Segment);
 
 #endif

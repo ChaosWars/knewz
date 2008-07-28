@@ -29,3 +29,15 @@ Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
 Segment::~Segment()
 {
 }
+
+QDataStream& operator>>( QDataStream &in, Segment &data )
+{
+    in >> data;
+    return in;
+}
+
+QDataStream& operator<<( QDataStream &out, const Segment &data )
+{
+    out << data;
+    return out;
+}

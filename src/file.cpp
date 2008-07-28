@@ -44,10 +44,12 @@ File::~File()
 
 QDataStream& operator>>( QDataStream &in, File &data )
 {
+    in >> data;
     return in;
 }
 
 QDataStream& operator<<( QDataStream &out, const File &data )
 {
+    out << data;
     return out;
 }
