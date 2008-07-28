@@ -149,9 +149,9 @@ class File : public QList<Segment*>, public BaseType
 
         /* QVariant stream operators */
 
-        friend QDataStream& operator>>( QDataStream &in, File &/*data*/ );
+        friend QDataStream& operator>>( QDataStream &in, File &data );
 
-        friend QDataStream& operator<<( QDataStream &out, const File &/*data*/ );
+        friend QDataStream& operator<<( QDataStream &out, const File &data );
 
     private:
         NzbFile *m_parent;

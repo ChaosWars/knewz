@@ -33,13 +33,12 @@
 #include <QHeaderView>
 #include <QMenu>
 #include "downloadqueue.h"
-#include "file.h"
 #include "knewz.h"
 #include "knewzmodel.h"
 #include "knewzview.h"
 #include "nzbdialog.h"
+#include "nzbfile.h"
 #include "nzbreader.h"
-#include "segment.h"
 #include "serverwidget.h"
 #include "settings.h"
 

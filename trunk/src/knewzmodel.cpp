@@ -236,8 +236,8 @@ QMap<int, QVariant> KNewzModel::itemData( const QModelIndex &index ) const
         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
         roles.insert( Qt::UserRole, QVariant::fromValue( *nzbFile ) );
     }else if( base->type() == "File" ){
-//         File *file = static_cast< File* >( index.internalPointer() );
-//         roles.insert( Qt::UserRole, QVariant::fromValue( *file ) );
+        File *file = static_cast< File* >( index.internalPointer() );
+        roles.insert( Qt::UserRole, QVariant::fromValue( *file ) );
     }
     return roles;
 }
