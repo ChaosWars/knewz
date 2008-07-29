@@ -49,9 +49,9 @@ int main( int argc, char **argv )
     }
 
     KUniqueApplication app;
-    qRegisterMetaTypeStreamOperators<NzbFile>( "NzbFile" );
-    qRegisterMetaTypeStreamOperators<File>( "File" );
-    qRegisterMetaTypeStreamOperators<Segment>( "Segment" );
+//     qRegisterMetaTypeStreamOperators<NzbFile>( "NzbFile" );
+//     qRegisterMetaTypeStreamOperators<File>( "File" );
+//     qRegisterMetaTypeStreamOperators<Segment>( "Segment" );
     app.setQuitOnLastWindowClosed( false );
     KNewz *m = new KNewz();
 

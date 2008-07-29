@@ -187,7 +187,8 @@ void NzbModel::trimNzbFiles()
                 for( int j = 0, size = currentNzbFile->size(); j < size; j++ ){
                     File *file = currentNzbFile->at( j );
                     if( file->state() == Qt::Checked ){
-                        nzbFile->append( new File( *file, nzbFile ) );
+                        nzbFile->append( new File( *file ) );
+                        nzbFile->last()->setParent( nzbFile );
                     }
                 }
 

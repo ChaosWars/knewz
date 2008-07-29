@@ -40,6 +40,8 @@ class Segment : public BaseType
 {
     public:
 
+//         enum{ FileRole = Qt::UserRole + 2 };
+
         /**
          * Constructor
          * @param parent
@@ -52,6 +54,8 @@ class Segment : public BaseType
          *      The size of the Segment.
          */
         Segment( File *parent = NULL, const QString &id = QString(), int nr = 0, quint32 bytes = 0 );
+
+        Segment( Segment &segment );
         ~Segment();
 
         /**
@@ -96,9 +100,9 @@ class Segment : public BaseType
 
         /* QVariant stream operators */
 
-        friend QDataStream& operator>>( QDataStream &in, Segment &data );
-
-        friend QDataStream& operator<<( QDataStream &out, const Segment &data );
+//         friend QDataStream& operator>>( QDataStream &in, Segment &data );
+// 
+//         friend QDataStream& operator<<( QDataStream &out, const Segment &data );
 
     private:
         File *m_parent;
@@ -107,6 +111,6 @@ class Segment : public BaseType
         quint32 m_bytes;
 };
 
-Q_DECLARE_METATYPE(Segment);
+// Q_DECLARE_METATYPE(Segment);
 
 #endif

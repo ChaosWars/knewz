@@ -37,6 +37,7 @@ class File;
 class NzbFile : public QList<File*>, public BaseType
 {
     public:
+//         enum{ NzbFileRole = Qt::UserRole };
 
         /**
          * Constructor.
@@ -47,6 +48,8 @@ class NzbFile : public QList<File*>, public BaseType
          *      The total size of the parts in the NZB file.
          */
         NzbFile( const QString &filename = QString(), quint32 bytes = 0 );
+
+        NzbFile( NzbFile &nzbFile );
         ~NzbFile();
 
         /**
@@ -86,16 +89,18 @@ class NzbFile : public QList<File*>, public BaseType
          */
         const QString type() const{ return QString( "NzbFile" ); }
 
-        /* QVariant stream operators */
-        friend QDataStream& operator>>( QDataStream &in, NzbFile &data );
+        NzbFile& operator=( NzbFile &nzbFile );
 
-        friend QDataStream& operator<<( QDataStream &out, const NzbFile &data );
+        /* QVariant stream operators */
+//         friend QDataStream& operator>>( QDataStream &in, NzbFile &data );
+// 
+//         friend QDataStream& operator<<( QDataStream &out, const NzbFile &data );
 
     private:
         QString m_filename;
         quint32 m_bytes;
 };
 
-Q_DECLARE_METATYPE(NzbFile);
+// Q_DECLARE_METATYPE(NzbFile);
 
 #endif

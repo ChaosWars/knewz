@@ -22,7 +22,16 @@
 #include "segment.h"
 
 Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
-    : m_parent( parent ), m_id( id ), m_nr( nr ), m_bytes( bytes )
+    : BaseType(), m_parent( parent ), m_id( id ), m_nr( nr ), m_bytes( bytes )
+{
+}
+
+Segment::Segment( Segment &segment )
+    : BaseType(),
+      m_parent( segment.parent() ),
+      m_id( segment.id() ),
+      m_nr( segment.nr() ),
+      m_bytes( segment.bytes() )
 {
 }
 
@@ -30,14 +39,14 @@ Segment::~Segment()
 {
 }
 
-QDataStream& operator>>( QDataStream &in, Segment &data )
-{
-    in >> data;
-    return in;
-}
-
-QDataStream& operator<<( QDataStream &out, const Segment &data )
-{
-    out << data;
-    return out;
-}
+// QDataStream& operator>>( QDataStream &in, Segment &data )
+// {
+//     in >> data;
+//     return in;
+// }
+// 
+// QDataStream& operator<<( QDataStream &out, const Segment &data )
+// {
+//     out << data;
+//     return out;
+// }

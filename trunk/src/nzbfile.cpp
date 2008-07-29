@@ -22,7 +22,15 @@
 #include "nzbfile.h"
 
 NzbFile::NzbFile( const QString &filename, quint32 bytes )
-    : m_filename( filename ), m_bytes( bytes )
+    : QList<File*>(), BaseType(), m_filename( filename ), m_bytes( bytes )
+{
+}
+
+NzbFile::NzbFile( NzbFile &nzbFile )
+    : QList<File*>(),
+      BaseType(),
+      m_filename( nzbFile.filename() ),
+      m_bytes( nzbFile.bytes() )
 {
 }
 
@@ -30,14 +38,24 @@ NzbFile::~NzbFile()
 {
 }
 
-QDataStream& operator>>( QDataStream &in, NzbFile &data )
+NzbFile& NzbFile::operator=( NzbFile &nzbFile )
 {
-    in >> data;
-    return in;
+    if( this != &nzbFile ){
+        m_filename = nzbFile.filename();
+        m_bytes = nzbFile.bytes();
+    }
+
+    return *this;
 }
 
-QDataStream& operator<<( QDataStream &out, const NzbFile &data )
-{
-    out << data;
-    return out;
-}
+// QDataStream& operator>>( QDataStream &in, NzbFile &data )
+// {
+//     in >> data;
+//     return in;
+// }
+// 
+// QDataStream& operator<<( QDataStream &out, const NzbFile &data )
+// {
+//     out << data;
+//     return out;
+// }
