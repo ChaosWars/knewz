@@ -69,13 +69,14 @@ class KNewzModel : public QAbstractItemModel
         QVariant headerData( int section, Qt::Orientation orientation,
                              int role = Qt::DisplayRole ) const;
         QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-        QMap<int, QVariant> itemData( const QModelIndex &index ) const;
-//         bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+//         QMap<int, QVariant> itemData( const QModelIndex &index ) const;
+        bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
         QStringList mimeTypes() const;
         QModelIndex parent( const QModelIndex &index ) const;
-//         bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+        bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
         int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-//         Qt::DropActions supportedDropActions() const;
+        bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+        Qt::DropActions supportedDropActions() const;
 
     public Q_SLOTS:
         void clicked( const QModelIndex &index );

@@ -23,33 +23,61 @@
 #include "nzbfile.h"
 
 File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
-    : m_parent( parent ), m_bytes( bytes ), m_groups( groups ), m_subject( subject )
+    : QList<Segment*>(),
+      BaseType(),
+      m_parent( parent ),
+      m_bytes( bytes ),
+      m_groups( groups ),
+      m_subject( subject )
 {
 }
 
-File::File( const File &file, NzbFile *parent )
+File::File( File &file )
+    : QList<Segment*>(),
+      BaseType(),
+      m_parent( file.parent() ),
+      m_bytes( file.bytes() ),
+      m_groups( file.groups() ),
+      m_subject( file.subject() )
 {
-    m_parent = parent;
-    m_bytes = file.bytes();
-    m_groups = file.groups();
-    m_subject = file.subject();
-
-    if( parent )
-        parent->setBytes( parent->bytes() + m_bytes );
 }
 
 File::~File()
 {
 }
 
-QDataStream& operator>>( QDataStream &in, File &data )
+void File::setParent( NzbFile *parent )
 {
-    in >> data;
-    return in;
+    if( m_parent ){
+        m_parent->setBytes( m_parent->bytes() - m_bytes );
+    }
+
+    m_parent = parent;
+    if( parent ){
+        parent->setBytes( parent->bytes() + m_bytes );
+    }
 }
 
-QDataStream& operator<<( QDataStream &out, const File &data )
+File& File::operator=( File &other )
 {
-    out << data;
-    return out;
+    if( this != &other ){
+        m_parent = other.parent();
+        m_bytes = other.bytes();
+        m_groups = other.groups();
+        m_subject = other.subject();
+    }
+
+    return *this;
 }
+
+// QDataStream& operator>>( QDataStream &in, File &data )
+// {
+//     in >> data;
+//     return in;
+// }
+// 
+// QDataStream& operator<<( QDataStream &out, const File &data )
+// {
+//     out << data;
+//     return out;
+// }

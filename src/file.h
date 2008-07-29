@@ -42,6 +42,8 @@ class File : public QList<Segment*>, public BaseType
 {
     public:
 
+//         enum{ FileRole = Qt::UserRole + 1 };
+
         /**
          * Constructor.
          *
@@ -65,11 +67,8 @@ class File : public QList<Segment*>, public BaseType
          *
          * @param file
          *      The file to construct a copy of.
-         *
-         * @param parent
-         *      The parent of the file.
          */
-        File( const File &file, NzbFile *parent );
+        File( File &file );
         ~File();
 
         /**
@@ -127,7 +126,7 @@ class File : public QList<Segment*>, public BaseType
          *
          * \see NzbFile
          */
-        void setParent( NzbFile *parent ){ m_parent = parent; }
+        void setParent( NzbFile *parent );
 
         /**
          * The subject of the file found in the NZB file.
@@ -147,11 +146,13 @@ class File : public QList<Segment*>, public BaseType
          */
         const QString type() const{ return QString( "File" ); }
 
+        File& operator=( File &other );
+
         /* QVariant stream operators */
 
-        friend QDataStream& operator>>( QDataStream &in, File &data );
-
-        friend QDataStream& operator<<( QDataStream &out, const File &data );
+//         friend QDataStream& operator>>( QDataStream &in, File &data );
+// 
+//         friend QDataStream& operator<<( QDataStream &out, const File &data );
 
     private:
         NzbFile *m_parent;
@@ -160,6 +161,6 @@ class File : public QList<Segment*>, public BaseType
         QString m_subject;
 };
 
-Q_DECLARE_METATYPE(File);
+// Q_DECLARE_METATYPE(File);
 
 #endif

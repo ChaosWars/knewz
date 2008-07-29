@@ -176,7 +176,6 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction /*action*/,
     }
 
     if( data->hasFormat( "text/x-nzb" ) ){
-        emit layoutChanged();
         return true;
     }
 
@@ -227,27 +226,34 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
     return createIndex( row, column, file );
 }
 
-QMap<int, QVariant> KNewzModel::itemData( const QModelIndex &index ) const
-{
-    QMap<int, QVariant> roles = QAbstractItemModel::itemData( index );
-    BaseType *base = static_cast<BaseType*>( index.internalPointer() );
-
-    if( base->type() == "NzbFile" ){
-        NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
-        roles.insert( Qt::UserRole, QVariant::fromValue( *nzbFile ) );
-    }else if( base->type() == "File" ){
-        File *file = static_cast< File* >( index.internalPointer() );
-        roles.insert( Qt::UserRole, QVariant::fromValue( *file ) );
-    }
-    return roles;
-}
-
-// bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
+// QMap<int, QVariant> KNewzModel::itemData( const QModelIndex &index ) const
 // {
-//     beginInsertRows( parent, row, row + count - 1 );
-//     endInsertRows();
-//     return true;
+//     QMap<int, QVariant> roles = QAbstractItemModel::itemData( index );
+//     kDebug() << roles;
+//     BaseType *base = static_cast<BaseType*>( index.internalPointer() );
+//     kDebug() << base;
+// 
+//     if( base->type() == "NzbFile" ){
+//         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
+//         kDebug() << "NzbFile:" << nzbFile;
+//         roles.insert( Qt::UserRole, QVariant::fromValue( *nzbFile ) );
+//         kDebug() << "roles:" << roles;
+//     }else if( base->type() == "File" ){
+//         File *file = static_cast< File* >( index.internalPointer() );
+//         kDebug() << "file:" << file;
+//         roles.insert( Qt::UserRole, QVariant::fromValue( *file ) );
+//         kDebug() << "roles:" << roles;
+//     }
+//     return roles;
 // }
+
+bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
+{
+    kDebug();
+    beginInsertRows( parent, row, row + count - 1 );
+    endInsertRows();
+    return true;
+}
 
 QStringList KNewzModel::mimeTypes() const
 {
@@ -274,49 +280,50 @@ QModelIndex KNewzModel::parent( const QModelIndex &index ) const
     return createIndex( downloadqueue->indexOf( nzbFile ), 0, nzbFile );
 }
 
-// bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
-// {
-//     if( row < 0 )
-//         return false;
-// 
-//     int rows = row + count - 1;
-// 
-//     if( rows < 1 )
-//         return false;
-// 
-//     beginRemoveRows( parent, row, rows );
-// 
-//     if( parent.isValid() ){
-//         NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
-// 
-//         downloadqueue->mutex().lock();
-//         while( row <= rows ){
-//             nzbFile->removeAt( row );
-//             rows--;
-//         }
-// 
-//         downloadqueue->mutex().unlock();
-//     }else{
-// 
-//         downloadqueue->mutex().lock();
-//         while( row <= rows ){
-//             QMutableListIterator< File* > it( *(*downloadqueue)[row] );
-// 
-//             while( it.hasNext() ){
-//                 it.next();
-//                 it.remove();
-//             }
-// 
-//             downloadqueue->removeAt( row );
-//             rows--;
-//         }
-// 
-//         downloadqueue->mutex().unlock();
-//     }
-// 
-//     endRemoveRows();
-//     return true;
-// }
+bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
+{
+    kDebug();
+    if( row < 0 )
+        return false;
+
+    int rows = row + count - 1;
+
+    if( rows < 1 )
+        return false;
+
+    beginRemoveRows( parent, row, rows );
+
+    if( parent.isValid() ){
+        NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
+
+        downloadqueue->mutex().lock();
+        while( row <= rows ){
+            nzbFile->removeAt( row );
+            rows--;
+        }
+
+        downloadqueue->mutex().unlock();
+    }else{
+
+        downloadqueue->mutex().lock();
+        while( row <= rows ){
+            QMutableListIterator< File* > it( *(*downloadqueue)[row] );
+
+            while( it.hasNext() ){
+                it.next();
+                it.remove();
+            }
+
+            downloadqueue->removeAt( row );
+            rows--;
+        }
+
+        downloadqueue->mutex().unlock();
+    }
+
+    endRemoveRows();
+    return true;
+}
 
 int KNewzModel::rowCount( const QModelIndex &parent ) const
 {
@@ -332,10 +339,19 @@ int KNewzModel::rowCount( const QModelIndex &parent ) const
     return 0;
 }
 
-// Qt::DropActions KNewzModel::supportedDropActions() const
-// {
-//     return Qt::CopyAction | Qt::MoveAction;
-// }
+bool KNewzModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+    kDebug();
+    if( role != Qt::EditRole )
+        return false;
+
+    return true;
+}
+
+Qt::DropActions KNewzModel::supportedDropActions() const
+{
+    return Qt::CopyAction | Qt::MoveAction;
+}
 
 void KNewzModel::clicked( const QModelIndex& index )
 {

@@ -1,12 +1,14 @@
 [Desktop Entry]
-Name=KNewz
-Name[x-test]=xxKNewzxx
-Exec=knewz %i -caption "%c"
-Icon=applications-internet
-Type=Application
-MimeType=application/x-nzb;
+Categories=Qt;KDE;Application;Network;
 DocPath=knewz/index.html
-GenericName=A NZB downloading program for KDE4
+Exec=knewz %i %m -caption "%c"
+GenericName=NZB Download Program
+Icon=applications-internet
+MimeType=application/x-nzb;
+Name=KNewz
 Terminal=false
-Categories=Qt;KDE;Network;
+Type=Application
+X-DBUS-ServiceName=com.googlecode.KNewz
 X-DBUS-ServiceType=Unique
+X-DocPath=knewz/index.html
+X-KDE-StartupNotify=true
