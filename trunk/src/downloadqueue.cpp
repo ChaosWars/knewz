@@ -18,7 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include "downloadqueue.h"
+#include "file.h"
+#include "nzbfile.h"
+#include "segment.h"
 
 DownloadQueue* DownloadQueue::m_instance = NULL;
 QMutex DownloadQueue::m_mutex;
@@ -29,6 +33,7 @@ DownloadQueue::DownloadQueue()
 
 DownloadQueue::~DownloadQueue()
 {
+    kDebug();
     clear();
 }
 
@@ -44,4 +49,11 @@ DownloadQueue* DownloadQueue::Instance()
     }
 
     return m_instance;
+}
+
+void DownloadQueue::dumpQueue()
+{
+    for( int i = 0, count = DownloadQueue::Instance()->size(); i < count; i++ ){
+        DownloadQueue::Instance()->at( i )->dumpQueue();
+    }
 }

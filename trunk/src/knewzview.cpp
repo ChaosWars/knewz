@@ -41,19 +41,17 @@ KNewzView::~KNewzView()
 
 void KNewzView::dragEnterEvent( QDragEnterEvent *event )
 {
-//     kDebug() << event->mimeData()->formats();
     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
         event->acceptProposedAction();
-//         QTreeView::dragEnterEvent( event );
+        QTreeView::dragEnterEvent( event );
     }
 }
 
 void KNewzView::dragMoveEvent( QDragMoveEvent *event )
 {
-//     kDebug() << event->mimeData()->formats();
     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
         event->acceptProposedAction();
-//         QTreeView::dragMoveEvent( event );
+        QTreeView::dragMoveEvent( event );
     }
 }
 

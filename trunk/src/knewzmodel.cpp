@@ -67,6 +67,7 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     const QModelIndex parentIndex = index.parent();
 
     if( !parentIndex.isValid() ){
+//         kDebug() << "index.row():" << index.row();
 
         switch( index.column() ){
             case 0:
@@ -87,7 +88,7 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
         }
 
     }else{
-
+//         kDebug() << "parentIndex.row():" << parentIndex.row();
         switch( index.column() ){
             case 0:
                 break;
@@ -111,8 +112,14 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction /*action*/, int /*row*/, int /*column*/, const QModelIndex &parent )
+bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
+    if( column > 4 )
+        return false;
+
+    if( action == Qt::IgnoreAction )
+        return true;
+
     if( data->hasFormat( "text/uri-list" ) ){
 
         if( data->hasUrls() ){
@@ -139,38 +146,38 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction /*action*/,
 
             }
 
+            if( nzbFiles.size() == 0 )
+                return false;
+
+            downloadqueue->mutex().lock();
             if( parent.isValid() ){
 
+                int parentRow;
                 if( parent.parent().isValid() ){
-                    downloadqueue->mutex().lock();
-
-                    foreach( NzbFile *nzbFile, nzbFiles ){
-                        downloadqueue->insert( parent.parent().row(), nzbFile );
-                    }
-
-                    downloadqueue->mutex().unlock();
+                    parentRow = parent.parent().row();
                 }else{
-                    downloadqueue->mutex().lock();
+                    parentRow = parent.row();
+                }
 
-                    foreach( NzbFile *nzbFile, nzbFiles ){
-                        downloadqueue->insert( parent.row(), nzbFile );
-                    }
-
-                    downloadqueue->mutex().unlock();
+                beginInsertRows( QModelIndex(), parentRow, parentRow + nzbFiles.size() - 1 );
+                foreach( NzbFile *nzbFile, nzbFiles ){
+                    downloadqueue->insert( parentRow++, nzbFile );
                 }
 
             }else{
-                downloadqueue->mutex().lock();
+                int endRow = downloadqueue->size();
+                beginInsertRows( parent, endRow, endRow + nzbFiles.size() - 1 );
 
                 foreach( NzbFile *nzbFile, nzbFiles ){
                     downloadqueue->append( nzbFile );
                 }
 
-                downloadqueue->mutex().unlock();
             }
+
+            endInsertRows();
+            downloadqueue->mutex().unlock();
         }
 
-        emit layoutChanged();
         return true;
 
     }
@@ -184,13 +191,11 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction /*action*/,
 
 Qt::ItemFlags KNewzModel::flags( const QModelIndex &index ) const
 {
-    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags( index );
-
     if ( index.isValid() ){
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | QAbstractItemModel::flags( index );
     }
 
-    return Qt::ItemIsDropEnabled | defaultFlags;
+    return Qt::ItemIsDropEnabled | QAbstractItemModel::flags( index );
 }
 
 QVariant KNewzModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -232,7 +237,7 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
 //     kDebug() << roles;
 //     BaseType *base = static_cast<BaseType*>( index.internalPointer() );
 //     kDebug() << base;
-// 
+//
 //     if( base->type() == "NzbFile" ){
 //         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
 //         kDebug() << "NzbFile:" << nzbFile;
@@ -249,11 +254,41 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
 
 bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-    kDebug();
+    kDebug() << "row:" << row;
+    kDebug() << "count:" << count;
+    kDebug() << "parent:" << parent;
+    if( row < 0 )
+        return false;
+
+    if( count < 1 )
+        return false;
+
+    if( parent.parent().isValid() )
+        return false;
+
     beginInsertRows( parent, row, row + count - 1 );
+
+    if( parent.isValid() ){
+
+        for( int i = 0; i < count; i++ ){
+            downloadqueue->at( parent.row() )->insert( row, new File() );
+        }
+
+    }else{
+
+        for( int i = 0; i < count; i++ ){
+            downloadqueue->insert( row, new NzbFile() );
+        }
+
+    }
+
     endInsertRows();
     return true;
 }
+
+// QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
+// {
+// }
 
 QStringList KNewzModel::mimeTypes() const
 {
@@ -282,11 +317,11 @@ QModelIndex KNewzModel::parent( const QModelIndex &index ) const
 
 bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-    kDebug();
     if( row < 0 )
         return false;
 
     int rows = row + count - 1;
+    int beginRow = row;
 
     if( rows < 1 )
         return false;
@@ -297,17 +332,17 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
         NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
 
         downloadqueue->mutex().lock();
-        while( row <= rows ){
+        while( beginRow <= rows ){
             nzbFile->removeAt( row );
-            rows--;
+            beginRow++;
         }
 
         downloadqueue->mutex().unlock();
     }else{
 
         downloadqueue->mutex().lock();
-        while( row <= rows ){
-            QMutableListIterator< File* > it( *(*downloadqueue)[row] );
+        while( beginRow <= rows ){
+            QMutableListIterator< File* > it( *(downloadqueue->at( row ) ) );
 
             while( it.hasNext() ){
                 it.next();
@@ -315,7 +350,7 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
             }
 
             downloadqueue->removeAt( row );
-            rows--;
+            beginRow++;
         }
 
         downloadqueue->mutex().unlock();
@@ -339,13 +374,32 @@ int KNewzModel::rowCount( const QModelIndex &parent ) const
     return 0;
 }
 
-bool KNewzModel::setData(const QModelIndex& index, const QVariant& value, int role)
+bool KNewzModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
-    kDebug();
+//     kDebug() << "index:" << index;
+    if( !index.isValid() )
+        return false;
+
     if( role != Qt::EditRole )
         return false;
 
-    return true;
+    BaseType *base = static_cast<BaseType*>( index.internalPointer() );
+    kDebug() << base->type();
+
+    if( value.canConvert<NzbFile>() && ( base->type() == "NzbFile" ) ){
+        NzbFile data = value.value<NzbFile>();
+        *(*downloadqueue)[index.row()] = data;
+        QModelIndex parent = this->index( index.row(), 0 );
+//         emit dataChanged( parent, this->index( index.row(), columnCount( index ) ) );
+//         emit dataChanged( this->index( 0, 0, parent ), this->index( rowCount( parent ), columnCount( parent ), parent ) );
+        return true;
+    }else if( value.canConvert<File>() && ( base->type() == "File" ) ){
+        File data = value.value<File>();
+//         emit dataChanged(  );
+        return true;
+    }
+
+    return false;
 }
 
 Qt::DropActions KNewzModel::supportedDropActions() const

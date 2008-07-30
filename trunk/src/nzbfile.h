@@ -49,8 +49,13 @@ class NzbFile : public QList<File*>, public BaseType
          */
         NzbFile( const QString &filename = QString(), quint32 bytes = 0 );
 
-        NzbFile( NzbFile &nzbFile );
+//         NzbFile( const NzbFile &nzbFile );
         ~NzbFile();
+
+        /**
+         * Debug function. Prints the content of the queue via kDebug();
+         */
+        void dumpQueue();
 
         /**
          *  Sets the filename of the file.
@@ -89,11 +94,11 @@ class NzbFile : public QList<File*>, public BaseType
          */
         const QString type() const{ return QString( "NzbFile" ); }
 
-        NzbFile& operator=( NzbFile &nzbFile );
+//         NzbFile& operator=( const NzbFile &other );
 
         /* QVariant stream operators */
 //         friend QDataStream& operator>>( QDataStream &in, NzbFile &data );
-// 
+//
 //         friend QDataStream& operator<<( QDataStream &out, const NzbFile &data );
 
     private:
@@ -101,6 +106,6 @@ class NzbFile : public QList<File*>, public BaseType
         quint32 m_bytes;
 };
 
-// Q_DECLARE_METATYPE(NzbFile);
+Q_DECLARE_METATYPE(NzbFile);
 
 #endif

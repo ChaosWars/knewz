@@ -62,21 +62,22 @@ class KNewzModel : public QAbstractItemModel
          * Emits the layoutChanged() signal.
          */
         void changed();
-        int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-        QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-        bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
-        Qt::ItemFlags flags( const QModelIndex &index ) const;
-        QVariant headerData( int section, Qt::Orientation orientation,
+        virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+        virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+        virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+        virtual QVariant headerData( int section, Qt::Orientation orientation,
                              int role = Qt::DisplayRole ) const;
-        QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+        virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 //         QMap<int, QVariant> itemData( const QModelIndex &index ) const;
-        bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-        QStringList mimeTypes() const;
-        QModelIndex parent( const QModelIndex &index ) const;
-        bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-        int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-        bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-        Qt::DropActions supportedDropActions() const;
+        virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+//         virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+        virtual QStringList mimeTypes() const;
+        virtual QModelIndex parent( const QModelIndex &index ) const;
+        virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+        virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+        virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
+        virtual Qt::DropActions supportedDropActions() const;
 
     public Q_SLOTS:
         void clicked( const QModelIndex &index );
