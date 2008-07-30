@@ -68,8 +68,13 @@ class File : public QList<Segment*>, public BaseType
          * @param file
          *      The file to construct a copy of.
          */
-        File( File &file );
+//         File( const File &file );
         ~File();
+
+        /**
+         * Debug function. Prints the content of the queue via kDebug();
+         */
+        void dumpQueue();
 
         /**
          *  The size of the file.
@@ -92,7 +97,7 @@ class File : public QList<Segment*>, public BaseType
          * @return
          *      The parent of the file.
          */
-        NzbFile* parent(){ return m_parent; }
+        NzbFile* parent() const{ return m_parent; }
 
         /**
          *  The subject of the file.
@@ -146,12 +151,11 @@ class File : public QList<Segment*>, public BaseType
          */
         const QString type() const{ return QString( "File" ); }
 
-        File& operator=( File &other );
+//         File& operator=( const File &other );
 
         /* QVariant stream operators */
-
 //         friend QDataStream& operator>>( QDataStream &in, File &data );
-// 
+//
 //         friend QDataStream& operator<<( QDataStream &out, const File &data );
 
     private:
@@ -161,6 +165,6 @@ class File : public QList<Segment*>, public BaseType
         QString m_subject;
 };
 
-// Q_DECLARE_METATYPE(File);
+Q_DECLARE_METATYPE(File);
 
 #endif

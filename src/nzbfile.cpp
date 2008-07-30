@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <KDE/KDebug>
+#include "file.h"
 #include "nzbfile.h"
 
 NzbFile::NzbFile( const QString &filename, quint32 bytes )
@@ -26,36 +27,51 @@ NzbFile::NzbFile( const QString &filename, quint32 bytes )
 {
 }
 
-NzbFile::NzbFile( NzbFile &nzbFile )
-    : QList<File*>(),
-      BaseType(),
-      m_filename( nzbFile.filename() ),
-      m_bytes( nzbFile.bytes() )
-{
-}
+// NzbFile::NzbFile( const NzbFile &nzbFile )
+//     : QList<File*>( nzbFile ),
+//       BaseType( nzbFile ),
+//       m_filename( nzbFile.filename() ),
+//       m_bytes( nzbFile.bytes() )
+// {
+// }
 
 NzbFile::~NzbFile()
 {
 }
 
-NzbFile& NzbFile::operator=( NzbFile &nzbFile )
+void NzbFile::dumpQueue()
 {
-    if( this != &nzbFile ){
-        m_filename = nzbFile.filename();
-        m_bytes = nzbFile.bytes();
+    kDebug() << "filename:" << m_filename;
+    kDebug() << "bytes:" << m_bytes;
+    for( int i = 0, size = this->size(); i < size; i++ ){
+        at( i )->dumpQueue();
     }
-
-    return *this;
 }
+
+// NzbFile& NzbFile::operator=( const NzbFile &other )
+// {
+//     if( this != &other ){
+//         m_filename = other.m_filename;
+//         m_bytes = other.m_bytes;
+//         BaseType::operator=( other );
+//         QList<File*>::operator=( other );
+//     }
+// 
+//     return *this;
+// }
 
 // QDataStream& operator>>( QDataStream &in, NzbFile &data )
 // {
+//     in >> data.m_filename;
+//     in >> data.m_bytes;
 //     in >> data;
 //     return in;
 // }
 // 
 // QDataStream& operator<<( QDataStream &out, const NzbFile &data )
 // {
+//     out << data.m_filename;
+//     out << data.m_bytes;
 //     out << data;
 //     return out;
 // }

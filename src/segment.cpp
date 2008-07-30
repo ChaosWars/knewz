@@ -22,31 +22,54 @@
 #include "segment.h"
 
 Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
-    : BaseType(), m_parent( parent ), m_id( id ), m_nr( nr ), m_bytes( bytes )
+    : m_parent( parent ), m_id( id ), m_nr( nr ), m_bytes( bytes )
 {
 }
 
-Segment::Segment( Segment &segment )
-    : BaseType(),
-      m_parent( segment.parent() ),
-      m_id( segment.id() ),
-      m_nr( segment.nr() ),
-      m_bytes( segment.bytes() )
-{
-}
+// Segment::Segment( const Segment &segment )
+//     : m_parent( segment.parent() ),
+//       m_id( segment.id() ),
+//       m_nr( segment.nr() ),
+//       m_bytes( segment.bytes() )
+// {
+// }
 
 Segment::~Segment()
 {
 }
 
+void Segment::dumpQueue()
+{
+    kDebug() << "parent:" << m_parent;
+    kDebug() << "id:" << m_id;
+    kDebug() << "nr:" << m_nr;
+    kDebug() << "bytes:" << m_bytes;
+}
+
+// Segment& Segment::operator=( const Segment &other )
+// {
+//     if( this != &other ){
+//         m_parent = other.m_parent;
+//         m_id = other.m_id;
+//         m_nr = other.m_nr;
+//         m_bytes = other.m_bytes;
+//     }
+// 
+//     return *this;
+// }
+
 // QDataStream& operator>>( QDataStream &in, Segment &data )
 // {
-//     in >> data;
+//     in >> data.m_id;
+//     in >> data.m_nr;
+//     in >> data.m_bytes;
 //     return in;
 // }
 // 
 // QDataStream& operator<<( QDataStream &out, const Segment &data )
 // {
-//     out << data;
+//     out << data.m_id;
+//     out << data.m_nr;
+//     out << data.m_bytes;
 //     return out;
 // }

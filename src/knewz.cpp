@@ -89,11 +89,13 @@ void KNewz::openRecentFile( const KUrl &url )
 
         if( nzbDialog->result() == QDialog::Accepted && nzbDialog->files().size() > 0 ){
             downloadqueue->mutex().lock();
+//             int row = downloadqueue->size();
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
                 downloadqueue->append( nzbFile );
             }
 
+//             model->insertRows( QModelIndex(), row, downloadqueue->size() - 1 );
             downloadqueue->mutex().unlock();
             model->changed();
         }
@@ -155,17 +157,27 @@ void KNewz::showFileOpenDialog( const QStringList &files )
         nzbDialog = new NzbDialog( this, nzbFiles );
         nzbDialog->exec();
 
-        if( nzbDialog->result() == QDialog::Accepted && nzbDialog->files().size() > 0 ){
+        if( nzbDialog->result() == QDialog::Accepted ){
+            int count = nzbDialog->files().size();
+
+            if( count == 0 )
+                return;
+
             downloadqueue->mutex().lock();
+            int row = downloadqueue->size();
+            model->insertRows( row, count );
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
-                downloadqueue->append( nzbFile );
+//                 downloadqueue->append( nzbFile );
+                model->setData( model->index( row++, 0 ), QVariant::fromValue( *nzbFile ) );
             }
 
             downloadqueue->mutex().unlock();
-            model->changed();
+//             model->changed();
         }
     }
+
+//     downloadqueue->dumpQueue();
 }
 
 void KNewz::urlOpen()

@@ -25,7 +25,6 @@
 #define SEGMENT_H
 
 #include <QtCore>
-#include "basetype.h"
 
 class File;
 
@@ -36,7 +35,7 @@ class File;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class Segment : public BaseType
+class Segment
 {
     public:
 
@@ -55,15 +54,20 @@ class Segment : public BaseType
          */
         Segment( File *parent = NULL, const QString &id = QString(), int nr = 0, quint32 bytes = 0 );
 
-        Segment( Segment &segment );
+//         Segment( const Segment &segment );
         ~Segment();
+
+        /**
+         * Debug function. Prints the content of the queue via kDebug();
+         */
+        void dumpQueue();
 
         /**
          * Segment size in bytes.
          * @return
          *      The size of the segment.
          */
-        quint32 bytes(){ return m_bytes; }
+        quint32 bytes() const{ return m_bytes; }
 
         /**
          * The id of the Segment. This corresponds to the parts id on the
@@ -71,14 +75,14 @@ class Segment : public BaseType
          * @return
          *      The id of the segment.
          */
-        const QString id(){ return m_id; }
+        const QString id() const{ return m_id; }
 
         /**
          * The number of the segment in the File.
          * @return
          *      The number of the segment.
          */
-        int nr(){ return m_nr; }
+        int nr() const{ return m_nr; }
 
         /**
          * The parent of the Segment. This is the multipart file opf which
@@ -99,7 +103,7 @@ class Segment : public BaseType
         const QString type() const{ return QString( "Segment" ); }
 
         /* QVariant stream operators */
-
+//         Segment& operator=( const Segment &other );
 //         friend QDataStream& operator>>( QDataStream &in, Segment &data );
 // 
 //         friend QDataStream& operator<<( QDataStream &out, const Segment &data );

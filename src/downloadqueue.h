@@ -57,6 +57,11 @@ class DownloadQueue : public QList< NzbFile* >{
          */
         static QMutex& mutex(){ return m_mutex; }
 
+        /**
+         * Debug function. Prints the content of the queue via kDebug();
+         */
+        static void dumpQueue();
+
     protected:
         DownloadQueue();
         ~DownloadQueue();

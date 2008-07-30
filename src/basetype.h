@@ -51,7 +51,8 @@ class BaseType
          * @param state
          *      Optional state parameter. The default is checked.
          */
-        BaseType( Qt::CheckState state = Qt::Checked ) : m_state( state ){};
+        BaseType( Qt::CheckState state = Qt::Checked ) : m_state( state ){}
+        BaseType( const BaseType &base ) : m_state( base.state() ){}
 
         virtual ~BaseType(){};
 
@@ -86,6 +87,11 @@ class BaseType
          * \see NzbFile, File, Segment
          */
         virtual const QString type() const = 0;
+
+        /**
+         * Assigns \p other to this object and returns a reference.
+         */
+        BaseType& operator=( const BaseType &other ){ m_state = other.m_state; return *this; }
 
     private:
         Qt::CheckState m_state;
