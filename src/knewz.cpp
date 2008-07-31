@@ -36,6 +36,7 @@
 #include "knewz.h"
 #include "knewzmodel.h"
 #include "knewzview.h"
+#include "modeltest.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 #include "nzbreader.h"
@@ -46,6 +47,7 @@ KNewz::KNewz( QWidget *parent )
     : KXmlGuiWindow( parent ),
       view( new KNewzView( this ) ),
       model( new KNewzModel( view ) ),
+      modeltest( new ModelTest( model, this ) ),
       downloadqueue( DownloadQueue::Instance() ),
       ok_to_close( false )
 {
@@ -53,7 +55,7 @@ KNewz::KNewz( QWidget *parent )
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     setCentralWidget( view );
     setupActions();
-    setupGUI();
+    setupGUI( /*ToolBar | Keys | StatusBar*/ );
     setAutoSaveSettings();
     config = KGlobal::config();
     KConfigGroup configGroup( config, "RecentFiles" );
@@ -71,6 +73,7 @@ KNewz::~KNewz()
     //Save the recent files entries
     KConfigGroup configGroup( config, "RecentFiles" );
     recentFiles->saveEntries( configGroup );
+    delete modeltest;
     delete model;
     delete view;
 }
@@ -90,19 +93,24 @@ void KNewz::openRecentFile( const KUrl &url )
         if( nzbDialog->result() == QDialog::Accepted && nzbDialog->files().size() > 0 ){
             downloadqueue->mutex().lock();
 //             int row = downloadqueue->size();
+//             int count = nzbDialog->files().size();
+//             model->insertRows( row, count );
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
                 downloadqueue->append( nzbFile );
+//                 QModelIndex parent = model->index( row, 0 );
+//                 model->insertRows( 0, nzbFile->size(), parent );
+//                 model->setData( parent, QVariant::fromValue( *nzbFile ) );
+//                 row++;
             }
 
-//             model->insertRows( QModelIndex(), row, downloadqueue->size() - 1 );
             downloadqueue->mutex().unlock();
             model->changed();
         }
     }
 }
 
-void KNewz::optionsPreferences()
+void KNewz::optionsConfigure()
 {
     if ( KConfigDialog::showDialog( "settings" ) )  {
         return;
@@ -112,8 +120,8 @@ void KNewz::optionsPreferences()
     QWidget *generalSettingsDlg = new QWidget();
     new ServerWidget( generalSettingsDlg );
     dialog->addPage( generalSettingsDlg, i18n( "Server" ), "preferences-system-network" );
-    connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( settingsChanged() ) );
     dialog->setAttribute( Qt::WA_DeleteOnClose );
+    connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( settingsChanged() ) );
     dialog->show();
 }
 
@@ -128,7 +136,7 @@ void KNewz::setupActions()
     openFiles = KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
     KStandardAction::quit( this, SLOT( exit() ), actionCollection() );
-    preferences = KStandardAction::preferences( this, SLOT( optionsPreferences() ), actionCollection() );
+    preferences = KStandardAction::preferences( this, SLOT( optionsConfigure() ), actionCollection() );
 }
 
 void KNewz::showFileOpenDialog( const QStringList &files )
@@ -160,7 +168,7 @@ void KNewz::showFileOpenDialog( const QStringList &files )
         if( nzbDialog->result() == QDialog::Accepted ){
             int count = nzbDialog->files().size();
 
-            if( count == 0 )
+            if( count < 1 )
                 return;
 
             downloadqueue->mutex().lock();
@@ -169,7 +177,10 @@ void KNewz::showFileOpenDialog( const QStringList &files )
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
 //                 downloadqueue->append( nzbFile );
-                model->setData( model->index( row++, 0 ), QVariant::fromValue( *nzbFile ) );
+                QModelIndex parent = model->index( row, 0 );
+                model->insertRows( 0, nzbFile->size(), parent );
+                model->setData( parent, QVariant::fromValue( *nzbFile ) );
+                row++;
             }
 
             downloadqueue->mutex().unlock();

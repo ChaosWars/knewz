@@ -67,7 +67,6 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     const QModelIndex parentIndex = index.parent();
 
     if( !parentIndex.isValid() ){
-//         kDebug() << "index.row():" << index.row();
 
         switch( index.column() ){
             case 0:
@@ -88,7 +87,6 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
         }
 
     }else{
-//         kDebug() << "parentIndex.row():" << parentIndex.row();
         switch( index.column() ){
             case 0:
                 break;
@@ -191,9 +189,8 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
 
 Qt::ItemFlags KNewzModel::flags( const QModelIndex &index ) const
 {
-    if ( index.isValid() ){
+    if ( index.isValid() )
         return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | QAbstractItemModel::flags( index );
-    }
 
     return Qt::ItemIsDropEnabled | QAbstractItemModel::flags( index );
 }
@@ -254,9 +251,6 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
 
 bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
 {
-    kDebug() << "row:" << row;
-    kDebug() << "count:" << count;
-    kDebug() << "parent:" << parent;
     if( row < 0 )
         return false;
 
@@ -266,6 +260,9 @@ bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
     if( parent.parent().isValid() )
         return false;
 
+//     kDebug() << "row:" << row;
+//     kDebug() << "count:" << count;
+//     kDebug() << "parent:" << parent;
     beginInsertRows( parent, row, row + count - 1 );
 
     if( parent.isValid() ){
@@ -384,12 +381,13 @@ bool KNewzModel::setData( const QModelIndex& index, const QVariant& value, int r
         return false;
 
     BaseType *base = static_cast<BaseType*>( index.internalPointer() );
-    kDebug() << base->type();
 
     if( value.canConvert<NzbFile>() && ( base->type() == "NzbFile" ) ){
         NzbFile data = value.value<NzbFile>();
         *(*downloadqueue)[index.row()] = data;
-        QModelIndex parent = this->index( index.row(), 0 );
+        createIndex( index.row(), 0, &data );
+
+//         QModelIndex parent = this->index( index.row(), 0 );
 //         emit dataChanged( parent, this->index( index.row(), columnCount( index ) ) );
 //         emit dataChanged( this->index( 0, 0, parent ), this->index( rowCount( parent ), columnCount( parent ), parent ) );
         return true;
