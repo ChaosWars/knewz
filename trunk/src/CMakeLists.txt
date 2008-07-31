@@ -7,6 +7,7 @@ SET( SRC downloadqueue.cpp
         main.cpp
         knewzmodel.cpp
         knewzview.cpp
+	modeltest.cpp
         nzbfile.cpp
         nzbhandler.cpp
 #         nzbmimedata.cpp

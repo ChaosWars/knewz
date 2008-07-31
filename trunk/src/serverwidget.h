@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- * @class Segment segment.h
+ * @class ServerWidget serverwidget.h
  */
 #ifndef SERVERWIDGET_H
 #define SERVERWIDGET_H

@@ -43,7 +43,6 @@ void KNewzView::dragEnterEvent( QDragEnterEvent *event )
 {
     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
         event->acceptProposedAction();
-        QTreeView::dragEnterEvent( event );
     }
 }
 
@@ -51,7 +50,6 @@ void KNewzView::dragMoveEvent( QDragMoveEvent *event )
 {
     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
         event->acceptProposedAction();
-        QTreeView::dragMoveEvent( event );
     }
 }
 

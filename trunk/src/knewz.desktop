@@ -1,5 +1,5 @@
 [Desktop Entry]
-Categories=Qt;KDE;Application;Network;
+Categories=Qt;KDE;Network;FileTransfer;
 DocPath=knewz/index.html
 Exec=knewz %i %m -caption "%c"
 GenericName=NZB Download Program
@@ -8,7 +8,7 @@ MimeType=application/x-nzb;
 Name=KNewz
 Terminal=false
 Type=Application
-X-DBUS-ServiceName=com.googlecode.KNewz
+X-DBUS-ServiceName=com.googlecode.knewz
 X-DBUS-ServiceType=Unique
 X-DocPath=knewz/index.html
 X-KDE-StartupNotify=true

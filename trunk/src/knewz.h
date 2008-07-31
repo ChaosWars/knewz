@@ -37,6 +37,7 @@ class KNewzModel;
 class KSystemTrayIcon;
 class QTreeView;
 class DownloadQueue;
+class ModelTest;
 /**
  * \brief The main window of the program.
  *
@@ -59,7 +60,7 @@ class KNewz : public KXmlGuiWindow
 
     private Q_SLOTS:
         void openRecentFile( const KUrl &url );
-        void optionsPreferences();
+        void optionsConfigure();
         void settingsChanged();
         void urlOpen();
         void exit();
@@ -70,6 +71,7 @@ class KNewz : public KXmlGuiWindow
     private:
         QTreeView *view;
         KNewzModel *model;
+        ModelTest *modeltest;
         DownloadQueue *downloadqueue;
         KSharedConfigPtr config;
         KSystemTrayIcon *trayIcon;
