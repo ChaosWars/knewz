@@ -359,7 +359,7 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
 
 int KNewzModel::rowCount( const QModelIndex &parent ) const
 {
-    if( parent.column() > 4 )
+    if( parent.column() > 0 )
         return 0;
 
     if ( !parent.isValid() )
