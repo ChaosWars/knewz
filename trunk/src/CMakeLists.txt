@@ -1,21 +1,22 @@
 INCLUDE_DIRECTORIES( ${KDE4_INCLUDES} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 INCLUDE( DBusMacros )
 INCLUDE( UsePkgConfig )
-SET( SRC downloadqueue.cpp
-        file.cpp
-        knewz.cpp
-        main.cpp
-        knewzmodel.cpp
-        knewzview.cpp
-	modeltest.cpp
-        nzbfile.cpp
-        nzbhandler.cpp
+SET( SRC basemodel.cpp
+         downloadqueue.cpp
+         file.cpp
+         knewz.cpp
+         main.cpp
+         knewzmodel.cpp
+         knewzview.cpp
+         modeltest.cpp
+         nzbfile.cpp
+         nzbhandler.cpp
 #         nzbmimedata.cpp
-        nzbreader.cpp
-        nzbmodel.cpp
-        nzbdialog.cpp
-        segment.cpp
-        serverwidget.cpp )
+         nzbreader.cpp
+         nzbmodel.cpp
+         nzbdialog.cpp
+         segment.cpp
+         serverwidget.cpp )
 # SET( DBUS_SERVICE_SRC org.kde.knewz.service.in )
 # PKGCONFIG_GETVAR( dbus-1 session_bus_services_dir dbus_service_file_install_dir )
 KDE4_ADD_UI_FILES( SRC serversettings.ui )

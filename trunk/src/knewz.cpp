@@ -90,22 +90,26 @@ void KNewz::openRecentFile( const KUrl &url )
         nzbDialog = new NzbDialog( this, nzbFiles );
         nzbDialog->exec();
 
-        if( nzbDialog->result() == QDialog::Accepted && nzbDialog->files().size() > 0 ){
+        if( nzbDialog->result() == QDialog::Accepted ){
             downloadqueue->mutex().lock();
-//             int row = downloadqueue->size();
-//             int count = nzbDialog->files().size();
-//             model->insertRows( row, count );
+            int row = downloadqueue->size();
+            int count = nzbDialog->files().size();
+
+            if( count < 1 )
+                return;
+
+            model->insertRows( row, count );
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
-                downloadqueue->append( nzbFile );
-//                 QModelIndex parent = model->index( row, 0 );
-//                 model->insertRows( 0, nzbFile->size(), parent );
-//                 model->setData( parent, QVariant::fromValue( *nzbFile ) );
-//                 row++;
+//                 downloadqueue->append( nzbFile );
+                QModelIndex parent = model->index( row, 0 );
+                model->insertRows( 0, nzbFile->size(), parent );
+                model->setData( parent, QVariant::fromValue( *nzbFile ) );
+                row++;
             }
 
             downloadqueue->mutex().unlock();
-            model->changed();
+//             model->changed();
         }
     }
 }

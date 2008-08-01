@@ -24,12 +24,9 @@
 #ifndef _MODELTESTMODEL_H_
 #define _MODELTESTMODEL_H_
 
-#include <QAbstractItemModel>
-#include <QStringList>
+#include "basemodel.h"
 
-class QTreeView;
 class BaseType;
-class DownloadQueue;
 class NzbFile;
 
 /**
@@ -40,7 +37,7 @@ class NzbFile;
  *
  * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class NzbModel : public QAbstractItemModel
+class NzbModel : public BaseModel
 {
     Q_OBJECT
 
@@ -55,12 +52,11 @@ class NzbModel : public QAbstractItemModel
          *      The NZB files of which the content should be displayed.
          */
         NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles );
-        ~NzbModel();
+        ~NzbModel(){};
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-        virtual QVariant headerData( int section, Qt::Orientation orientation,
-                             int role = Qt::DisplayRole ) const;
+//         virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
         virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
         virtual QModelIndex parent( const QModelIndex &index ) const;
         virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -78,7 +74,7 @@ class NzbModel : public QAbstractItemModel
          * @param index
          *      The item that was clicked.
          */
-        void clicked( const QModelIndex &index );
+//         void clicked( const QModelIndex &index );
 
         /**
          * Check all items.
@@ -115,11 +111,10 @@ class NzbModel : public QAbstractItemModel
         const QList< NzbFile* >& files(){ return m_files; }
 
     private:
-        QTreeView *view;
-        QStringList rootItem;
+//         QStringList rootItem;
         QList< NzbFile* > m_nzbFiles;
         QList< NzbFile* > m_files;
-        void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
+//         void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
 };
 
 #endif
