@@ -27,14 +27,17 @@
 #include <QPushButton>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include "modeltest.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 
 NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
-    : QDialog( parent ), view( new QTreeView( this ) )
+    : QDialog( parent ),
+      view( new QTreeView( this ) ),
+      model( new NzbModel( view, nzbFiles ) ),
+      modeltest( new ModelTest( model ) )
 {
     // Set up the model/view
-    model = new NzbModel( view, nzbFiles );
     view->setSelectionMode( QAbstractItemView::ExtendedSelection );
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
@@ -85,6 +88,7 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
 NzbDialog::~NzbDialog()
 {
     delete model;
+    delete modeltest;
     delete view;
     delete selectButtonGroup;
     delete defaultButtonGroup;

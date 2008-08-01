@@ -27,13 +27,13 @@ NzbFile::NzbFile( const QString &filename, quint32 bytes )
 {
 }
 
-// NzbFile::NzbFile( const NzbFile &nzbFile )
-//     : QList<File*>( nzbFile ),
-//       BaseType( nzbFile ),
-//       m_filename( nzbFile.filename() ),
-//       m_bytes( nzbFile.bytes() )
-// {
-// }
+NzbFile::NzbFile( const NzbFile &other )
+    : QList<File*>( other ),
+      BaseType( other )
+{
+    m_filename = other.m_filename;
+    m_bytes = other.m_bytes;
+}
 
 NzbFile::~NzbFile()
 {
@@ -48,17 +48,21 @@ void NzbFile::dumpQueue()
     }
 }
 
-// NzbFile& NzbFile::operator=( const NzbFile &other )
-// {
-//     if( this != &other ){
-//         m_filename = other.m_filename;
-//         m_bytes = other.m_bytes;
-//         BaseType::operator=( other );
-//         QList<File*>::operator=( other );
-//     }
-// 
-//     return *this;
-// }
+NzbFile& NzbFile::operator=( const NzbFile &other )
+{
+    if( this != &other ){
+        m_filename = other.m_filename;
+        m_bytes = other.m_bytes;
+        BaseType::operator=( other );
+        QList<File*>::operator=( other );
+
+        for( int i = 0, size = this->size(); i < size; i++ ){
+            (*this)[i]->m_parent = this;
+        }
+    }
+
+    return *this;
+}
 
 // QDataStream& operator>>( QDataStream &in, NzbFile &data )
 // {

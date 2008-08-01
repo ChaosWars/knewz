@@ -68,7 +68,7 @@ class File : public QList<Segment*>, public BaseType
          * @param file
          *      The file to construct a copy of.
          */
-//         File( const File &file );
+        File( const File &other );
         ~File();
 
         /**
@@ -151,7 +151,9 @@ class File : public QList<Segment*>, public BaseType
          */
         const QString type() const{ return QString( "File" ); }
 
-//         File& operator=( const File &other );
+        File& operator=( const File &other );
+
+        friend class NzbFile;
 
         /* QVariant stream operators */
 //         friend QDataStream& operator>>( QDataStream &in, File &data );
