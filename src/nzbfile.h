@@ -49,7 +49,7 @@ class NzbFile : public QList<File*>, public BaseType
          */
         NzbFile( const QString &filename = QString(), quint32 bytes = 0 );
 
-//         NzbFile( const NzbFile &nzbFile );
+        NzbFile( const NzbFile &other );
         ~NzbFile();
 
         /**
@@ -94,7 +94,7 @@ class NzbFile : public QList<File*>, public BaseType
          */
         const QString type() const{ return QString( "NzbFile" ); }
 
-//         NzbFile& operator=( const NzbFile &other );
+        NzbFile& operator=( const NzbFile &other );
 
         /* QVariant stream operators */
 //         friend QDataStream& operator>>( QDataStream &in, NzbFile &data );

@@ -55,7 +55,7 @@ KNewz::KNewz( QWidget *parent )
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     setCentralWidget( view );
     setupActions();
-    setupGUI( /*ToolBar | Keys | StatusBar*/ );
+    setupGUI();
     setAutoSaveSettings();
     config = KGlobal::config();
     KConfigGroup configGroup( config, "RecentFiles" );
@@ -176,7 +176,6 @@ void KNewz::showFileOpenDialog( const QStringList &files )
             model->insertRows( row, count );
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
-//                 downloadqueue->append( nzbFile );
                 QModelIndex parent = model->index( row, 0 );
                 model->insertRows( 0, nzbFile->size(), parent );
                 model->setData( parent, QVariant::fromValue( *nzbFile ) );
@@ -184,7 +183,6 @@ void KNewz::showFileOpenDialog( const QStringList &files )
             }
 
             downloadqueue->mutex().unlock();
-//             model->changed();
         }
     }
 

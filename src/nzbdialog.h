@@ -27,6 +27,7 @@
 #include <QDialog>
 #include "nzbmodel.h"
 
+class ModelTest;
 class NzbFile;
 class QTreeView;
 class QVBoxLayout;
@@ -70,6 +71,7 @@ class NzbDialog : public QDialog
     private:
         QTreeView *view;
         NzbModel *model;
+        ModelTest *modeltest;
         QVBoxLayout *layout;
         QHBoxLayout *buttonLayout;
         QButtonGroup *defaultButtonGroup;

@@ -110,7 +110,7 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int /*row*/, int column, const QModelIndex &parent )
 {
     if( column > 4 )
         return false;
@@ -268,13 +268,25 @@ bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
     if( parent.isValid() ){
 
         for( int i = 0; i < count; i++ ){
-            downloadqueue->at( parent.row() )->insert( row, new File() );
+            NzbFile *nzbFile = downloadqueue->at( parent.row() );
+            File *file = new File();
+            file->setParent( nzbFile );
+
+            if( row >= nzbFile->size() )
+                nzbFile->append( file );
+            else
+                nzbFile->insert( row, file );
         }
 
     }else{
 
+        bool append = ( row >= downloadqueue->size() );
+
         for( int i = 0; i < count; i++ ){
-            downloadqueue->insert( row, new NzbFile() );
+            if( !append )
+                downloadqueue->insert( row, new NzbFile() );
+            else
+                downloadqueue->append( new NzbFile() );
         }
 
     }
@@ -385,8 +397,6 @@ bool KNewzModel::setData( const QModelIndex& index, const QVariant& value, int r
     if( value.canConvert<NzbFile>() && ( base->type() == "NzbFile" ) ){
         NzbFile data = value.value<NzbFile>();
         *(*downloadqueue)[index.row()] = data;
-        createIndex( index.row(), 0, &data );
-
 //         QModelIndex parent = this->index( index.row(), 0 );
 //         emit dataChanged( parent, this->index( index.row(), columnCount( index ) ) );
 //         emit dataChanged( this->index( 0, 0, parent ), this->index( rowCount( parent ), columnCount( parent ), parent ) );

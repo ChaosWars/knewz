@@ -51,7 +51,7 @@ int main( int argc, char **argv )
     KUniqueApplication app;
     qRegisterMetaType<NzbFile>( "NzbFile" );
     qRegisterMetaType<File>( "File" );
-//     qRegisterMetaType<Segment>( "Segment" );
+    qRegisterMetaType<Segment>( "Segment" );
 //     qRegisterMetaTypeStreamOperators<NzbFile>( "NzbFile" );
 //     qRegisterMetaTypeStreamOperators<File>( "File" );
 //     qRegisterMetaTypeStreamOperators<Segment>( "Segment" );

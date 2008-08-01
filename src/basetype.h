@@ -24,6 +24,7 @@
 #ifndef BASETYPE_H
 #define BASETYPE_H
 
+#include <KDE/KDebug>
 #include <QtCore>
 
 /**
@@ -91,7 +92,15 @@ class BaseType
         /**
          * Assigns \p other to this object and returns a reference.
          */
-        BaseType& operator=( const BaseType &other ){ m_state = other.m_state; return *this; }
+        BaseType& operator=( const BaseType &other )
+        {
+            if( this != & other )
+                m_state = other.m_state;
+            return *this;
+        }
+
+        friend class NzbFile;
+        friend class File;
 
     private:
         Qt::CheckState m_state;
