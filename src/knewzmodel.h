@@ -24,10 +24,8 @@
 #ifndef KNEWZMODEL_H
 #define KNEWZMODEL_H
 
-#include <QAbstractItemModel>
-#include <QStringList>
+#include "basemodel.h"
 
-class QTreeView;
 class DownloadQueue;
 class NzbFile;
 
@@ -42,7 +40,7 @@ class NzbFile;
  *
  *  \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class KNewzModel : public QAbstractItemModel
+class KNewzModel : public BaseModel
 {
     Q_OBJECT
 
@@ -55,19 +53,12 @@ class KNewzModel : public QAbstractItemModel
          *      The tree view parent of the model.
          */
         KNewzModel( QTreeView *parent );
-        ~KNewzModel();
-
-        /**
-         * Called when information has been added to or removed from the model.
-         * Emits the layoutChanged() signal.
-         */
-        void changed();
+        ~KNewzModel(){};
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
         virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-        virtual QVariant headerData( int section, Qt::Orientation orientation,
-                             int role = Qt::DisplayRole ) const;
+//         virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
         virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 //         QMap<int, QVariant> itemData( const QModelIndex &index ) const;
         virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
@@ -79,13 +70,12 @@ class KNewzModel : public QAbstractItemModel
         virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
         virtual Qt::DropActions supportedDropActions() const;
 
-    public Q_SLOTS:
-        void clicked( const QModelIndex &index );
+//     public Q_SLOTS:
+//         void clicked( const QModelIndex &index );
 
     private:
-        QTreeView *view;
         DownloadQueue *downloadqueue;
-        QStringList rootItem;
+//         QStringList rootItem;
 };
 
 #endif

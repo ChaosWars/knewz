@@ -27,16 +27,10 @@
 #include "nzbmodel.h"
 
 NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles )
-    : QAbstractItemModel( parent ),
-      view( parent ),
+    : BaseModel( parent ),
       m_nzbFiles( nzbFiles )
 {
     rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" );
-    connect( parent, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( clicked( const QModelIndex& ) ) );
-}
-
-NzbModel::~NzbModel()
-{
 }
 
 int NzbModel::columnCount( const QModelIndex &/*parent*/ ) const
@@ -106,13 +100,13 @@ Qt::ItemFlags NzbModel::flags( const QModelIndex &index ) const
     return defaultFlags;
 }
 
-QVariant NzbModel::headerData( int section, Qt::Orientation orientation, int role ) const
-{
-    if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
-        return rootItem.at( section );
-
-    return QVariant();
-}
+// QVariant NzbModel::headerData( int section, Qt::Orientation orientation, int role ) const
+// {
+//     if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
+//         return rootItem.at( section );
+// 
+//     return QVariant();
+// }
 
 QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) const
 {
@@ -201,15 +195,15 @@ void NzbModel::trimNzbFiles()
     }
 }
 
-void NzbModel::clicked( const QModelIndex& index )
-{
-    if( !( index.column() == 0 ) )
-        return;
-
-    BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-    Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
-    changeCheckState( index, checkstate, base );
-}
+// void NzbModel::clicked( const QModelIndex& index )
+// {
+//     if( !( index.column() == 0 ) )
+//         return;
+// 
+//     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+//     Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
+//     changeCheckState( index, checkstate, base );
+// }
 
 void NzbModel::checkAll()
 {
@@ -265,36 +259,36 @@ void NzbModel::invertSelection()
 {
 }
 
-void NzbModel::changeCheckState( const QModelIndex &idx, Qt::CheckState state, BaseType *base )
-{
-    if( !base )
-        base = static_cast< BaseType* >( idx.internalPointer() );
-
-    base->setState( state );
-    view->update( idx );
-
-    if( base->type() == "NzbFile" ){
-        NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
-
-        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-            nzbFile->at( i )->setState( state );
-            view->update( index( i, 0, idx ) );
-        }
-    }else{
-        NzbFile *nzbFile = static_cast< NzbFile* >( idx.parent().internalPointer() );
-        Qt::CheckState m_state = nzbFile->first()->state();
-        int counter = 0;
-
-        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-
-            if( nzbFile->at( i )->state() == m_state  ){
-                counter++;
-            }
-        }
-
-        counter == nzbFile->size() ? nzbFile->setState( m_state ) : nzbFile->setState( Qt::PartiallyChecked );
-        view->update( idx.parent() );
-    }
-}
+// void NzbModel::changeCheckState( const QModelIndex &idx, Qt::CheckState state, BaseType *base )
+// {
+//     if( !base )
+//         base = static_cast< BaseType* >( idx.internalPointer() );
+// 
+//     base->setState( state );
+//     view->update( idx );
+// 
+//     if( base->type() == "NzbFile" ){
+//         NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
+// 
+//         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+//             nzbFile->at( i )->setState( state );
+//             view->update( index( i, 0, idx ) );
+//         }
+//     }else{
+//         NzbFile *nzbFile = static_cast< NzbFile* >( idx.parent().internalPointer() );
+//         Qt::CheckState m_state = nzbFile->first()->state();
+//         int counter = 0;
+// 
+//         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+// 
+//             if( nzbFile->at( i )->state() == m_state  ){
+//                 counter++;
+//             }
+//         }
+// 
+//         counter == nzbFile->size() ? nzbFile->setState( m_state ) : nzbFile->setState( Qt::PartiallyChecked );
+//         view->update( idx.parent() );
+//     }
+// }
 
 #include "nzbmodel.moc"
