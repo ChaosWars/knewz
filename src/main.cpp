@@ -28,15 +28,16 @@
 #include "nzbfile.h"
 #include "segment.h"
 
-static const char description[] = I18N_NOOP( "A program for downloading the contents of NZB files from newsgroups for KDE" );
+static const char description[] = I18N_NOOP( "Binary newsgroup program for KDE" );
 static const char version[] = "1.0";
 
 int main( int argc, char **argv )
 {
     KCmdLineOptions options;
     options.add( "+files", ki18n( "NZB files to open. You can list multiple files here." ) );
-    KAboutData about( "knewz", QByteArray(), ki18n( "KNewz" ), version, ki18n( description ), KAboutData::License_GPL,
-                      ki18n( "(C) 2007 Lawrence Lee" ), KLocalizedString(), 0, "http://code.google.com/p/knewz/issues/list" );
+    KAboutData about( "knewz", "knewz", ki18n( "KNewz" ), version, ki18n( description ), KAboutData::License_GPL,
+                      ki18n( "Copyright (c) 2008 Lawrence Lee" ), ki18n( "Application for downloading the contents of NZB files" ),
+                      "http://knewz.googlecode.com", "http://code.google.com/p/knewz/issues/list" );
     about.addAuthor( ki18n( "Lawrence Lee" ), ki18n( "Lead programmer" ), "valheru.ashen.shugar@gmail.com", "http://knewz.googlecode.com" );
     KCmdLineArgs::init( argc, argv, &about );
     KCmdLineArgs::addCmdLineOptions( options );

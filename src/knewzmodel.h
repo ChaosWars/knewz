@@ -53,15 +53,32 @@ class KNewzModel : public BaseModel
          *      The tree view parent of the model.
          */
         KNewzModel( QTreeView *parent );
-        ~KNewzModel(){};
+        virtual ~KNewzModel(){};
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
         virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-//         virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
         virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 //         QMap<int, QVariant> itemData( const QModelIndex &index ) const;
         virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+        /**
+         * Insert rows into a top level item. This both inserts a number of rows and sets their data.
+         * @param parent
+         *      The parent to add the children to. The parent must be valid and must be in column 0, ie.
+         *      parent.column() must return 0.
+         * @param nzbFile
+         *      The nzbFile which contains the data for the children.
+         * @param row
+         *      This parameter is the row at which to start inserting the children. If you call this function
+         *      immediately after adding a top level item with that item as \p parent, then just leave the
+         *      value of this variable as 0. The only time you will want to set this variable is when you are
+         *      adding children to a top level item that already has children. In practice you will only set
+         *      this variable during internal drag and drop operations.
+         * @return
+         *      \c false if \p parent was not valid or if parent.column() was larger than 0.
+         */
+        virtual bool insertChildren( const QModelIndex &parent, const NzbFile &nzbFile, int row = 0 );
 //         virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
         virtual QStringList mimeTypes() const;
         virtual QModelIndex parent( const QModelIndex &index ) const;
@@ -70,12 +87,8 @@ class KNewzModel : public BaseModel
         virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
         virtual Qt::DropActions supportedDropActions() const;
 
-//     public Q_SLOTS:
-//         void clicked( const QModelIndex &index );
-
     private:
         DownloadQueue *downloadqueue;
-//         QStringList rootItem;
 };
 
 #endif

@@ -47,12 +47,19 @@ class BaseModel : public QAbstractItemModel
         virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
     protected Q_SLOTS:
-        void clicked( const QModelIndex &index );
+
+        /**
+         * Slot for interacting with the clicked item.
+         *
+         * @param index
+         *      The item that was clicked.
+         */
+        virtual void clicked( const QModelIndex &index );
 
     protected:
         QStringList rootItem;
         QTreeView *view;
-        void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
+        virtual void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
 
 };
 
