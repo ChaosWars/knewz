@@ -101,9 +101,6 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
 
 bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent )
 {
-//     if( column > 4 )
-//         return false;
-
     if( action == Qt::IgnoreAction )
         return true;
 
@@ -148,19 +145,6 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                     setData( idx, QVariant::fromValue( *nzbFile ) );
                     m_row++;
                 }
-//                 insertRows( m_row, nzbFiles.size() );
-
-//                 foreach( NzbFile *nzbFile, nzbFiles ){
-//                     QModelIndex m_parent = index( m_row, 0 );
-//                     insertChildren( m_parent, *nzbFile );
-//                     insertRows( 0, nzbFile->size() );
-//                     setData( parent, QVariant::fromValue( *nzbFile ) );
-//                     m_row++;
-//                 }
-//                 beginInsertRows( QModelIndex(), parentRow, parentRow + nzbFiles.size() - 1 );
-//                 foreach( NzbFile *nzbFile, nzbFiles ){
-//                     downloadqueue->insert( parentRow++, nzbFile );
-//                 }
 
             }else{
                 /* Top level drop */
@@ -196,14 +180,6 @@ Qt::ItemFlags KNewzModel::flags( const QModelIndex &index ) const
 
     return Qt::ItemIsDropEnabled | QAbstractItemModel::flags( index );
 }
-
-// QVariant KNewzModel::headerData( int section, Qt::Orientation orientation, int role ) const
-// {
-//     if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
-//         return rootItem.at( section );
-// 
-//     return QVariant();
-// }
 
 QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) const
 {
