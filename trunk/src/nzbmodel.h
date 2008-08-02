@@ -52,11 +52,10 @@ class NzbModel : public BaseModel
          *      The NZB files of which the content should be displayed.
          */
         NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles );
-        ~NzbModel(){};
+        virtual ~NzbModel(){};
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-//         virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
         virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
         virtual QModelIndex parent( const QModelIndex &index ) const;
         virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -67,14 +66,6 @@ class NzbModel : public BaseModel
         void trimNzbFiles();
 
     public Q_SLOTS:
-
-        /**
-         * Slot for interacting with the clicked item.
-         *
-         * @param index
-         *      The item that was clicked.
-         */
-//         void clicked( const QModelIndex &index );
 
         /**
          * Check all items.

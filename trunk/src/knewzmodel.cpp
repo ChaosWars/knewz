@@ -99,10 +99,10 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int /*row*/, int column, const QModelIndex &parent )
+bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent )
 {
-    if( column > 4 )
-        return false;
+//     if( column > 4 )
+//         return false;
 
     if( action == Qt::IgnoreAction )
         return true;
@@ -139,29 +139,42 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
             downloadqueue->mutex().lock();
             if( parent.isValid() ){
 
-                int parentRow;
-                if( parent.parent().isValid() ){
-                    parentRow = parent.parent().row();
-                }else{
-                    parentRow = parent.row();
-                }
+                /* We only want to add stuff to the top level if we are dropping NZB files */
+                int m_row = parent.parent().isValid() ? parent.parent().row() : parent.row();
+                insertRows( m_row, nzbFiles.size() );
 
-                beginInsertRows( QModelIndex(), parentRow, parentRow + nzbFiles.size() - 1 );
                 foreach( NzbFile *nzbFile, nzbFiles ){
-                    downloadqueue->insert( parentRow++, nzbFile );
+                    QModelIndex idx = index( m_row, 0 );
+                    setData( idx, QVariant::fromValue( *nzbFile ) );
+                    m_row++;
                 }
+//                 insertRows( m_row, nzbFiles.size() );
+
+//                 foreach( NzbFile *nzbFile, nzbFiles ){
+//                     QModelIndex m_parent = index( m_row, 0 );
+//                     insertChildren( m_parent, *nzbFile );
+//                     insertRows( 0, nzbFile->size() );
+//                     setData( parent, QVariant::fromValue( *nzbFile ) );
+//                     m_row++;
+//                 }
+//                 beginInsertRows( QModelIndex(), parentRow, parentRow + nzbFiles.size() - 1 );
+//                 foreach( NzbFile *nzbFile, nzbFiles ){
+//                     downloadqueue->insert( parentRow++, nzbFile );
+//                 }
 
             }else{
-                int endRow = downloadqueue->size();
-                beginInsertRows( parent, endRow, endRow + nzbFiles.size() - 1 );
+                /* Top level drop */
+                int m_row = rowCount();
+                insertRows( m_row, nzbFiles.size() );
 
                 foreach( NzbFile *nzbFile, nzbFiles ){
-                    downloadqueue->append( nzbFile );
+                    QModelIndex idx = index( m_row, 0 );
+                    setData( idx, QVariant::fromValue( *nzbFile ) );
+                    m_row++;
                 }
 
             }
 
-            endInsertRows();
             downloadqueue->mutex().unlock();
         }
 
@@ -237,6 +250,24 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
 //     }
 //     return roles;
 // }
+
+bool KNewzModel::insertChildren( const QModelIndex &parent, const NzbFile &nzbFile, int row )
+{
+    if( !parent.isValid() )
+        return false;
+
+    if( parent.column() > 0 )
+        return false;
+
+    insertRows( row, nzbFile.size(), parent );
+
+    foreach( File *file, nzbFile ){;
+        setData( index( row, 0 ), QVariant::fromValue( *file ) );
+        row++;
+    }
+
+    return true;
+}
 
 bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
 {
@@ -380,15 +411,27 @@ bool KNewzModel::setData( const QModelIndex& index, const QVariant& value, int r
     BaseType *base = static_cast<BaseType*>( index.internalPointer() );
 
     if( value.canConvert<NzbFile>() && ( base->type() == "NzbFile" ) ){
-        NzbFile data = value.value<NzbFile>();
-        *(*downloadqueue)[index.row()] = data;
-        QModelIndex parent = this->index( index.row(), 0 );
-        emit dataChanged( parent, this->index( index.row(), columnCount( index ) ) );
-        emit dataChanged( this->index( 0, 0, parent ), this->index( rowCount( parent ), columnCount( parent ), parent ) );
+        NzbFile n_data = value.value<NzbFile>();
+        /* Wacky syntax is due to downloadqueue being a pointer to a list
+           of pointers to objects.
+           QList<NzbFile*>::operator[](int) returns NzbFile* in this case.
+           So (*downloadqueue) gives us an actual QList, then the []
+           operator gives us a NzbFile*, from which we obtain the NzbFile
+           which we need by using the * operand.
+        */
+        *(*downloadqueue)[index.row()] = n_data;
+        emit dataChanged( index, this->index( 0, columnCount(), index ) );
+        /* Note that since File is also a registered data type, all child rows have
+           now been inserted and had their data set as well */
         return true;
     }else if( value.canConvert<File>() && ( base->type() == "File" ) ){
         File data = value.value<File>();
-//         emit dataChanged(  );
+        QModelIndex parent = index.parent();
+        /* Same story here as above, except we need to go one step further and
+           get a File. I'm sure you can follow it by now :)
+         */
+        *(*(*downloadqueue)[parent.row()])[index.row()] = data;
+        emit dataChanged( this->index( 0, 0, parent ), this->index( rowCount( parent ), columnCount( parent ), parent ) );
         return true;
     }
 
@@ -399,41 +442,5 @@ Qt::DropActions KNewzModel::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
 }
-
-// void KNewzModel::clicked( const QModelIndex& index )
-// {
-//     if( index.column() > 0 )
-//         return;
-// 
-//     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-//     Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
-//     base->setState( checkstate );
-//     view->update( index );
-// 
-//     if( base->type() == "NzbFile" ){
-// 
-//         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
-// 
-//         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-//             nzbFile->at( i )->setState( checkstate );
-//             view->update( index.child( i, 0 ) );
-//         }
-// 
-//     }else{
-//         NzbFile *nzbFile = static_cast< NzbFile* >( index.parent().internalPointer() );
-//         Qt::CheckState state = nzbFile->first()->state();
-//         int counter = 0;
-// 
-//         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-//             if( nzbFile->at( i )->state() == state  ){
-//                 counter++;
-//             }
-//         }
-// 
-//         counter == nzbFile->size() ? nzbFile->setState( state ) : nzbFile->setState( Qt::PartiallyChecked );
-//         view->update( index.parent() );
-//     }
-// 
-// }
 
 #include "knewzmodel.moc"

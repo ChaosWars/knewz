@@ -92,7 +92,7 @@ void KNewz::openRecentFile( const KUrl &url )
 
         if( nzbDialog->result() == QDialog::Accepted ){
             downloadqueue->mutex().lock();
-            int row = downloadqueue->size();
+            int row = model->rowCount();
             int count = nzbDialog->files().size();
 
             if( count < 1 )
@@ -101,15 +101,12 @@ void KNewz::openRecentFile( const KUrl &url )
             model->insertRows( row, count );
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
-//                 downloadqueue->append( nzbFile );
-                QModelIndex parent = model->index( row, 0 );
-                model->insertRows( 0, nzbFile->size(), parent );
-                model->setData( parent, QVariant::fromValue( *nzbFile ) );
+                QModelIndex idx = model->index( row, 0 );
+                model->setData( idx, QVariant::fromValue( *nzbFile ) );
                 row++;
             }
 
             downloadqueue->mutex().unlock();
-//             model->changed();
         }
     }
 }
@@ -176,21 +173,18 @@ void KNewz::showFileOpenDialog( const QStringList &files )
                 return;
 
             downloadqueue->mutex().lock();
-            int row = downloadqueue->size();
+            int row = model->rowCount();
             model->insertRows( row, count );
 
             foreach( NzbFile *nzbFile, nzbDialog->files() ){
-                QModelIndex parent = model->index( row, 0 );
-                model->insertRows( 0, nzbFile->size(), parent );
-                model->setData( parent, QVariant::fromValue( *nzbFile ) );
+                QModelIndex idx = model->index( row, 0 );
+                model->setData( idx, QVariant::fromValue( *nzbFile ) );
                 row++;
             }
 
             downloadqueue->mutex().unlock();
         }
     }
-
-//     downloadqueue->dumpQueue();
 }
 
 void KNewz::urlOpen()
