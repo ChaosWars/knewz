@@ -102,10 +102,8 @@ class NzbModel : public BaseModel
         const QList< NzbFile* >& files(){ return m_files; }
 
     private:
-//         QStringList rootItem;
         QList< NzbFile* > m_nzbFiles;
         QList< NzbFile* > m_files;
-//         void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
 };
 
 #endif

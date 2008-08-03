@@ -18,7 +18,7 @@ MACRO(PKGCONFIG_GETVAR _package _var _output_variable)
 ENDMACRO(PKGCONFIG_GETVAR _package _var _output_variable)
 
 macro( DBUS_ADD_ACTIVATION_SERVICE _outfiles )
-#     PKGCONFIG_GETVAR( dbus-1 session_bus_services_dir _install_dir )
+    PKGCONFIG_GETVAR( dbus-1 session_bus_services_dir _install_dir )
     foreach( _current_file ${ARGN} )
         get_filename_component( _service_file ${_current_file} ABSOLUTE )
         string( REGEX REPLACE "\\.service.in$" ".service" _output_file ${_current_file} )

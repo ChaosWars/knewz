@@ -33,6 +33,7 @@
 #include <QHeaderView>
 #include <QMenu>
 #include "downloadqueue.h"
+#include "generalwidget.h"
 #include "knewz.h"
 #include "knewzmodel.h"
 #include "knewzview.h"
@@ -118,9 +119,12 @@ void KNewz::optionsConfigure()
     }
 
     KConfigDialog *dialog = new KConfigDialog( this, "settings", Settings::self() );
-    QWidget *generalSettingsDlg = new QWidget();
-    new ServerWidget( generalSettingsDlg );
-    dialog->addPage( generalSettingsDlg, i18n( "Server" ), "preferences-system-network" );
+    QWidget *generalSettings = new QWidget();
+    new GeneralWidget( generalSettings );
+    dialog->addPage( generalSettings, i18n( "General" ), "preferences-system-general" );
+    QWidget *serverSettings = new QWidget();
+    new ServerWidget( serverSettings );
+    dialog->addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );
     dialog->setAttribute( Qt::WA_DeleteOnClose );
     connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( settingsChanged() ) );
     dialog->show();
