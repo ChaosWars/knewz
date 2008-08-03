@@ -1,0 +1,71 @@
+<ui version="4.0" >
+ <class>GeneralSettings</class>
+ <widget class="QWidget" name="GeneralSettings" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>211</width>
+    <height>111</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>General Settings</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <item>
+    <widget class="QGroupBox" name="securitySettings" >
+     <property name="title" >
+      <string>Security Settings</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" >
+      <item>
+       <widget class="QRadioButton" name="kcfg_saveEncrypted" >
+        <property name="toolTip" >
+         <string>Save encrypted using KWallet</string>
+        </property>
+        <property name="whatsThis" >
+         <string>If this button is checked, the program will encrypt the server and login information using KWallet to save it securely</string>
+        </property>
+        <property name="text" >
+         <string>Save using KWallet</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="kcfg_saveUnencrypted" >
+        <property name="toolTip" >
+         <string>Save unencrypted in the programs configuration file</string>
+        </property>
+        <property name="whatsThis" >
+         <string>If this option is checked, the program will store the server and login information in the programs configuration file. This is insecure, and anyone with access to your home directory can read your login information.</string>
+        </property>
+        <property name="text" >
+         <string>Save in configuration file</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer" >
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>20</width>
+       <height>26</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

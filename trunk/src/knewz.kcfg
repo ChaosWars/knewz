@@ -4,7 +4,17 @@
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
   <kcfgfile name="knewzrc"/>
-  <group name="Preferences">
+  <group name="GeneralSettings">
+    <entry name="saveEncrypted" type="Bool">
+        <label>Save server and login information using KWallet</label>
+        <default>true</default>
+    </entry>
+    <entry name="saveUnencrypted" type="Bool">
+        <label>Save server and login information in the programs configuration file</label>
+        <default>false</default>
+    </entry>
+  </group>
+  <group name="ServerSettings">
     <entry name="server" type="String">
 	    <label>Server address</label>
     </entry>
