@@ -48,7 +48,6 @@
  * {
  *     ...
  *     knewzwallet = KNewzWallet::Instance();
- *     wallet = knewzwallet->wallet();
  *     ...
  * }
  *
@@ -122,6 +121,7 @@ class KNewzWallet : public QObject{
         static int m_ref;
         static KNewzWallet *m_instance;
         static KWallet::Wallet* m_wallet;
+        void initializeWallet();
 };
 
 #endif

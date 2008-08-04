@@ -26,13 +26,16 @@
 
 #include <KDE/KConfigDialog>
 
+class QShowEvent;
+class GeneralWidget;
+class ServerWidget;
 class KNewzSettings;
 class KNewzWallet;
 
 /**
  * @brief KConfigDialog for KNewz
  *
- * Overridden to provide for saving the server settings in KWallet.
+ * Overridden to provide for saving the login information in KWallet.
  * See the KDE documentation for KConfigDialog for member documentation.
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
@@ -45,9 +48,15 @@ class KNewzConfigDialog : public KConfigDialog
         KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config );
         ~KNewzConfigDialog();
 
+    protected:
+        void showEvent( QShowEvent *event );
+
     private:
+        GeneralWidget *generalWidget;
+        ServerWidget *serverWidget;
         KNewzWallet *knewzwallet;
         KNewzSettings *settings;
+        void setupWallet();
 
     private Q_SLOTS:
         void saveWalletSettings();

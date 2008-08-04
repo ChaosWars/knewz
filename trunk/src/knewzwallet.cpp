@@ -32,25 +32,13 @@ Wallet* KNewzWallet::m_wallet = NULL;
 
 KNewzWallet::KNewzWallet() : QObject()
 {
-    m_wallet = Wallet::openWallet( Wallet::LocalWallet(), -1 );
-    if( m_wallet ){
-        connect( m_wallet, SIGNAL( walletClosed() ), this, SIGNAL( walletClosed() ) );
-        connect( m_wallet, SIGNAL( folderUpdated(const QString& ) ), this, SIGNAL( folderUpdated(const QString& ) ) );
-        connect( m_wallet, SIGNAL( folderListUpdated() ), this, SIGNAL(folderListUpdated() ) );
-        connect( m_wallet, SIGNAL( folderRemoved( const QString& ) ), this, SIGNAL( folderRemoved( const QString& ) ) );
-        connect( m_wallet, SIGNAL( walletOpened( bool ) ), this, SIGNAL( walletOpened( bool ) ) );
-    }else{
-        KMessageBox::error( 0, i18n( "You either canceled the request, or the KWallet sustem is disabled." ),
-                            i18n( "Failed to open the KWallet system" ) );
-    }
-
+    initializeWallet();
 }
 
 KNewzWallet* KNewzWallet::Instance()
 {
     m_mutex.lock();
     m_ref++;
-    kDebug() << "m_ref:" << m_ref;
     m_mutex.unlock();
 
     if( !m_instance ){
@@ -69,7 +57,6 @@ void KNewzWallet::close()
 {
     QMutexLocker lock( &m_mutex );
     m_ref--;
-    kDebug() << "m_ref:" << m_ref;
 
     if( m_ref == 0 ){
         delete m_wallet;
@@ -79,8 +66,34 @@ void KNewzWallet::close()
 
 void KNewzWallet::open()
 {
-    if( !m_wallet->isOpen() ){
-        m_wallet = Wallet::openWallet( Wallet::LocalWallet(), -1 );
+    initializeWallet();
+}
+
+void KNewzWallet::initializeWallet()
+{
+    m_wallet = Wallet::openWallet( Wallet::LocalWallet(), 0 );
+    if( m_wallet ){
+
+        if( !m_wallet->hasFolder( "KNewz" ) ){
+
+            if( !m_wallet->createFolder( "KNewz" ) ){
+                KMessageBox::error( 0, i18n( "There was an error creating the folder for KNewz in KWallet.\nYour information was not saved. Resolve this problem first before trying to store your data using KWallet.\nIn the meanwhile, you can store your login data in the programs configuration file. Be warned though that anyone with access to your home directory can read this information." ), i18n( "Error creating KWallet folder" ) );
+            }else{
+                m_wallet->setFolder( "KNewz" );
+            }
+
+        }else{
+            m_wallet->setFolder( "KNewz" );
+        }
+
+        connect( m_wallet, SIGNAL( walletClosed() ), this, SIGNAL( walletClosed() ) );
+        connect( m_wallet, SIGNAL( folderUpdated(const QString& ) ), this, SIGNAL( folderUpdated(const QString& ) ) );
+        connect( m_wallet, SIGNAL( folderListUpdated() ), this, SIGNAL(folderListUpdated() ) );
+        connect( m_wallet, SIGNAL( folderRemoved( const QString& ) ), this, SIGNAL( folderRemoved( const QString& ) ) );
+        connect( m_wallet, SIGNAL( walletOpened( bool ) ), this, SIGNAL( walletOpened( bool ) ) );
+    }else{
+        KMessageBox::error( 0, i18n( "You either canceled the request, or the KWallet sustem is disabled." ),
+                            i18n( "Failed to open the KWallet system" ) );
     }
 }
 

@@ -35,18 +35,17 @@ KNewzConfigDialog::KNewzConfigDialog( QWidget *parent, const QString &name, KCon
     : KConfigDialog( parent, name, config ), knewzwallet( NULL )
 {
     QWidget *generalSettings = new QWidget();
-    new GeneralWidget( generalSettings );
+    generalWidget = new GeneralWidget( generalSettings );
     addPage( generalSettings, i18n( "General" ), "preferences-system-general" );
     QWidget *serverSettings = new QWidget();
-    new ServerWidget( serverSettings );
+    serverWidget = new ServerWidget( serverSettings );
     addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );
     setAttribute( Qt::WA_DeleteOnClose );
     settings = KNewzSettings::self();
     connect( this, SIGNAL( applyClicked() ), SLOT( saveWalletSettings() ) );
 
     if( settings->saveEncrypted() ){
-        knewzwallet = KNewzWallet::Instance();
-        connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
+        setupWallet();
     }
 }
 
@@ -60,15 +59,18 @@ void KNewzConfigDialog::saveWalletSettings()
 {
     if( settings->saveEncrypted() ){
 
+        if( !knewzwallet )
+            setupWallet();
+
         if( knewzwallet->isOpen() ){
+            knewzwallet->writeEntry( "username", QByteArray( KNewzSettings::username().toUtf8() ) );
+            knewzwallet->writePassword( "password", KNewzSettings::password() );
             KConfigGroup configGroup( KGlobal::config(), "ServerSettings" );
-            configGroup.deleteEntry( "server" );
-            configGroup.deleteEntry( "port" );
             configGroup.deleteEntry( "username" );
             configGroup.deleteEntry( "password" );
         }else{
             int result = KMessageBox::messageBox( this, KMessageBox::WarningYesNoCancel,
-                                                  i18n( "The application was unable to open KWallet.\nThis was probably because you canceled the transaction with the wallet. The application can save the server and login information in it's configuration file, but this is inadviseable from a security standpoint since the information will be saved as plain text, and anyone with access to your home directory can access this information.\nClick Yes to save the information, No to reenter the KWallet password or Cancel to return to the settings dialog." ) );
+                                                  i18n( "The application was unable to open KWallet.\nThis was probably because you canceled the transaction with the wallet. The application can save the login information in it's configuration file, but this is inadviseable from a security standpoint since the information will be saved as plain text, and anyone with access to your home directory can access this information.\nClick Yes to save the information, No to reenter the KWallet password or Cancel to return to the settings dialog." ) );
 
                                          switch( result ){
                                              case KMessageBox::Yes:
@@ -87,6 +89,28 @@ void KNewzConfigDialog::saveWalletSettings()
 
     }else{
     }
+}
+
+void KNewzConfigDialog::setupWallet()
+{
+    knewzwallet = KNewzWallet::Instance();
+    connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
+
+    if( !knewzwallet->isOpen() ){
+        knewzwallet->open();
+    }
+
+    QByteArray username;
+    knewzwallet->readEntry( "username", username );
+    serverWidget->kcfg_username->setText( username );
+    QString password;
+    knewzwallet->readPassword( "password", password );
+    serverWidget->kcfg_password->setText( password );
+    enableButtonApply( false );
+}
+
+void KNewzConfigDialog::showEvent( QShowEvent */*event*/ )
+{
 }
 
 void KNewzConfigDialog::walletClosed()
