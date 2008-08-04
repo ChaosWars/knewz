@@ -18,31 +18,33 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
- /**
-  * \class NzbDialog nzbdialog.h
-  */
+/**
+ * @class NzbDialog nzbdialog.h
+ */
 #ifndef NZBDIALOG_H
 #define NZBDIALOG_H
 
+#include <KDE/KConfig>
 #include <QDialog>
 #include "nzbmodel.h"
 
-class ModelTest;
-class NzbFile;
-class QTreeView;
-class QVBoxLayout;
+class KConfigGroup;
+class QButtonGroup;
 class QHBoxLayout;
 class QPushButton;
-class QButtonGroup;
+class QTreeView;
+class QVBoxLayout;
+class ModelTest;
+class NzbFile;
 
 /**
- * \brief Dialog for displaying the contents of an NZB file.
+ * @brief Dialog for displaying the contents of an NZB file.
  *
  * Displays the contents of multiple NZB files, providing the user with a
  * way to interact with the contents of the files in a manner that enables
  * him to choose which of the contents he wishes to download.
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class NzbDialog : public QDialog
 {
@@ -69,6 +71,8 @@ class NzbDialog : public QDialog
         const QList< NzbFile* >& files(){ return model->files(); }
 
     private:
+        KSharedConfigPtr config;
+        KConfigGroup *configGroup;
         QTreeView *view;
         NzbModel *model;
         ModelTest *modeltest;

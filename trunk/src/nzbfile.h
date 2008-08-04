@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- * \class NzbFile nzbfile.h
+ * @class NzbFile nzbfile.h
  */
 #ifndef NZBFILE_H
 #define NZBFILE_H
@@ -30,9 +30,11 @@
 class File;
 
 /**
- * \brief Container for the contents of an NZB file.
+ * @brief Container for the contents of an NZB file.
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ *
+ * @see File, Segment
  */
 class NzbFile : public QList<File*>, public BaseType
 {

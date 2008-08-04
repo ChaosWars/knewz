@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- *  \class File file.h
+ * @class File file.h
  */
 #ifndef FILE_H
 #define FILE_H
@@ -31,12 +31,14 @@ class NzbFile;
 class Segment;
 
 /**
- *  \brief The segments in a file entry in a NZB file.
+ * @brief The segments in a file entry in a NZB file.
  *
  * Implements a QList of type Segment that represents the segments in a file
  * entry in a NZB file.
  *
- *  \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * 
+ * @see NzbFile, Segment
  */
 class File : public QList<Segment*>, public BaseType
 {
@@ -65,7 +67,7 @@ class File : public QList<Segment*>, public BaseType
         /**
          * Constructs a copy of \c other with a new parent \c parent
          *
-         * @param file
+         * @param other
          *      The file to construct a copy of.
          */
         File( const File &other );

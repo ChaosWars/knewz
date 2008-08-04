@@ -18,7 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KConfigGroup>
 #include <KDE/KDebug>
+#include <KDE/KGlobal>
 #include <KDE/KIcon>
 #include <KDE/KLocalizedString>
 #include <QButtonGroup>
@@ -37,6 +39,7 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
       model( new NzbModel( view, nzbFiles ) ),
       modeltest( new ModelTest( model ) )
 {
+    setMinimumSize( QSize( 640, 480 ) );
     // Set up the model/view
     view->setSelectionMode( QAbstractItemView::ExtendedSelection );
     view->setModel( model );
@@ -82,11 +85,18 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     connect( checkSelected, SIGNAL( clicked() ), model, SLOT( checkSelected() ) );
     connect( uncheckSelected, SIGNAL( clicked() ), model, SLOT( uncheckSelected() ) );
     connect( invertSelection, SIGNAL( clicked() ), model, SLOT( invertSelection() ) );
+    //Read the saved configuration
+    config = KGlobal::config();
+    configGroup = new KConfigGroup( config, "NzbFileDialog" );
+    QVariant size( configGroup->readEntry( "size", QSize( 640, 480 ) ) );
+    resize( size.toSize() );
 }
 
 
 NzbDialog::~NzbDialog()
 {
+    configGroup->writeEntry( "size", size() );
+    delete configGroup;
     delete model;
     delete modeltest;
     delete view;
@@ -99,6 +109,7 @@ NzbDialog::~NzbDialog()
 void NzbDialog::okSlot()
 {
     model->trimNzbFiles();
+    configGroup->writeEntry( "size", size() );
     emit accept();
 }
 

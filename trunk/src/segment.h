@@ -34,6 +34,8 @@ class File;
  * This represents a part of a NNTP multipart file.
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ *
+ * @see NzbFile, File
  */
 class Segment
 {

@@ -18,6 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+/**
+ * @class DownloadQueue downloadqueue.h
+ */
 #ifndef DOWNLOADQUEUE_H
 #define DOWNLOADQUEUE_H
 
@@ -27,13 +30,13 @@
 class NzbFile;
 
 /**
- * \class DownloadQueue downloadqueue.h
- *
- * \brief Provides a download queue for the application
+ * @brief Provides a download queue for the application
  *
  * Provides a static mechanism for accessing the download queue.
  * Create a pointer to the class in every class you wish to access the queue,
- * and then initialize the pointer to the Instance() function.
+ * and then initialize the pointer to the Instance() function. Only delete this
+ * class once, calling it from the main destructor of your program. Usually
+ * this will be the main window's destructor of your program.
  * This class is thread safe.
  *
  *  @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
@@ -47,6 +50,7 @@ class DownloadQueue : public QList< NzbFile* >{
          * @returns The singleton instance of the download queue.
          */
         static DownloadQueue* Instance();
+        ~DownloadQueue();
 
         /**
          * Returns the internal mutex that should be used to obtain a lock on the
@@ -64,7 +68,6 @@ class DownloadQueue : public QList< NzbFile* >{
 
     protected:
         DownloadQueue();
-        ~DownloadQueue();
 
     private:
         static QMutex m_mutex;

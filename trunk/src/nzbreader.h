@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- * \class NzbReader nzbreader.h
+ * @class NzbReader nzbreader.h
  */
 #ifndef _NZBREADER_H_
 #define _NZBREADER_H_
@@ -30,12 +30,14 @@
 class NzbFile;
 
 /**
- * \brief Xml reader which handles the setup neccessary to read a NZB file.
+ * @brief Xml reader which handles the setup neccessary to read a NZB file.
  *
  * Performs the setup up of QXmlSimpleReader and QXmlInputSource in order to
  * parse a xml file - in this case, a *.nzb file.
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ *
+ * @see NzbHandler
  */
 class NzbReader
 {

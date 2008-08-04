@@ -29,5 +29,3 @@ GeneralWidget::GeneralWidget( QWidget *parent )
 GeneralWidget::~GeneralWidget()
 {
 }
-
-

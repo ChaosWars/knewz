@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- * \class NzbModel nzbmodel.h
+ * @class NzbModel nzbmodel.h
  */
 #ifndef _MODELTESTMODEL_H_
 #define _MODELTESTMODEL_H_
@@ -30,12 +30,12 @@ class BaseType;
 class NzbFile;
 
 /**
- * \brief The model for the dialog displaying the contents of the NZB file.
+ * @brief The model for the dialog displaying the contents of the NZB file.
  *
  * See the Qt documentation for QAbstractItemModel for documentation of the
  * implemented functions.
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class NzbModel : public BaseModel
 {

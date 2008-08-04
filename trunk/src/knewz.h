@@ -19,9 +19,9 @@
  ***************************************************************************/
 
 /**
- * \class KNewz knewz.h
+ * @class KNewz knewz.h
  *
- * \mainpage KNewz
+ * @mainpage KNewz
  *      A program for downloading the contents of NZB files for KDE4.
  */
 #ifndef KNEWZ_H
@@ -30,43 +30,50 @@
 #include <KDE/KXmlGuiWindow>
 #include <KDE/KUrl>
 
-// class KAction;
 class KAction;
+class KConfigGroup;
 class KRecentFilesAction;
-class KNewzModel;
 class KSystemTrayIcon;
 class QTreeView;
 class DownloadQueue;
+class KNewzModel;
+class KNewzWallet;
 class ModelTest;
+
 /**
- * \brief The main window of the program.
+ * @brief The main window of the program.
  *
  * Provides a main window for the program, using KXmlGuiWindow to set up and
  * track changes to the menubar and toolbar.
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com
  */
 class KNewz : public KXmlGuiWindow
 {
     Q_OBJECT
 
     public:
+
+        /**
+         * Constructor.
+         * @param parent
+         *      Parent widget. Since this is the main window, this should always be 0.
+         */
         KNewz( QWidget *parent = 0 );
         virtual ~KNewz();
+
+    public Q_SLOTS:
+
+        /**
+         * Display the contents of @p files for selection and adding to the download queue.
+         * @param files
+         *      The list of files to open.
+         */
+        void showFileOpenDialog( const QStringList &files);
 
     protected:
         virtual bool queryClose();
         virtual bool queryExit();
-
-    private Q_SLOTS:
-        void openRecentFile( const KUrl &url );
-        void optionsConfigure();
-        void settingsChanged();
-        void urlOpen();
-        void exit();
-
-    public Q_SLOTS:
-        void showFileOpenDialog( const QStringList &files);
 
     private:
         QTreeView *view;
@@ -77,8 +84,19 @@ class KNewz : public KXmlGuiWindow
         KSystemTrayIcon *trayIcon;
         KRecentFilesAction *recentFiles;
         KAction *openFiles, *preferences;
+        KConfigGroup *configGroup;
+        KNewzWallet *knewzwallet;
         bool ok_to_close;
         void setupActions();
+        void setupWallet();
+
+    private Q_SLOTS:
+        void exit();
+        void loadSettings();
+        void openRecentFile( const KUrl &url );
+        void optionsConfigure();
+        void urlOpen();
+        void walletClosed();
 };
 
 #endif

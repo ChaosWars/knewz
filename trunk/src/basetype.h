@@ -19,7 +19,7 @@
  ***************************************************************************/
 
  /**
- * \class BaseType basetype.h
+ * @class BaseType basetype.h
   */
 #ifndef BASETYPE_H
 #define BASETYPE_H
@@ -28,7 +28,7 @@
 #include <QtCore>
 
 /**
- * \brief The base class for objects specific to the NZB file
+ * @brief The base class for objects specific to the NZB file
  *
  * The objects that an NZB file is made up of, ie. the segments, files and
  * the NZB file itself all inherit from this class. It provides a mechanism
@@ -40,7 +40,7 @@
  * the very least. Convention is that the function returns the name of the
  * inheriting class as a QString.
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class BaseType
 {
@@ -53,8 +53,13 @@ class BaseType
          *      Optional state parameter. The default is checked.
          */
         BaseType( Qt::CheckState state = Qt::Checked ) : m_state( state ){}
-        BaseType( const BaseType &base ) : m_state( base.state() ){}
 
+        /**
+         * Copy constructor.
+         * @param other
+         *      The object to copy.
+         */
+        BaseType( const BaseType &other ) : m_state( other.state() ){}
         virtual ~BaseType(){};
 
         /**
@@ -90,7 +95,7 @@ class BaseType
         virtual const QString type() const = 0;
 
         /**
-         * Assigns \p other to this object and returns a reference.
+         * Assigns @p other to this object and returns a reference.
          */
         BaseType& operator=( const BaseType &other )
         {
