@@ -29,7 +29,9 @@
 class NzbFile;
 
 /**
- * @author
+ * @brief Custom NZB mime data for internal drag and drop.
+ *
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class NzbMimeData : public QMimeData
 {

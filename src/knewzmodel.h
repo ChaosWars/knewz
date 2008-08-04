@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- * \class KNewzModel mainmodel.h
+ * @class KNewzModel mainmodel.h
  */
 #ifndef KNEWZMODEL_H
 #define KNEWZMODEL_H
@@ -30,7 +30,7 @@ class DownloadQueue;
 class NzbFile;
 
 /**
- * \brief Provides a model for the main view of the program
+ * @brief Provides a model for the main view of the program
  *
  * This is the main model for the main view of the program. Here the information
  * of the current download queue is represented, giving an overview of the state
@@ -38,20 +38,13 @@ class NzbFile;
  * See the Qt documentation for QAbstractItemModel for documentation of the
  * implemented functions.
  *
- *  \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class KNewzModel : public BaseModel
 {
     Q_OBJECT
 
     public:
-
-        /**
-         * Constructor
-         *
-         * @param parent
-         *      The tree view parent of the model.
-         */
         KNewzModel( QTreeView *parent );
         virtual ~KNewzModel(){};
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;

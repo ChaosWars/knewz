@@ -19,42 +19,69 @@
  ***************************************************************************/
 
 #include <KDE/KDebug>
-#include "downloadqueue.h"
-#include "file.h"
-#include "nzbfile.h"
-#include "segment.h"
+#include <KDE/KLocale>
+#include <KDE/KMessageBox>
+#include "knewzwallet.h"
 
-DownloadQueue* DownloadQueue::m_instance = NULL;
-QMutex DownloadQueue::m_mutex;
+using namespace KWallet;
 
-DownloadQueue::DownloadQueue()
+QMutex KNewzWallet::m_mutex;
+int KNewzWallet::m_ref = 0;
+KNewzWallet* KNewzWallet::m_instance = NULL;
+Wallet* KNewzWallet::m_wallet = NULL;
+
+KNewzWallet::KNewzWallet() : QObject()
 {
+    m_wallet = Wallet::openWallet( Wallet::LocalWallet(), -1 );
+    if( m_wallet ){
+        connect( m_wallet, SIGNAL( walletClosed() ), this, SIGNAL( walletClosed() ) );
+        connect( m_wallet, SIGNAL( folderUpdated(const QString& ) ), this, SIGNAL( folderUpdated(const QString& ) ) );
+        connect( m_wallet, SIGNAL( folderListUpdated() ), this, SIGNAL(folderListUpdated() ) );
+        connect( m_wallet, SIGNAL( folderRemoved( const QString& ) ), this, SIGNAL( folderRemoved( const QString& ) ) );
+        connect( m_wallet, SIGNAL( walletOpened( bool ) ), this, SIGNAL( walletOpened( bool ) ) );
+    }else{
+        KMessageBox::error( 0, i18n( "You either canceled the request, or the KWallet sustem is disabled." ),
+                            i18n( "Failed to open the KWallet system" ) );
+    }
+
 }
 
-DownloadQueue* DownloadQueue::Instance()
+KNewzWallet* KNewzWallet::Instance()
 {
+    m_mutex.lock();
+    m_ref++;
+    kDebug() << "m_ref:" << m_ref;
+    m_mutex.unlock();
+
     if( !m_instance ){
         QMutexLocker mutexLock( &m_mutex );
         /* Make sure that the instance wasn't created while we were
         waiting for the lock */
         if( !m_instance ){
-            m_instance = new DownloadQueue();
+            m_instance = new KNewzWallet();
         }
     }
 
     return m_instance;
 }
 
-DownloadQueue::~DownloadQueue()
+void KNewzWallet::close()
 {
     QMutexLocker lock( &m_mutex );
-    qDeleteAll( *this );
-    clear();
-}
+    m_ref--;
+    kDebug() << "m_ref:" << m_ref;
 
-void DownloadQueue::dumpQueue()
-{
-    for( int i = 0, count = m_instance->size(); i < count; i++ ){
-        m_instance->at( i )->dumpQueue();
+    if( m_ref == 0 ){
+        delete m_wallet;
+        m_wallet = NULL;
     }
 }
+
+void KNewzWallet::open()
+{
+    if( !m_wallet->isOpen() ){
+        m_wallet = Wallet::openWallet( Wallet::LocalWallet(), -1 );
+    }
+}
+
+#include "knewzwallet.moc"

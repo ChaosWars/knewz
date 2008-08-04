@@ -19,32 +19,39 @@
  ***************************************************************************/
 
 /**
- * @class GeneralWidget generalwidget.h
+ * @class KNewzConfigDialog knewzconfigdialog.h
  */
-#ifndef GENERALSETTINGS_H
-#define GENERALSETTINGS_H
+#ifndef KNEWZCONFIGDIALOG_H
+#define KNEWZCONFIGDIALOG_H
 
-#include <QtGui/QWidget>
-#include <ui_generalsettings.h>
+#include <KDE/KConfigDialog>
+
+class KNewzSettings;
+class KNewzWallet;
 
 /**
- * @brief General settings widget
+ * @brief KConfigDialog for KNewz
  *
- * Widget providing an interface to the general settings for KNewz.
+ * Overridden to provide for saving the server settings in KWallet.
+ * See the KDE documentation for KConfigDialog for member documentation.
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class GeneralWidget : public QWidget, public Ui::GeneralSettings
+class KNewzConfigDialog : public KConfigDialog
 {
-    public:
+    Q_OBJECT
 
-        /**
-         * Constructor
-         * @param parent
-         *      Parent widget.
-         */
-        GeneralWidget( QWidget *parent );
-        ~GeneralWidget();
+    public:
+        KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config );
+        ~KNewzConfigDialog();
+
+    private:
+        KNewzWallet *knewzwallet;
+        KNewzSettings *settings;
+
+    private Q_SLOTS:
+        void saveWalletSettings();
+        void walletClosed();
 };
 
 #endif

@@ -27,22 +27,25 @@
 #include <KDE/KFileDialog>
 #include <KDE/KGlobal>
 #include <KDE/KLocale>
+#include <KDE/KMessageBox>
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
 #include <KDE/KSystemTrayIcon>
 #include <QHeaderView>
 #include <QMenu>
 #include "downloadqueue.h"
-#include "generalwidget.h"
 #include "knewz.h"
+#include "knewzconfigdialog.h"
 #include "knewzmodel.h"
+#include "knewzsettings.h"
 #include "knewzview.h"
+#include "knewzwallet.h"
 #include "modeltest.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 #include "nzbreader.h"
-#include "serverwidget.h"
-#include "settings.h"
+
+using namespace KWallet;
 
 KNewz::KNewz( QWidget *parent )
     : KXmlGuiWindow( parent ),
@@ -50,8 +53,10 @@ KNewz::KNewz( QWidget *parent )
       model( new KNewzModel( view ) ),
       modeltest( new ModelTest( model, this ) ),
       downloadqueue( DownloadQueue::Instance() ),
+      knewzwallet( NULL ),
       ok_to_close( false )
 {
+    loadSettings();
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     setCentralWidget( view );
@@ -59,24 +64,30 @@ KNewz::KNewz( QWidget *parent )
     setupGUI();
     setAutoSaveSettings();
     config = KGlobal::config();
-    KConfigGroup configGroup( config, "RecentFiles" );
-    recentFiles->loadEntries( configGroup );
+    configGroup = new KConfigGroup( config, "RecentFiles" );
+    recentFiles->loadEntries( *configGroup );
     trayIcon = new KSystemTrayIcon( "applications-internet", this );
-    connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
     trayIcon->contextMenu()->addAction( openFiles );
     trayIcon->contextMenu()->addAction( recentFiles );
     trayIcon->contextMenu()->addAction( preferences );
+    connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
     trayIcon->show();
 }
 
 KNewz::~KNewz()
 {
     //Save the recent files entries
-    KConfigGroup configGroup( config, "RecentFiles" );
-    recentFiles->saveEntries( configGroup );
+    configGroup->changeGroup( "RecentFiles" );
+    recentFiles->saveEntries( *configGroup );
+
+    if( knewzwallet )
+        knewzwallet->close();
+
+    delete configGroup;
     delete modeltest;
     delete model;
     delete view;
+    delete downloadqueue;
 }
 
 void KNewz::openRecentFile( const KUrl &url )
@@ -114,24 +125,26 @@ void KNewz::openRecentFile( const KUrl &url )
 
 void KNewz::optionsConfigure()
 {
-    if ( KConfigDialog::showDialog( "settings" ) )  {
+    if ( KNewzConfigDialog::showDialog( "settings" ) )  {
         return;
     }
 
-    KConfigDialog *dialog = new KConfigDialog( this, "settings", Settings::self() );
-    QWidget *generalSettings = new QWidget();
-    new GeneralWidget( generalSettings );
-    dialog->addPage( generalSettings, i18n( "General" ), "preferences-system-general" );
-    QWidget *serverSettings = new QWidget();
-    new ServerWidget( serverSettings );
-    dialog->addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );
-    dialog->setAttribute( Qt::WA_DeleteOnClose );
-    connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( settingsChanged() ) );
+    KNewzConfigDialog *dialog = new KNewzConfigDialog( this, "settings", KNewzSettings::self() );
+    connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( loadSettings() ) );
     dialog->show();
 }
 
-void KNewz::settingsChanged()
+void KNewz::loadSettings()
 {
+    if( KNewzSettings::saveEncrypted() ){
+
+        if( !knewzwallet ){
+            setupWallet();
+        }
+
+    }else{
+        kDebug() << "saveUnencrypted";
+    }
 }
 
 void KNewz::setupActions()
@@ -142,6 +155,12 @@ void KNewz::setupActions()
     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
     KStandardAction::quit( this, SLOT( exit() ), actionCollection() );
     preferences = KStandardAction::preferences( this, SLOT( optionsConfigure() ), actionCollection() );
+}
+
+void KNewz::setupWallet()
+{
+    knewzwallet = KNewzWallet::Instance();
+    connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
 }
 
 void KNewz::showFileOpenDialog( const QStringList &files )
@@ -219,6 +238,10 @@ void KNewz::exit()
     ok_to_close = true;
     kapp->setQuitOnLastWindowClosed( true );
     close();
+}
+
+void KNewz::walletClosed()
+{
 }
 
 #include "knewz.moc"

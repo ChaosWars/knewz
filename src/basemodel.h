@@ -32,9 +32,10 @@ class QTreeView;
 
 /**
  * @brief Base class for the internal models used by the program
- * This is an abstract class, and cannot be instantiated by itself. It provides
- * a model interface to the download queue, and implements methods to add and
- * removes files from the queue as well as some other common functions.
+ *
+ * This is an abstract class, and cannot be instantiated by itself.
+ * See Qt documentation for QAbstractItemModel for it's member documentation.
+ *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 class BaseModel : public QAbstractItemModel
@@ -42,6 +43,7 @@ class BaseModel : public QAbstractItemModel
     Q_OBJECT
 
     public:
+
         BaseModel( QTreeView *parent );
         virtual ~BaseModel() = 0;
         virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;

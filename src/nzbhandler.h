@@ -19,7 +19,7 @@
  ***************************************************************************/
 
 /**
- * \class NzbHandler nzbhandler.h
+ * @class NzbHandler nzbhandler.h
  */
 
 #ifndef _NZBHANDLER_H
@@ -32,15 +32,15 @@
 class File;
 
 /**
- * \brief Class implementing QXmlDefaultHandler in order to parse *.nzb files.
+ * @brief Class implementing QXmlDefaultHandler in order to parse *.nzb files.
  *
  * Parses an NZB file, scanning it for files and their segments (in the case of multipart
  * binaries ). After creating an instance of this class, the function setFilename must
  * be called with the path of the file to be parsed before calling parse().
  *
- * \see NzbReader
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  *
- * \author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ * @see NzbReader
  */
 class NzbHandler : public QXmlDefaultHandler
 {
