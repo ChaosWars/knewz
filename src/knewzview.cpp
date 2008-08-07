@@ -24,7 +24,7 @@
 #include <QDragMoveEvent>
 #include <QDropEvent>
 #include "knewzview.h"
-// #include "nzbmimedata.h"
+#include "nzbmimedata.h"
 
 KNewzView::KNewzView( QWidget *parent )
  : QTreeView( parent )
@@ -42,6 +42,7 @@ KNewzView::~KNewzView()
 void KNewzView::dragEnterEvent( QDragEnterEvent *event )
 {
     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
+//         QTreeView::dragEnterEvent( event );
         event->acceptProposedAction();
     }
 }
@@ -49,24 +50,25 @@ void KNewzView::dragEnterEvent( QDragEnterEvent *event )
 void KNewzView::dragMoveEvent( QDragMoveEvent *event )
 {
     if( event->mimeData()->hasFormat( "text/uri-list" ) || event->mimeData()->hasFormat( "text/x-nzb" ) ){
+//         QTreeView::dragMoveEvent( event );
         event->acceptProposedAction();
     }
 }
 
 void KNewzView::dropEvent( QDropEvent *event )
 {
-//     kDebug() << event->mimeData()->formats();
+    kDebug() << event->mimeData()->formats();
     if( event->mimeData()->hasFormat( "text/uri-list" ) ){
         model()->dropMimeData( event->mimeData(), event->proposedAction(), -1, -1, indexAt( event->pos() ) );
+//         QTreeView::dropEvent( event );
         event->acceptProposedAction();
     }else if( event->mimeData()->hasFormat( "text/x-nzb" ) ){
-//         const NzbMimeData *mimeData = qobject_cast< const NzbMimeData* >( event->mimeData() );
+        const NzbMimeData *mimeData = qobject_cast< const NzbMimeData* >( event->mimeData() );
 
-//         if( mimeData ){
-//             model()->dropMimeData( mimeData, event->proposedAction(), -1, -1, indexAt( event->pos() ) );
-//             kDebug() << const_cast< QList< NzbFile* > >( mimeData->getNzbData() );
+        if( mimeData ){
+            model()->dropMimeData( mimeData, event->proposedAction(), -1, -1, indexAt( event->pos() ) );
             event->acceptProposedAction();
-//         }
+        }
     }
 
 }

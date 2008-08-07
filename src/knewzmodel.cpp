@@ -26,6 +26,7 @@
 #include "file.h"
 #include "knewzmodel.h"
 #include "nzbfile.h"
+#include "nzbmimedata.h"
 #include "nzbreader.h"
 
 KNewzModel::KNewzModel( QTreeView *parent )
@@ -288,9 +289,30 @@ bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
     return true;
 }
 
-// QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
-// {
-// }
+QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
+{
+    for( int i = 0, size = indexes.size(); i < size; i++ ){
+        BaseType *base = static_cast< BaseType* >( indexes.at( i ).internalPointer() );
+
+        if( base->type() == "NzbFile" ){
+            NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
+
+            if( !nzbFile )
+                return new QMimeData();
+
+            return new NzbMimeData();
+        }else{
+            File *file = dynamic_cast< File* >( base );
+
+            if( !file )
+                return new QMimeData();
+
+            return new NzbMimeData();
+        }
+    }
+
+    return new QMimeData();
+}
 
 QStringList KNewzModel::mimeTypes() const
 {

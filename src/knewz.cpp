@@ -56,7 +56,6 @@ KNewz::KNewz( QWidget *parent )
       knewzwallet( NULL ),
       ok_to_close( false )
 {
-    loadSettings();
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     setCentralWidget( view );
@@ -66,12 +65,13 @@ KNewz::KNewz( QWidget *parent )
     config = KGlobal::config();
     configGroup = new KConfigGroup( config, "RecentFiles" );
     recentFiles->loadEntries( *configGroup );
-    trayIcon = new KSystemTrayIcon( "applications-internet", this );
+    trayIcon = new KSystemTrayIcon( "knewz", this );
     trayIcon->contextMenu()->addAction( openFiles );
     trayIcon->contextMenu()->addAction( recentFiles );
     trayIcon->contextMenu()->addAction( preferences );
     connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
     trayIcon->show();
+    loadSettings();
 }
 
 KNewz::~KNewz()
@@ -88,6 +88,7 @@ KNewz::~KNewz()
     delete model;
     delete view;
     delete downloadqueue;
+    delete trayIcon;
 }
 
 void KNewz::openRecentFile( const KUrl &url )
@@ -142,8 +143,6 @@ void KNewz::loadSettings()
             setupWallet();
         }
 
-    }else{
-        kDebug() << "saveUnencrypted";
     }
 }
 
