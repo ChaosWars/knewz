@@ -72,7 +72,7 @@ class KNewzModel : public BaseModel
          *      \c false if \p parent was not valid or if parent.column() was larger than 0.
          */
         virtual bool insertChildren( const QModelIndex &parent, const NzbFile &nzbFile, int row = 0 );
-//         virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
+        virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
         virtual QStringList mimeTypes() const;
         virtual QModelIndex parent( const QModelIndex &index ) const;
         virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );

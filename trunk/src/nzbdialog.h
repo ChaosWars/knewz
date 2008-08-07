@@ -26,16 +26,17 @@
 
 #include <KDE/KConfig>
 #include <QDialog>
+#include "ui_nzbdialog.h"
 #include "nzbmodel.h"
 
-class KConfigGroup;
-class QButtonGroup;
-class QHBoxLayout;
-class QPushButton;
-class QTreeView;
-class QVBoxLayout;
-class ModelTest;
-class NzbFile;
+// class KConfigGroup;
+// class QButtonGroup;
+// class QHBoxLayout;
+// class QPushButton;
+// class QTreeView;
+// class QVBoxLayout;
+// class ModelTest;
+// class NzbFile;
 
 /**
  * @brief Dialog for displaying the contents of an NZB file.
@@ -46,7 +47,7 @@ class NzbFile;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class NzbDialog : public QDialog
+class NzbDialog : public QDialog, public Ui::NzbDialog
 {
     Q_OBJECT
 
@@ -73,20 +74,20 @@ class NzbDialog : public QDialog
     private:
         KSharedConfigPtr config;
         KConfigGroup *configGroup;
-        QTreeView *view;
+//         QTreeView *view;
         NzbModel *model;
         ModelTest *modeltest;
-        QVBoxLayout *layout;
-        QHBoxLayout *buttonLayout;
-        QButtonGroup *defaultButtonGroup;
-        QButtonGroup *selectButtonGroup;
-        QPushButton *checkAll;
-        QPushButton *checkNone;
-        QPushButton *checkSelected;
-        QPushButton *uncheckSelected;
-        QPushButton *invertSelection;
-        QPushButton *ok;
-        QPushButton *cancel;
+//         QVBoxLayout *layout;
+//         QHBoxLayout *buttonLayout;
+//         QButtonGroup *defaultButtonGroup;
+//         QButtonGroup *selectButtonGroup;
+//         QPushButton *checkAll;
+//         QPushButton *checkNone;
+//         QPushButton *checkSelected;
+//         QPushButton *uncheckSelected;
+//         QPushButton *invertSelection;
+//         QPushButton *ok;
+//         QPushButton *cancel;
 
     private Q_SLOTS:
         void okSlot();

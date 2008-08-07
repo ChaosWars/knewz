@@ -1,14 +1,17 @@
 [Desktop Entry]
 Categories=Qt;KDE;Network;FileTransfer;
-DocPath=knewz/index.html
-Exec=knewz %i %m -caption "%c"
+Comment=A program for downloading binaries from newsgroups
+Encoding=UTF-8
+Exec=knewz
 GenericName=NZB Download Program
-Icon=applications-internet
+Icon=knewz
+InitialPreference=8
 MimeType=application/x-nzb;
 Name=KNewz
 Terminal=false
 Type=Application
+X-DBUS-StartupType=Unique
 X-DBUS-ServiceName=com.googlecode.knewz
-X-DBUS-ServiceType=Unique
 X-DocPath=knewz/index.html
+X-KDE-HasTempFileOption=true
 X-KDE-StartupNotify=true
