@@ -37,6 +37,7 @@ class KSystemTrayIcon;
 class QTreeView;
 class DownloadQueue;
 class KNewzModel;
+class KNewzView;
 class KNewzWallet;
 class ModelTest;
 
@@ -76,7 +77,7 @@ class KNewz : public KXmlGuiWindow
         virtual bool queryExit();
 
     private:
-        QTreeView *view;
+        KNewzView *view;
         KNewzModel *model;
         ModelTest *modeltest;
         DownloadQueue *downloadqueue;

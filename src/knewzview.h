@@ -26,6 +26,23 @@
 
 #include <QTreeView>
 
+class KNewzView;
+
+class KNewzViewEventFilter : public QObject
+{
+    Q_OBJECT
+
+    public:
+        KNewzViewEventFilter( KNewzView *parent );
+        ~KNewzViewEventFilter(){}
+
+    protected:
+        bool eventFilter( QObject *obj, QEvent *event );
+
+    private:
+        KNewzView *m_parent;
+};
+
 /**
  * @brief A subclassed QTreeView providing drag and drop support.
  *
@@ -53,6 +70,12 @@ class KNewzView : public QTreeView
         virtual void dragMoveEvent ( QDragMoveEvent * event );
         virtual void dropEvent ( QDropEvent * event );
 //         virtual void mousePressEvent( QMouseEvent *event );
+
+    private:
+        KNewzViewEventFilter *eventFilterObject;
+
+    friend class KNewzModel;
+    friend class KNewzViewEventFilter;
 };
 
 #endif

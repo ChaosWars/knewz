@@ -27,6 +27,7 @@
 #include "basemodel.h"
 
 class DownloadQueue;
+class KNewzView;
 class NzbFile;
 
 /**
@@ -45,7 +46,7 @@ class KNewzModel : public BaseModel
     Q_OBJECT
 
     public:
-        KNewzModel( QTreeView *parent );
+        KNewzModel( KNewzView *parent );
         virtual ~KNewzModel(){};
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
@@ -81,6 +82,7 @@ class KNewzModel : public BaseModel
         virtual Qt::DropActions supportedDropActions() const;
 
     private:
+        KNewzView *m_parent;
         DownloadQueue *downloadqueue;
 };
 

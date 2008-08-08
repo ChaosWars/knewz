@@ -21,16 +21,18 @@
 #include <KDE/KDebug>
 #include <KDE/KLocalizedString>
 #include <KDE/KUrl>
-#include <QTreeView>
+#include <QMutexLocker>
 #include "downloadqueue.h"
 #include "file.h"
 #include "knewzmodel.h"
+#include "knewzview.h"
 #include "nzbfile.h"
 #include "nzbmimedata.h"
 #include "nzbreader.h"
 
-KNewzModel::KNewzModel( QTreeView *parent )
+KNewzModel::KNewzModel( KNewzView *parent )
     : BaseModel( parent ),
+      m_parent( parent ),
       downloadqueue( DownloadQueue::Instance() )
 {
     rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" ) << i18n( "Status" ) << i18n( "ETA" );
@@ -134,7 +136,7 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
             if( nzbFiles.size() == 0 )
                 return false;
 
-            downloadqueue->mutex().lock();
+            QMutexLocker lock( &downloadqueue->mutex() );
             if( parent.isValid() ){
 
                 /* We only want to add stuff to the top level if we are dropping NZB files */
@@ -159,8 +161,6 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                 }
 
             }
-
-            downloadqueue->mutex().unlock();
         }
 
         return true;
@@ -175,12 +175,11 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
 
         for( int i = 0, size = nzbMimeData->getNzbData().size(); i < size; i++  ){
 
-            if( nzbMimeData->getNzbData().at( i )->type() == "NzbFile" ){
-                NzbFile *nzbFile = dynamic_cast< NzbFile* >( nzbMimeData->getNzbData().at( i ) );
-                kDebug() << "row:" << downloadqueue->indexOf( nzbFile );
-                removeRows( downloadqueue->indexOf( nzbFile ), 1 );
-                downloadqueue->dumpQueueTopLevel();
-            }
+//             if( nzbMimeData->getNzbData().at( i )->type() == "NzbFile" ){
+//                 NzbFile *nzbFile = dynamic_cast< NzbFile* >( nzbMimeData->getNzbData().at( i ) );
+//                 removeRows( downloadqueue->indexOf( nzbFile ), 1 );
+//                 downloadqueue->dumpQueueTopLevel();
+//             }
         }
 
         return true;
@@ -308,25 +307,30 @@ QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
 {
     QList< BaseType*> data;
     NzbMimeData *nzbMimeData = new NzbMimeData();
+    QModelIndexList list = indexes;
 
-    for( int i = 0, size = indexes.size(); i < size; i++ ){
-        BaseType *base = static_cast< BaseType* >( indexes.at( i ).internalPointer() );
+    /* We want to filter the index list here, since we cannot allow a selection to contain both
+       root items and children of those root items. Here we traverse the list, filtering out any
+       children who's parents are also in the list */
+    foreach( QModelIndex index, list ){
+        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
 
-        if( base->type() == "NzbFile" ){
-            NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
-
-            if( nzbFile ){
-                data.append( nzbFile );
-            }
-
-        }else{
+        if( base->type() == "File" ){
             File *file = dynamic_cast< File* >( base );
 
             if( file ){
-                data.append( file );
+                //If the current files parent is also in the list, then we don't want to process it
+                if( list.indexOf( this->index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
+                    list.removeAt( list.indexOf( index ) );
+                }
             }
-
         }
+
+    }
+
+    foreach( QModelIndex index, list ){
+        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+        data.append( base );
     }
 
     nzbMimeData->setNzbData( data );
