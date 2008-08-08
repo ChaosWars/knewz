@@ -23,8 +23,58 @@
 #include <QDragEnterEvent>
 #include <QDragMoveEvent>
 #include <QDropEvent>
+#include <QEvent>
+#include <QKeyEvent>
+#include <QModelIndexList>
+#include <QMutexLocker>
+#include "basetype.h"
+#include "downloadqueue.h"
+#include "file.h"
 #include "knewzview.h"
+#include "nzbfile.h"
 #include "nzbmimedata.h"
+
+KNewzViewEventFilter::KNewzViewEventFilter( KNewzView *parent ) : m_parent( parent )
+{
+}
+
+bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
+{
+    if( event->type() == QEvent::KeyPress ){
+        QKeyEvent *keyEvent = dynamic_cast< QKeyEvent* >( event );
+
+        if( keyEvent->key() == Qt::Key_Delete ){
+            kDebug();
+            DownloadQueue *downloadqueue = DownloadQueue::Instance();
+            QModelIndexList list = m_parent->selectedIndexes();
+
+            foreach( QModelIndex index, list ){
+                BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+
+                if( base->type() == "File" ){
+                    File *file = dynamic_cast< File* >( base );
+
+                    if( file ){
+                        //If the current files parent is also in the list, then we don't want to process it
+                        if( list.indexOf( m_parent->model()->index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
+                            list.removeAt( list.indexOf( index ) );
+                        }
+                    }
+                }
+
+            }
+
+//             foreach( QModelIndex index, list ){
+                
+//             }
+
+        }else{
+            return QObject::eventFilter( obj, event );
+        }
+    }
+
+    return QObject::eventFilter( obj, event );
+}
 
 KNewzView::KNewzView( QWidget *parent )
  : QTreeView( parent )
@@ -34,6 +84,8 @@ KNewzView::KNewzView( QWidget *parent )
     setAcceptDrops( true );
     setDropIndicatorShown( true );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    eventFilterObject = new KNewzViewEventFilter( this );
+    installEventFilter( eventFilterObject );
 }
 
 KNewzView::~KNewzView()

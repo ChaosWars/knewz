@@ -52,8 +52,9 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     //Read the saved configuration
     config = KGlobal::config();
     configGroup = new KConfigGroup( config, "NzbFileDialog" );
-    QVariant size( configGroup->readEntry( "size", QSize( 650, 488 ) ) );
+    QVariant size( configGroup->readEntry( "size", QSize( 660, 495 ) ) );
     resize( size.toSize() );
+    view->resizeColumnToContents( 1 );
 }
 
 
