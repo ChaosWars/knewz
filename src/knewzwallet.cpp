@@ -21,6 +21,7 @@
 #include <KDE/KDebug>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
+#include <QWidget>
 #include "knewzwallet.h"
 
 using namespace KWallet;
@@ -30,12 +31,14 @@ int KNewzWallet::m_ref = 0;
 KNewzWallet* KNewzWallet::m_instance = NULL;
 Wallet* KNewzWallet::m_wallet = NULL;
 
-KNewzWallet::KNewzWallet() : QObject()
+KNewzWallet::KNewzWallet( QWidget *parent )
+    : QObject( parent )
 {
+    m_parent = parent;
     initializeWallet();
 }
 
-KNewzWallet* KNewzWallet::Instance()
+KNewzWallet* KNewzWallet::Instance( QWidget *parent )
 {
     m_mutex.lock();
     m_ref++;
@@ -46,7 +49,7 @@ KNewzWallet* KNewzWallet::Instance()
         /* Make sure that the instance wasn't created while we were
         waiting for the lock */
         if( !m_instance ){
-            m_instance = new KNewzWallet();
+            m_instance = new KNewzWallet( parent );
         }
     }
 
@@ -71,7 +74,7 @@ void KNewzWallet::open()
 
 void KNewzWallet::initializeWallet()
 {
-    m_wallet = Wallet::openWallet( Wallet::LocalWallet(), 0 );
+    m_wallet = Wallet::openWallet( Wallet::LocalWallet(), m_parent->winId() );
     if( m_wallet ){
 
         if( !m_wallet->hasFolder( "KNewz" ) ){

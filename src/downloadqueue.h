@@ -66,6 +66,8 @@ class DownloadQueue : public QList< NzbFile* >{
          */
         static void dumpQueue();
 
+        static void dumpQueueTopLevel();
+
     protected:
         DownloadQueue();
 

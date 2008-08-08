@@ -62,7 +62,7 @@ class Segment
         /**
          * Debug function. Prints the content of the queue via kDebug();
          */
-        void dumpQueue();
+        void print();
 
         /**
          * Segment size in bytes.

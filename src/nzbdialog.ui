@@ -30,6 +30,9 @@
      <property name="selectionMode" >
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
+     <property name="uniformRowHeights" >
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
@@ -168,8 +171,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel" >
-     <x>316</x>
-     <y>260</y>
+     <x>644</x>
+     <y>482</y>
     </hint>
     <hint type="destinationlabel" >
      <x>286</x>

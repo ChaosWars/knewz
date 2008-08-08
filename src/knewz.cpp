@@ -65,13 +65,13 @@ KNewz::KNewz( QWidget *parent )
     config = KGlobal::config();
     configGroup = new KConfigGroup( config, "RecentFiles" );
     recentFiles->loadEntries( *configGroup );
+    loadSettings();
     trayIcon = new KSystemTrayIcon( "knewz", this );
     trayIcon->contextMenu()->addAction( openFiles );
     trayIcon->contextMenu()->addAction( recentFiles );
     trayIcon->contextMenu()->addAction( preferences );
     connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
     trayIcon->show();
-    loadSettings();
 }
 
 KNewz::~KNewz()
@@ -158,7 +158,7 @@ void KNewz::setupActions()
 
 void KNewz::setupWallet()
 {
-    knewzwallet = KNewzWallet::Instance();
+    knewzwallet = KNewzWallet::Instance( this );
     connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
 }
 

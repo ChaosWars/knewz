@@ -41,11 +41,17 @@ NzbFile::~NzbFile()
 
 void NzbFile::dumpQueue()
 {
-    kDebug() << "filename:" << m_filename;
-    kDebug() << "bytes:" << m_bytes;
+    print();
+
     for( int i = 0, size = this->size(); i < size; i++ ){
         at( i )->dumpQueue();
     }
+}
+
+void NzbFile::print()
+{
+    kDebug() << "filename:" << m_filename;
+    kDebug() << "bytes:" << m_bytes;
 }
 
 NzbFile& NzbFile::operator=( const NzbFile &other )

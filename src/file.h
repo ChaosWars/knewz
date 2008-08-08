@@ -78,6 +78,8 @@ class File : public QList<Segment*>, public BaseType
          */
         void dumpQueue();
 
+        void print();
+
         /**
          *  The size of the file.
          *
