@@ -58,14 +58,7 @@ int main( int argc, char **argv )
 //     qRegisterMetaTypeStreamOperators<Segment>( "Segment" );
     app.setQuitOnLastWindowClosed( false );
     KNewz *m = new KNewz();
-
-    if (app.isSessionRestored())
-    {
-        RESTORE(KNewz);
-    }else{
-        m->show();
-    }
-
+    m->show();
     return app.exec();
 
 }

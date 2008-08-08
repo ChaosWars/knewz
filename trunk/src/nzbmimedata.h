@@ -26,7 +26,7 @@
 
 #include <QMimeData>
 
-class NzbFile;
+class BaseType;
 
 /**
  * @brief Custom NZB mime data for internal drag and drop.
@@ -40,8 +40,8 @@ class NzbMimeData : public QMimeData
     public:
         NzbMimeData();
         ~NzbMimeData();
-        void setNzbData( const QList< NzbFile* > &data );
-        QList< NzbFile* > getNzbData();
+        void setNzbData( const QList< BaseType* > &data );
+        QList< BaseType* > getNzbData() const;
         virtual QStringList formats() const;
         virtual bool hasFormat( const QString &mimeType ) const;
 
@@ -49,7 +49,7 @@ class NzbMimeData : public QMimeData
 //         virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type) const;
 
     private:
-        QList< NzbFile* > m_data;
+        QList< BaseType* > m_data;
 };
 
 #endif

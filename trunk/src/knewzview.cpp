@@ -29,6 +29,7 @@
 KNewzView::KNewzView( QWidget *parent )
  : QTreeView( parent )
 {
+    setUniformRowHeights( true );
     setDragEnabled( true );
     setAcceptDrops( true );
     setDropIndicatorShown( true );
@@ -57,7 +58,6 @@ void KNewzView::dragMoveEvent( QDragMoveEvent *event )
 
 void KNewzView::dropEvent( QDropEvent *event )
 {
-    kDebug() << event->mimeData()->formats();
     if( event->mimeData()->hasFormat( "text/uri-list" ) ){
         model()->dropMimeData( event->mimeData(), event->proposedAction(), -1, -1, indexAt( event->pos() ) );
 //         QTreeView::dropEvent( event );
@@ -72,20 +72,6 @@ void KNewzView::dropEvent( QDropEvent *event )
     }
 
 }
-
-// void KNewzView::mouseMoveEvent( QMouseEvent *event )
-// {
-//     if( !( event->buttons() & Qt::LeftButton ) )
-//         return;
-// 
-//     QDrag *drag = new QDrag( this );
-//     NzbMimeData *mimeData = new NzbMimeData();
-//     QList< NzbFile* > data;
-//     mimeData->setNzbData( data );
-//     drag->setMimeData( mimeData );
-// 
-//     Qt::DropAction dropAction = drag->exec();
-// }
 
 // void KNewzView::mousePressEvent( QMouseEvent *event )
 // {

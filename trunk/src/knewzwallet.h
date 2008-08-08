@@ -27,6 +27,8 @@
 #include <KDE/KWallet/Wallet>
 #include <QMutex>
 
+class QWidget;
+
 /**
  * @brief A static interface to the KWallet system
  *
@@ -75,7 +77,7 @@ class KNewzWallet : public QObject{
     Q_OBJECT
 
     public:
-        static KNewzWallet* Instance();
+        static KNewzWallet* Instance( QWidget *parent );
         void close();
         void open();
         virtual int sync(){ if( m_wallet ) return m_wallet->sync(); else return -1; }
@@ -113,12 +115,13 @@ class KNewzWallet : public QObject{
         void walletOpened( bool success );
 
     protected:
-        KNewzWallet();
+        KNewzWallet( QWidget *parent );
         ~KNewzWallet(){ delete m_wallet; };
 
     private:
         static QMutex m_mutex;
         static int m_ref;
+        QWidget *m_parent;
         static KNewzWallet *m_instance;
         static KWallet::Wallet* m_wallet;
         void initializeWallet();

@@ -38,7 +38,7 @@ Segment::~Segment()
 {
 }
 
-void Segment::dumpQueue()
+void Segment::print()
 {
     kDebug() << "parent:" << m_parent;
     kDebug() << "id:" << m_id;

@@ -59,6 +59,8 @@ class NzbFile : public QList<File*>, public BaseType
          */
         void dumpQueue();
 
+        void print();
+
         /**
          *  Sets the filename of the file.
          *  @param filename

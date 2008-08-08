@@ -49,13 +49,19 @@ File::~File()
 
 void File::dumpQueue()
 {
+    print();
+
+    for( int i = 0, size = this->size(); i < size; i++ ){
+        at( i )->print();
+    }
+}
+
+void File::print()
+{
     kDebug() << "parent:" << m_parent;
     kDebug() << "bytes:" << m_bytes;
     kDebug() << "groups:" << m_groups;
     kDebug() << "subject" << m_subject;
-    for( int i = 0, size = this->size(); i < size; i++ ){
-        at( i )->dumpQueue();
-    }
 }
 
 void File::setParent( NzbFile *parent )

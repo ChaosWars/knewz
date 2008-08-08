@@ -58,3 +58,10 @@ void DownloadQueue::dumpQueue()
         m_instance->at( i )->dumpQueue();
     }
 }
+
+void DownloadQueue::dumpQueueTopLevel()
+{
+    for( int i = 0, count = m_instance->size(); i < count; i++ ){
+        m_instance->at( i )->print();
+    }
+}

@@ -168,6 +168,21 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
     }
 
     if( data->hasFormat( "text/x-nzb" ) ){
+        const NzbMimeData *nzbMimeData = dynamic_cast< const NzbMimeData* >( data );
+
+        if( !nzbMimeData )
+            return false;
+
+        for( int i = 0, size = nzbMimeData->getNzbData().size(); i < size; i++  ){
+
+            if( nzbMimeData->getNzbData().at( i )->type() == "NzbFile" ){
+                NzbFile *nzbFile = dynamic_cast< NzbFile* >( nzbMimeData->getNzbData().at( i ) );
+                kDebug() << "row:" << downloadqueue->indexOf( nzbFile );
+                removeRows( downloadqueue->indexOf( nzbFile ), 1 );
+                downloadqueue->dumpQueueTopLevel();
+            }
+        }
+
         return true;
     }
 
@@ -291,27 +306,31 @@ bool KNewzModel::insertRows( int row, int count, const QModelIndex &parent )
 
 QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
 {
+    QList< BaseType*> data;
+    NzbMimeData *nzbMimeData = new NzbMimeData();
+
     for( int i = 0, size = indexes.size(); i < size; i++ ){
         BaseType *base = static_cast< BaseType* >( indexes.at( i ).internalPointer() );
 
         if( base->type() == "NzbFile" ){
             NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
 
-            if( !nzbFile )
-                return new QMimeData();
+            if( nzbFile ){
+                data.append( nzbFile );
+            }
 
-            return new NzbMimeData();
         }else{
             File *file = dynamic_cast< File* >( base );
 
-            if( !file )
-                return new QMimeData();
+            if( file ){
+                data.append( file );
+            }
 
-            return new NzbMimeData();
         }
     }
 
-    return new QMimeData();
+    nzbMimeData->setNzbData( data );
+    return nzbMimeData;
 }
 
 QStringList KNewzModel::mimeTypes() const
@@ -344,11 +363,11 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
     if( row < 0 )
         return false;
 
+    if( count < 1 )
+        return false;
+
     int rows = row + count - 1;
     int beginRow = row;
-
-    if( rows < 1 )
-        return false;
 
     beginRemoveRows( parent, row, rows );
 

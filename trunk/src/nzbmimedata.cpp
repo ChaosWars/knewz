@@ -19,8 +19,8 @@
  ***************************************************************************/
 
 #include <KDE/KDebug>
+#include "basetype.h"
 #include "nzbmimedata.h"
-#include "nzbfile.h"
 
 NzbMimeData::NzbMimeData()
  : QMimeData()
@@ -31,12 +31,12 @@ NzbMimeData::~NzbMimeData()
 {
 }
 
-void NzbMimeData::setNzbData( const QList< NzbFile* > &data )
+void NzbMimeData::setNzbData( const QList< BaseType* > &data )
 {
     m_data = data;
 }
 
-QList< NzbFile* > NzbMimeData::getNzbData()
+QList< BaseType* > NzbMimeData::getNzbData() const
 {
     return m_data;
 }
