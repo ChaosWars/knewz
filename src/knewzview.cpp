@@ -44,9 +44,9 @@ bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
         QKeyEvent *keyEvent = dynamic_cast< QKeyEvent* >( event );
 
         if( keyEvent->key() == Qt::Key_Delete ){
-            kDebug();
             DownloadQueue *downloadqueue = DownloadQueue::Instance();
             QModelIndexList list = m_parent->selectedIndexes();
+            QList< BaseType* > rows;
 
             foreach( QModelIndex index, list ){
                 BaseType *base = static_cast< BaseType* >( index.internalPointer() );
@@ -56,17 +56,37 @@ bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
 
                     if( file ){
                         //If the current files parent is also in the list, then we don't want to process it
-                        if( list.indexOf( m_parent->model()->index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
-                            list.removeAt( list.indexOf( index ) );
+                        if( list.indexOf( m_parent->model()->index( downloadqueue->indexOf( file->parent() ), 0 ) ) == -1 ){
+                            rows.append( base );
                         }
                     }
+                }else{
+                    rows.append( base );
                 }
 
             }
 
-//             foreach( QModelIndex index, list ){
-                
-//             }
+            QMutexLocker lock( &downloadqueue->mutex() );
+
+            foreach( BaseType *base, rows ){
+
+                if( base->type() == "NzbFile" ){
+                    NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
+
+                    if( nzbFile ){
+                        m_parent->model()->removeRows( downloadqueue->indexOf( nzbFile ), 1 );
+                    }
+
+                }else{
+                    File *file = dynamic_cast< File* >( base );
+
+                    if( file ){
+                        QModelIndex parent = m_parent->model()->index( downloadqueue->indexOf( file->parent() ), 0 );
+                        m_parent->model()->removeRows( file->parent()->indexOf( file ), 1, parent );
+                    }
+                }
+
+            }
 
         }else{
             return QObject::eventFilter( obj, event );
@@ -90,6 +110,7 @@ KNewzView::KNewzView( QWidget *parent )
 
 KNewzView::~KNewzView()
 {
+    delete eventFilterObject;
 }
 
 void KNewzView::dragEnterEvent( QDragEnterEvent *event )

@@ -31,7 +31,11 @@
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
 #include <KDE/KSystemTrayIcon>
+#include <QPushButton>
+#include <QDockWidget>
+#include <QHBoxLayout>
 #include <QHeaderView>
+#include <QVBoxLayout>
 #include <QMenu>
 #include "downloadqueue.h"
 #include "knewz.h"
@@ -59,6 +63,7 @@ KNewz::KNewz( QWidget *parent )
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     setCentralWidget( view );
+    createDockWidget();
     setupActions();
     setupGUI();
     setAutoSaveSettings();
@@ -84,11 +89,42 @@ KNewz::~KNewz()
         knewzwallet->close();
 
     delete configGroup;
+    delete dock;
     delete modeltest;
     delete model;
     delete view;
     delete downloadqueue;
     delete trayIcon;
+}
+
+void KNewz::createDockWidget()
+{
+    dock = new QDockWidget( "", this );
+    dock->setObjectName( "DockWidget" );
+    dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    dockButtonWidget = new QWidget();
+    dockWidgetLayout = new QHBoxLayout( dockButtonWidget );
+    dockWidgetLayout->addStretch();
+    dockButtonLayout = new QVBoxLayout();
+    dockButtonLayout->addStretch();
+    top = new QPushButton( KIcon( "go-top" ), QString() );
+    top->setFlat( true );
+    dockButtonLayout->addWidget( top );
+    up = new QPushButton( KIcon( "go-up" ), QString() );
+    up->setFlat( true );
+    dockButtonLayout->addWidget( up );
+    down = new QPushButton( KIcon( "go-down" ), QString() );
+    down->setFlat( true );
+    dockButtonLayout->addWidget( down );
+    bottom = new QPushButton( KIcon( "go-bottom" ), QString() );
+    bottom->setFlat( true );
+    dockButtonLayout->addWidget( bottom );
+    dockButtonLayout->addStretch();
+    dockWidgetLayout->addLayout( dockButtonLayout );
+    dockWidgetLayout->addStretch();
+    dockButtonWidget->setLayout( dockWidgetLayout );
+    dock->setWidget( dockButtonWidget );
+    addDockWidget( Qt::LeftDockWidgetArea, dock );
 }
 
 void KNewz::openRecentFile( const KUrl &url )
