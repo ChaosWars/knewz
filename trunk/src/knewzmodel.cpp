@@ -107,6 +107,7 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
     if( action == Qt::IgnoreAction )
         return true;
 
+    //External drop, ie. drag and drop from explorer/dolphin/konqueror...
     if( data->hasFormat( "text/uri-list" ) ){
 
         if( data->hasUrls() ){
@@ -167,19 +168,21 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
 
     }
 
+    //Internal drop, ie. user dragging and dropping rows in the view
     if( data->hasFormat( "text/x-nzb" ) ){
         const NzbMimeData *nzbMimeData = dynamic_cast< const NzbMimeData* >( data );
+        QList< BaseType* > nzbData = nzbMimeData->getNzbData();
 
         if( !nzbMimeData )
             return false;
 
-        for( int i = 0, size = nzbMimeData->getNzbData().size(); i < size; i++  ){
+        QMutexLocker lock( &downloadqueue->mutex() );
+        foreach( BaseType *base, nzbData ){
 
-//             if( nzbMimeData->getNzbData().at( i )->type() == "NzbFile" ){
-//                 NzbFile *nzbFile = dynamic_cast< NzbFile* >( nzbMimeData->getNzbData().at( i ) );
-//                 removeRows( downloadqueue->indexOf( nzbFile ), 1 );
-//                 downloadqueue->dumpQueueTopLevel();
-//             }
+            if( base->type() == "NzbData" ){
+            }else{
+            }
+
         }
 
         return true;
@@ -378,16 +381,13 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
     if( parent.isValid() ){
         NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
 
-        downloadqueue->mutex().lock();
         while( beginRow <= rows ){
             nzbFile->removeAt( row );
             beginRow++;
         }
 
-        downloadqueue->mutex().unlock();
     }else{
 
-        downloadqueue->mutex().lock();
         while( beginRow <= rows ){
             QMutableListIterator< File* > it( *(downloadqueue->at( row ) ) );
 
@@ -400,7 +400,6 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
             beginRow++;
         }
 
-        downloadqueue->mutex().unlock();
     }
 
     endRemoveRows();

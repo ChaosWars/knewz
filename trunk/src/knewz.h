@@ -34,7 +34,10 @@ class KAction;
 class KConfigGroup;
 class KRecentFilesAction;
 class KSystemTrayIcon;
-class QTreeView;
+class QPushButton;
+class QDockWidget;
+class QHBoxLayout;
+class QVBoxLayout;
 class DownloadQueue;
 class KNewzModel;
 class KNewzView;
@@ -87,7 +90,13 @@ class KNewz : public KXmlGuiWindow
         KAction *openFiles, *preferences;
         KConfigGroup *configGroup;
         KNewzWallet *knewzwallet;
+        QDockWidget *dock;
+        QWidget *dockButtonWidget;
+        QPushButton *top, *up, *down, *bottom;
+        QVBoxLayout *dockButtonLayout;
+        QHBoxLayout *dockWidgetLayout;
         bool ok_to_close;
+        void createDockWidget();
         void setupActions();
         void setupWallet();
 
