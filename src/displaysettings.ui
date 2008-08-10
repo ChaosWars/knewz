@@ -192,7 +192,7 @@
       </size>
      </property>
      <property name="title" >
-      <string>Dock Widget Settings</string>
+      <string>Queue Manager Settings</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5" >
       <item>

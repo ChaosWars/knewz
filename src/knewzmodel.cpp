@@ -194,12 +194,13 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                     /*We can't use remove/insertRows() here, and we need to implement the
                       begin/endRemove/InsertRows to avoid corruption of the model/view */
                     QModelIndex idx = index( row, 0 );
+                    bool expanded = view->isExpanded( idx );
                     beginRemoveRows( QModelIndex(), row, row );
                     //Essentially take yourself...oh, the innuendo inherent in this operation :p
                     nzbFile = downloadqueue->takeAt( row );
                     int rows = nzbFile->size();
                     endRemoveRows();
-                    /* Chaining ternerary explressions...besides looking cool, it also deals with wankers who think dropping
+                    /* Chaining ternary expressions...besides looking cool, it also deals with wankers who think dropping
                        top-level items on other peoples children is funny */
                     row = parent.parent().isValid() ? parent.parent().row() : ( parent.isValid() ? parent.row() : rowCount() );
                     beginInsertRows( QModelIndex(), row, row );
@@ -207,6 +208,9 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                     endInsertRows();
                     QModelIndex newIdx = index( row, 0 );
                     emit dataChanged( newIdx, index( rows, columnCount(), newIdx ) );
+
+                    if( expanded )
+                        view->setExpanded( newIdx, true );
                 }
             }else{
                 File *file = dynamic_cast< File* >( base );
