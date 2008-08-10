@@ -53,7 +53,6 @@ class KNewzModel : public BaseModel
         virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
         virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-//         QMap<int, QVariant> itemData( const QModelIndex &index ) const;
         virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
         /**
@@ -68,7 +67,7 @@ class KNewzModel : public BaseModel
          *      immediately after adding a top level item with that item as \p parent, then just leave the
          *      value of this variable as 0. The only time you will want to set this variable is when you are
          *      adding children to a top level item that already has children. In practice you will only set
-         *      this variable during internal drag and drop operations.
+         *      this variable during internal drag and drop operations of children.
          * @return
          *      \c false if \p parent was not valid or if parent.column() was larger than 0.
          */

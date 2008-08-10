@@ -107,7 +107,7 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
     if( action == Qt::IgnoreAction )
         return true;
 
-    //External drop, ie. drag and drop from explorer/dolphin/konqueror...
+    //External drop, ie. drag and drop from exploder/dolphin/konqueror/whatever Jobs is screwing you over with...
     if( data->hasFormat( "text/uri-list" ) ){
 
         if( data->hasUrls() ){
@@ -177,30 +177,49 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
             return false;
 
         QMutexLocker lock( &downloadqueue->mutex() );
-        /* Note: The list is garuanteed to contain only children who's parents are not in the list.
+        /* Note: The list is garuanteed to contain only parents who's children are not in the list.
            See mimeData()*/
         foreach( BaseType *base, nzbData ){
 
             if( base->type() == "NzbFile" ){
                 NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
                 /* We can do this without an operator== in NzbFile since although the Qt docs claim
-                   you must have it, the compiler just compares the memory address if it isn't there.
-                   Since QList of pointers just copies the pointer, the memory in all lists will point
-                   to the same object. */
+                   you must have it, the compiler just compares the memory address for pointers.
+                   Since a copy operation on a QList of pointers just copies the pointer, the memory
+                   in all lists will point to the same object. */
                 int row = downloadqueue->indexOf( nzbFile );
 
                 /* For some fucking irritating reason, Qt sends 5 drop events, 4 with row == -1... */
                 if( row >= 0 && row < downloadqueue->size() ){
+                    /*We can't use remove/insertRows() here, and we need to implement the
+                      begin/endRemove/InsertRows to avoid corruption of the model/view */
+                    QModelIndex idx = index( row, 0 );
+                    beginRemoveRows( QModelIndex(), row, row );
+                    //Essentially take yourself...oh, the innuendo inherent in this operation :p
                     nzbFile = downloadqueue->takeAt( row );
-                    row = parent.isValid() ? parent.row() : rowCount();
-                    insertRows( row, 1 );
-                    setData( index( row, 0 ), QVariant::fromValue( *nzbFile ) );
+                    int rows = nzbFile->size();
+                    endRemoveRows();
+                    /* Chaining ternerary explressions...besides looking cool, it also deals with wankers who think dropping
+                       top-level items on other peoples children is funny */
+                    row = parent.parent().isValid() ? parent.parent().row() : ( parent.isValid() ? parent.row() : rowCount() );
+                    beginInsertRows( QModelIndex(), row, row );
+                    downloadqueue->insert( row, nzbFile );
+                    endInsertRows();
+                    QModelIndex newIdx = index( row, 0 );
+                    emit dataChanged( newIdx, index( rows, columnCount(), newIdx ) );
                 }
             }else{
+                File *file = dynamic_cast< File* >( base );
+
+                //Only process the drop if it is dropped inside it's parent or on another child
+                if( file->parent() == parent.internalPointer() ){
+                }else if( file->parent() == parent.parent().internalPointer()  ){
+                }
             }
 
         }
-
+        //Unselect rows, otherwise the wrong rows become selected, which is odd and confusing.
+        view->selectionModel()->clearSelection();
         return true;
     }
 
@@ -239,27 +258,6 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
 
     return createIndex( row, column, file );
 }
-
-// QMap<int, QVariant> KNewzModel::itemData( const QModelIndex &index ) const
-// {
-//     QMap<int, QVariant> roles = QAbstractItemModel::itemData( index );
-//     kDebug() << roles;
-//     BaseType *base = static_cast<BaseType*>( index.internalPointer() );
-//     kDebug() << base;
-//
-//     if( base->type() == "NzbFile" ){
-//         NzbFile *nzbFile = static_cast< NzbFile* >( index.internalPointer() );
-//         kDebug() << "NzbFile:" << nzbFile;
-//         roles.insert( Qt::UserRole, QVariant::fromValue( *nzbFile ) );
-//         kDebug() << "roles:" << roles;
-//     }else if( base->type() == "File" ){
-//         File *file = static_cast< File* >( index.internalPointer() );
-//         kDebug() << "file:" << file;
-//         roles.insert( Qt::UserRole, QVariant::fromValue( *file ) );
-//         kDebug() << "roles:" << roles;
-//     }
-//     return roles;
-// }
 
 bool KNewzModel::insertChildren( const QModelIndex &parent, const NzbFile &nzbFile, int row )
 {
