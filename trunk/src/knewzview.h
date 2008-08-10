@@ -73,9 +73,6 @@ class KNewzView : public QTreeView
 
     private:
         KNewzViewEventFilter *eventFilterObject;
-
-    friend class KNewzModel;
-    friend class KNewzViewEventFilter;
 };
 
 #endif

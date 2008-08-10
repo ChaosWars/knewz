@@ -8,98 +8,167 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>350</width>
-    <height>250</height>
+    <width>210</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="minimumSize" >
    <size>
-    <width>350</width>
-    <height>250</height>
+    <width>210</width>
+    <height>320</height>
    </size>
   </property>
   <property name="windowTitle" >
    <string>Server Settings</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" >
+  <layout class="QVBoxLayout" name="verticalLayout_3" >
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3" >
-     <item>
-      <widget class="QLabel" name="label" >
-       <property name="minimumSize" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="text" >
-        <string>Server</string>
-       </property>
-       <property name="buddy" >
-        <cstring>kcfg_server</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="kcfg_server" >
-       <property name="toolTip" >
-        <string>Server address</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Address of the NNTP server</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4" >
-     <item>
-      <widget class="QLabel" name="label_2" >
-       <property name="minimumSize" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="text" >
-        <string>Port</string>
-       </property>
-       <property name="buddy" >
-        <cstring>kcfg_port</cstring>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="kcfg_port" >
-       <property name="toolTip" >
-        <string>Server port</string>
-       </property>
-       <property name="whatsThis" >
-        <string>Port used to connect to the NNTP server</string>
-       </property>
-       <property name="maximum" >
-        <number>65535</number>
-       </property>
-       <property name="value" >
-        <number>119</number>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="minimumSize" >
+      <size>
+       <width>200</width>
+       <height>150</height>
+      </size>
+     </property>
+     <property name="title" >
+      <string>Server settings</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2" >
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3" >
+        <item>
+         <widget class="QLabel" name="label" >
+          <property name="minimumSize" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>&amp;Server</string>
+          </property>
+          <property name="buddy" >
+           <cstring>kcfg_server</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="KLineEdit" name="kcfg_server" >
+          <property name="showClearButton" stdset="0" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4" >
+        <item>
+         <widget class="QLabel" name="label_2" >
+          <property name="minimumSize" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="text" >
+           <string>P&amp;ort</string>
+          </property>
+          <property name="buddy" >
+           <cstring>kcfg_port</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="KIntSpinBox" name="kcfg_port" >
+          <property name="maximum" >
+           <number>65535</number>
+          </property>
+          <property name="value" >
+           <number>119</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5" >
+        <item>
+         <widget class="QLabel" name="label_5" >
+          <property name="text" >
+           <string>Co&amp;nnections</string>
+          </property>
+          <property name="buddy" >
+           <cstring>kcfg_connections</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3" >
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="KIntSpinBox" name="kcfg_connections" >
+          <property name="maximum" >
+           <number>65535</number>
+          </property>
+          <property name="value" >
+           <number>8</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="kcfg_authentication" >
      <property name="sizePolicy" >
-      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize" >
       <size>
-       <width>210</width>
-       <height>0</height>
+       <width>200</width>
+       <height>150</height>
       </size>
      </property>
      <property name="toolTip" >
@@ -109,7 +178,7 @@
       <string>Check this if the NNTP server requires authentication</string>
      </property>
      <property name="title" >
-      <string>Server requires authentication</string>
+      <string>Au&amp;thentication settings</string>
      </property>
      <property name="checkable" >
       <bool>true</bool>
@@ -127,7 +196,7 @@
          <string>Use SSL encryption to connect to the server.</string>
         </property>
         <property name="text" >
-         <string>Use SSL</string>
+         <string>Use SS&amp;L</string>
         </property>
        </widget>
       </item>
@@ -142,7 +211,7 @@
            </size>
           </property>
           <property name="text" >
-           <string>Username</string>
+           <string>&amp;Username</string>
           </property>
           <property name="buddy" >
            <cstring>kcfg_username</cstring>
@@ -150,12 +219,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="kcfg_username" >
-          <property name="toolTip" >
-           <string>Username for authentication</string>
-          </property>
-          <property name="whatsThis" >
-           <string>Username used for authenticating with the NNTP server</string>
+         <widget class="KLineEdit" name="kcfg_username" >
+          <property name="showClearButton" stdset="0" >
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -172,7 +238,7 @@
            </size>
           </property>
           <property name="text" >
-           <string>Password</string>
+           <string>&amp;Password</string>
           </property>
           <property name="buddy" >
            <cstring>kcfg_password</cstring>
@@ -180,15 +246,12 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="kcfg_password" >
-          <property name="toolTip" >
-           <string>Password for authentication</string>
+         <widget class="KLineEdit" name="kcfg_password" >
+          <property name="showClearButton" stdset="0" >
+           <bool>true</bool>
           </property>
-          <property name="whatsThis" >
-           <string>Password used for authenticating with the NNTP server</string>
-          </property>
-          <property name="echoMode" >
-           <enum>QLineEdit::Password</enum>
+          <property name="passwordMode" >
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -205,13 +268,34 @@
      <property name="sizeHint" stdset="0" >
       <size>
        <width>20</width>
-       <height>4</height>
+       <height>1</height>
       </size>
      </property>
     </spacer>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>klineedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>kcfg_server</tabstop>
+  <tabstop>kcfg_port</tabstop>
+  <tabstop>kcfg_connections</tabstop>
+  <tabstop>kcfg_authentication</tabstop>
+  <tabstop>kcfg_ssl</tabstop>
+  <tabstop>kcfg_username</tabstop>
+  <tabstop>kcfg_password</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

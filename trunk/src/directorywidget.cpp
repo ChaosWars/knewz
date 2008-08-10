@@ -18,33 +18,17 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-/**
- * @class GeneralWidget generalwidget.h
- */
-#ifndef GENERALSETTINGS_H
-#define GENERALSETTINGS_H
+#include "directorywidget.h"
 
-#include <QtGui/QWidget>
-#include <ui_generalsettings.h>
-
-/**
- * @brief General settings widget
- *
- * Widget providing an interface to the general settings for KNewz.
- *
- * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
- */
-class GeneralWidget : public QWidget, public Ui::GeneralSettings
+DirectoryWidget::DirectoryWidget( QWidget *parent )
+ : QWidget(parent)
 {
-    public:
+    setupUi( parent );
+}
 
-        /**
-         * Constructor
-         * @param parent
-         *      Parent widget.
-         */
-        GeneralWidget( QWidget *parent );
-        ~GeneralWidget();
-};
 
-#endif
+DirectoryWidget::~DirectoryWidget()
+{
+}
+
+#include "directorywidget.moc"

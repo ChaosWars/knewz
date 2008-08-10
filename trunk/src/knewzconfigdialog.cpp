@@ -23,8 +23,9 @@
 #include <KDE/KGlobal>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
+#include "directorywidget.h"
 #include "knewzconfigdialog.h"
-#include "generalwidget.h"
+#include "securitywidget.h"
 #include "serverwidget.h"
 #include "knewzsettings.h"
 #include "knewzwallet.h"
@@ -35,16 +36,19 @@ KNewzConfigDialog::KNewzConfigDialog( QWidget *parent, const QString &name, KCon
     : KConfigDialog( parent, name, config ), knewzwallet( NULL )
 {
     setAttribute( Qt::WA_DeleteOnClose );
-    QWidget *generalSettings = new QWidget();
-    generalWidget = new GeneralWidget( generalSettings );
-    addPage( generalSettings, i18n( "General" ), "preferences-system-general" );
+    QWidget *directorySettings = new QWidget();
+    directoryWidget = new DirectoryWidget( directorySettings );
+    addPage( directorySettings, i18n( "Directories" ), "folder" );
+    QWidget *securitySettings = new QWidget();
+    securityWidget = new SecurityWidget( securitySettings );
+    addPage( securitySettings, i18n( "Security" ), "folder-locked" );
     QWidget *serverSettings = new QWidget();
     serverWidget = new ServerWidget( serverSettings );
     addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );
     settings = KNewzSettings::self();
     connect( this, SIGNAL( applyClicked() ), SLOT( saveWalletSettings() ) );
 
-    if( settings->saveEncrypted() ){
+    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication()){
         setupWallet();
     }
 }
@@ -57,7 +61,7 @@ KNewzConfigDialog::~KNewzConfigDialog()
 
 void KNewzConfigDialog::saveWalletSettings()
 {
-    if( settings->saveEncrypted() ){
+    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
 
         if( !knewzwallet )
             setupWallet();

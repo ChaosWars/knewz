@@ -69,6 +69,11 @@ class KNewz : public KXmlGuiWindow
     public Q_SLOTS:
 
         /**
+         * Load the settings for the program
+         */
+        void loadSettings();
+
+        /**
          * Display the contents of @p files for selection and adding to the download queue.
          * @param files
          *      The list of files to open.
@@ -96,13 +101,13 @@ class KNewz : public KXmlGuiWindow
         QVBoxLayout *dockButtonLayout;
         QHBoxLayout *dockWidgetLayout;
         bool ok_to_close;
+        void checkDirectories();
         void createDockWidget();
         void setupActions();
         void setupWallet();
 
     private Q_SLOTS:
         void exit();
-        void loadSettings();
         void openRecentFile( const KUrl &url );
         void optionsConfigure();
         void urlOpen();

@@ -67,16 +67,18 @@ KNewz::KNewz( QWidget *parent )
     setupActions();
     setupGUI();
     setAutoSaveSettings();
+    checkDirectories();
     config = KGlobal::config();
     configGroup = new KConfigGroup( config, "RecentFiles" );
     recentFiles->loadEntries( *configGroup );
-    loadSettings();
     trayIcon = new KSystemTrayIcon( "knewz", this );
     trayIcon->contextMenu()->addAction( openFiles );
     trayIcon->contextMenu()->addAction( recentFiles );
     trayIcon->contextMenu()->addAction( preferences );
     connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
     trayIcon->show();
+    //Give the main window time to show before popping up the KWallet password dialog
+    QTimer::singleShot( 1000, this, SLOT( loadSettings() ) );
 }
 
 KNewz::~KNewz()
@@ -95,6 +97,27 @@ KNewz::~KNewz()
     delete view;
     delete downloadqueue;
     delete trayIcon;
+}
+
+void KNewz::checkDirectories()
+{
+    QDir tempDir( KNewzSettings::tempDirectory().path() );
+    if( !tempDir.exists() ){
+
+        if( !tempDir.mkpath( tempDir.path() ) ){
+            KMessageBox::error( this, "Error creating temp directory" );
+        }
+
+    }
+
+    QDir downloadDir( KNewzSettings::tempDirectory().path() );
+    if( !downloadDir.exists() ){
+
+        if( !downloadDir.mkpath( downloadDir.path() ) ){
+            KMessageBox::error( this, "Error creating download directory" );
+        }
+
+    }
 }
 
 void KNewz::createDockWidget()
@@ -173,7 +196,7 @@ void KNewz::optionsConfigure()
 
 void KNewz::loadSettings()
 {
-    if( KNewzSettings::saveEncrypted() ){
+    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
 
         if( !knewzwallet ){
             setupWallet();
@@ -194,8 +217,10 @@ void KNewz::setupActions()
 
 void KNewz::setupWallet()
 {
-    knewzwallet = KNewzWallet::Instance( this );
-    connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
+    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
+        knewzwallet = KNewzWallet::Instance( this );
+        connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
+    }
 }
 
 void KNewz::showFileOpenDialog( const QStringList &files )

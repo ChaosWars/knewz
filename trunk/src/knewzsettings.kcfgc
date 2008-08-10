@@ -2,5 +2,5 @@
 File=knewzsettings.kcfg
 ClassName=KNewzSettings
 Singleton=true
-Mutators=saveEncrypted,saveUnencrypted,server,port,ssl,authentication,username,password
+Mutators=saveEncrypted,saveUnencrypted,server,port,connections,ssl,authentication,username,password,tempDirectory,downloadDirectory
 # will create the necessary code for setting those variables
