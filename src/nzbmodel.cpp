@@ -219,26 +219,63 @@ void NzbModel::checkNone()
 
 void NzbModel::checkSelected()
 {
-    QModelIndexList selection = view->selectionModel()->selectedRows();
+    QModelIndexList list = view->selectionModel()->selectedRows();
 
-    for( int selected = 0, size = selection.size(); selected < size; selected++ ){
-        QModelIndex idx = selection.at( selected );
+    foreach( QModelIndex idx, list ){
         changeCheckState( idx, Qt::Checked );
     }
 }
 
 void NzbModel::uncheckSelected()
 {
-    QModelIndexList selection = view->selectionModel()->selectedRows();
+    QModelIndexList list = view->selectionModel()->selectedRows();
 
-    for( int selected = 0, size = selection.size(); selected < size; selected++ ){
-        QModelIndex idx = selection.at( selected );
+    foreach( QModelIndex idx, list ){
         changeCheckState( idx, Qt::Unchecked );
     }
 }
 
 void NzbModel::invertSelection()
 {
+    QModelIndexList list = view->selectionModel()->selectedRows();
+
+    /* We want to filter the index list here, since we cannot allow a selection to contain both
+    root items and children of those root items. Here we traverse the list, filtering out any
+    children who's parents are also in the list */
+    foreach( QModelIndex idx, list ){
+        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+
+        if( base->type() == "File" ){
+            File *file = dynamic_cast< File* >( base );
+
+            if( file ){
+                /* If the current files parent is also in the list, then we don't want to process it.
+                 */
+                if( list.indexOf( index( m_nzbFiles.indexOf( file->parent() ), 0 ) ) != -1 ){
+                    list.removeAt( list.indexOf( idx ) );
+                }
+            }
+        }
+
+    }
+
+    foreach( QModelIndex idx, list ){
+        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+
+        /* We know the children are all filtered out, so we traverse them all now and flip their checkstates */
+        if( base->type() =="NzbFile" ){
+            NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
+
+            if( nzbFile ){
+                for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+                    changeCheckState( index( i, 0, idx ), nzbFile->at( i )->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+                }
+            }
+        }else{
+            /* Dealing with selected files now */
+            changeCheckState( idx, base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+        }
+    }
 }
 
 #include "nzbmodel.moc"

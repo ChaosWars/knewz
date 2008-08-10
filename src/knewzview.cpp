@@ -45,7 +45,7 @@ bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
 
         if( keyEvent->key() == Qt::Key_Delete ){
             DownloadQueue *downloadqueue = DownloadQueue::Instance();
-            QModelIndexList list = m_parent->selectedIndexes();
+            QModelIndexList list = m_parent->selectionModel()->selectedRows();
             QList< BaseType* > rows;
 
             foreach( QModelIndex index, list ){
@@ -55,7 +55,9 @@ bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
                     File *file = dynamic_cast< File* >( base );
 
                     if( file ){
-                        //If the current files parent is also in the list, then we don't want to process it
+                        /* If the current files parent is also in the list, then we don't want to process it.
+                         * A return value of -1 means it's parent wasn't found, so we can add it.
+                         */
                         if( list.indexOf( m_parent->model()->index( downloadqueue->indexOf( file->parent() ), 0 ) ) == -1 ){
                             rows.append( base );
                         }

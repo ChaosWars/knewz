@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>GeneralSettings</class>
- <widget class="QWidget" name="GeneralSettings" >
+ <class>SecuritySettings</class>
+ <widget class="QWidget" name="SecuritySettings" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>General Settings</string>
+   <string>Security</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" >
    <item>

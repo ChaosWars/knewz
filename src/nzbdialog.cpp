@@ -23,27 +23,23 @@
 #include <KDE/KGlobal>
 #include <KDE/KIcon>
 #include <KDE/KLocalizedString>
-#include <QButtonGroup>
-#include <QHBoxLayout>
 #include <QHeaderView>
-#include <QPushButton>
-#include <QTreeView>
-#include <QVBoxLayout>
 #include "modeltest.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 
 NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     : QDialog( parent )
-//       view( new QTreeView( this ) ),
 {
     setupUi( this );
+    ok->setIcon( KIcon( "dialog-ok" ) );
+    cancel->setIcon( KIcon( "dialog-cancel" ) ); 
     model = new NzbModel( view, nzbFiles );
     modeltest = new ModelTest( model );
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     //Set up the signals
-    connect( acceptButtonBox, SIGNAL( accepted() ), SLOT( okSlot() ) );
+    connect( ok, SIGNAL( clicked() ), SLOT( okSlot() ) );
     connect( checkAll, SIGNAL( clicked() ), model, SLOT( checkAll() ) );
     connect( checkNone, SIGNAL( clicked() ), model, SLOT( checkNone() ) );
     connect( checkSelected, SIGNAL( clicked() ), model, SLOT( checkSelected() ) );
@@ -52,7 +48,7 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     //Read the saved configuration
     config = KGlobal::config();
     configGroup = new KConfigGroup( config, "NzbFileDialog" );
-    QVariant size( configGroup->readEntry( "size", QSize( 660, 495 ) ) );
+    QVariant size( configGroup->readEntry( "size", QSize( 750, 500 ) ) );
     resize( size.toSize() );
     view->resizeColumnToContents( 1 );
 }

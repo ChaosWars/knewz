@@ -19,57 +19,32 @@
  ***************************************************************************/
 
 /**
- * @class NzbDialog nzbdialog.h
+ * @class SecurityWidget securitywidget.h
  */
-#ifndef NZBDIALOG_H
-#define NZBDIALOG_H
+#ifndef SECURITYWIDGET_H
+#define SECURITYWIDGET_H
 
-#include <KDE/KConfig>
-#include <QDialog>
-#include "ui_nzbdialog.h"
-#include "nzbmodel.h"
+#include <QtGui/QWidget>
+#include <ui_securitysettings.h>
 
 /**
- * @brief Dialog for displaying the contents of an NZB file.
+ * @brief General settings widget
  *
- * Displays the contents of multiple NZB files, providing the user with a
- * way to interact with the contents of the files in a manner that enables
- * him to choose which of the contents he wishes to download.
+ * Widget providing an interface to the general settings for KNewz.
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class NzbDialog : public QDialog, public Ui::NzbDialog
+class SecurityWidget : public QWidget, public Ui::SecuritySettings
 {
-    Q_OBJECT
-
     public:
 
         /**
          * Constructor
          * @param parent
          *      Parent widget.
-         *
-         * @param nzbfiles
-         *      List of nzb files that the user wants to open.
          */
-        NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
-        ~NzbDialog();
-
-        /**
-         * Returns the selected files in the model.
-         * @return
-         *      The currently selected files in the model.
-         */
-        const QList< NzbFile* >& files(){ return model->files(); }
-
-    private:
-        KSharedConfigPtr config;
-        KConfigGroup *configGroup;
-        NzbModel *model;
-        ModelTest *modeltest;
-
-    private Q_SLOTS:
-        void okSlot();
+        SecurityWidget( QWidget *parent );
+        ~SecurityWidget();
 };
 
 #endif

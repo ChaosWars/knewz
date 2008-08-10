@@ -4,7 +4,18 @@
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
   <kcfgfile name="knewzrc"/>
-  <group name="GeneralSettings">
+  <include>QDir</include>
+  <group name="DirectorySettings">
+    <entry name="tempDirectory" type="Url">
+        <label>Temp directory</label>
+        <default>QDir::homePath() + "/knewz/temp"</default>
+    </entry>
+    <entry name="downloadDirectory" type="Url">
+        <label>Download directory</label>
+        <default>QDir::homePath() + "/Downloads"</default>
+    </entry>
+  </group>
+  <group name="SecuritySettings">
     <entry name="saveEncrypted" type="Bool">
         <label>Save server and login information using KWallet</label>
         <default>true</default>
@@ -21,6 +32,10 @@
     <entry name="port" type="Int">
 	    <label>Server port</label>
 	    <default>119</default>
+    </entry>
+    <entry name="connections" type="Int">
+        <label>Server connections</label>
+        <default>8</default>
     </entry>
     <entry name="ssl" type="Bool">
 	    <label>Connect to the server using SSL</label>

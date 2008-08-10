@@ -27,7 +27,8 @@
 #include <KDE/KConfigDialog>
 
 class QShowEvent;
-class GeneralWidget;
+class DirectoryWidget;
+class SecurityWidget;
 class ServerWidget;
 class KNewzSettings;
 class KNewzWallet;
@@ -52,7 +53,8 @@ class KNewzConfigDialog : public KConfigDialog
         void showEvent( QShowEvent *event );
 
     private:
-        GeneralWidget *generalWidget;
+        DirectoryWidget *directoryWidget;
+        SecurityWidget *securityWidget;
         ServerWidget *serverWidget;
         KNewzWallet *knewzwallet;
         KNewzSettings *settings;
