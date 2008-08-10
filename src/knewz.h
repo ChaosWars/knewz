@@ -27,6 +27,7 @@
 #ifndef KNEWZ_H
 #define KNEWZ_H
 
+#include <KDE/KSharedConfig>
 #include <KDE/KXmlGuiWindow>
 #include <KDE/KUrl>
 
@@ -34,10 +35,9 @@ class KAction;
 class KConfigGroup;
 class KRecentFilesAction;
 class KSystemTrayIcon;
-class QPushButton;
+class QAction;
 class QDockWidget;
-class QHBoxLayout;
-class QVBoxLayout;
+class DockButtonWidget;
 class DownloadQueue;
 class KNewzModel;
 class KNewzView;
@@ -65,6 +65,7 @@ class KNewz : public KXmlGuiWindow
          */
         KNewz( QWidget *parent = 0 );
         virtual ~KNewz();
+        void parseCommandLineArgs();
 
     public Q_SLOTS:
 
@@ -95,11 +96,9 @@ class KNewz : public KXmlGuiWindow
         KAction *openFiles, *preferences;
         KConfigGroup *configGroup;
         KNewzWallet *knewzwallet;
+        QAction *toggleDock;
         QDockWidget *dock;
-        QWidget *dockButtonWidget;
-        QPushButton *top, *up, *down, *bottom;
-        QVBoxLayout *dockButtonLayout;
-        QHBoxLayout *dockWidgetLayout;
+        DockButtonWidget *dockButtonWidget;
         bool ok_to_close;
         void checkDirectories();
         void createDockWidget();

@@ -8,14 +8,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>210</width>
-    <height>320</height>
+    <width>245</width>
+    <height>410</height>
    </rect>
   </property>
   <property name="minimumSize" >
    <size>
-    <width>210</width>
-    <height>320</height>
+    <width>245</width>
+    <height>410</height>
    </size>
   </property>
   <property name="windowTitle" >
@@ -26,7 +26,7 @@
     <widget class="QGroupBox" name="groupBox" >
      <property name="minimumSize" >
       <size>
-       <width>200</width>
+       <width>240</width>
        <height>150</height>
       </size>
      </property>
@@ -167,8 +167,8 @@
      </property>
      <property name="minimumSize" >
       <size>
-       <width>200</width>
-       <height>150</height>
+       <width>240</width>
+       <height>220</height>
       </size>
      </property>
      <property name="toolTip" >
@@ -256,6 +256,50 @@
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="securitySettings" >
+        <property name="minimumSize" >
+         <size>
+          <width>220</width>
+          <height>90</height>
+         </size>
+        </property>
+        <property name="title" >
+         <string>Security Settings</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4" >
+         <item>
+          <widget class="QRadioButton" name="kcfg_saveEncrypted" >
+           <property name="toolTip" >
+            <string>Save encrypted using KWallet</string>
+           </property>
+           <property name="whatsThis" >
+            <string>If this button is checked, the program will encrypt the server and login information using KWallet to save it securely</string>
+           </property>
+           <property name="text" >
+            <string>Save using KWallet</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="kcfg_saveUnencrypted" >
+           <property name="toolTip" >
+            <string>Save unencrypted in the programs configuration file</string>
+           </property>
+           <property name="whatsThis" >
+            <string>If this option is checked, the program will store the server and login information in the programs configuration file. This is insecure, and anyone with access to your home directory can read your login information.</string>
+           </property>
+           <property name="text" >
+            <string>Save in configuration file</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
      </layout>
     </widget>

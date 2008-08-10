@@ -17,17 +17,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#include "securitywidget.h"
 
-SecurityWidget::SecurityWidget( QWidget *parent )
- : QWidget( parent )
+#include "displaywidget.h"
+
+DisplayWidget::DisplayWidget(QWidget *parent)
+ : QWidget(parent)
 {
     setupUi( parent );
 }
 
-
-SecurityWidget::~SecurityWidget()
+DisplayWidget::~DisplayWidget()
 {
 }
 
-#include "securitywidget.moc"
+#include "displaywidget.moc"

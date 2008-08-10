@@ -22,9 +22,11 @@
 #include <KDE/KAboutData>
 #include <KDE/KCmdLineArgs>
 #include <KDE/KDebug>
-#include <KDE/KUniqueApplication>
-#include "knewz.h"
+// #include <KDE/KUniqueApplication>
 #include "file.h"
+#include "knewz.h"
+#include "knewzapplication.h"
+#include "knewzsettings.h"
 #include "nzbfile.h"
 #include "segment.h"
 
@@ -42,23 +44,22 @@ int main( int argc, char **argv )
     KCmdLineArgs::init( argc, argv, &about );
     KCmdLineArgs::addCmdLineOptions( options );
     KCmdLineArgs::addTempFileOption();
-    KUniqueApplication::addCmdLineOptions();
+    KNewzApplication::addCmdLineOptions();
 
-    if( !KUniqueApplication::start() ){
-        kDebug() << i18n( "KNewz is already running!" ) << endl;
+    if( !KNewzApplication::start() ){
         exit( EXIT_FAILURE );
     }
 
-    KUniqueApplication app;
+    KNewzApplication app;
     qRegisterMetaType<NzbFile>( "NzbFile" );
     qRegisterMetaType<File>( "File" );
     qRegisterMetaType<Segment>( "Segment" );
 //     qRegisterMetaTypeStreamOperators<NzbFile>( "NzbFile" );
 //     qRegisterMetaTypeStreamOperators<File>( "File" );
 //     qRegisterMetaTypeStreamOperators<Segment>( "Segment" );
-    app.setQuitOnLastWindowClosed( false );
-    KNewz *m = new KNewz();
-    m->show();
+//     app.setQuitOnLastWindowClosed( false );
+    KNewz *mainWindow = new KNewz();
+    KNewzSettings::startMinimized() ? mainWindow->hide() : mainWindow->show();
     return app.exec();
 
 }

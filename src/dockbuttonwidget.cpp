@@ -18,33 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-/**
- * @class SecurityWidget securitywidget.h
- */
-#ifndef SECURITYWIDGET_H
-#define SECURITYWIDGET_H
+#include <KDE/KIcon>
+#include "dockbuttonwidget.h"
 
-#include <QtGui/QWidget>
-#include <ui_securitysettings.h>
-
-/**
- * @brief General settings widget
- *
- * Widget providing an interface to the general settings for KNewz.
- *
- * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
- */
-class SecurityWidget : public QWidget, public Ui::SecuritySettings
+DockButtonWidget::DockButtonWidget(QWidget *parent)
+ : QWidget( parent )
 {
-    public:
+    setupUi( this );
+    top->setIcon( KIcon( "go-top" ) );
+    up->setIcon( KIcon( "go-up" ) );
+    down->setIcon( KIcon( "go-down" ) );
+    bottom->setIcon( KIcon( "go-bottom" ) );
+}
 
-        /**
-         * Constructor
-         * @param parent
-         *      Parent widget.
-         */
-        SecurityWidget( QWidget *parent );
-        ~SecurityWidget();
-};
+DockButtonWidget::~DockButtonWidget()
+{
+}
 
-#endif
+#include "dockbuttonwidget.moc"

@@ -237,6 +237,28 @@ void NzbModel::uncheckSelected()
 
 void NzbModel::invertSelection()
 {
+    for( int i = 0, size = rowCount(); i < size; i++ ){
+
+        switch( m_nzbFiles.at( i )->state() ){
+            case Qt::Unchecked:
+                    changeCheckState( index( i, 0 ), Qt::Checked );
+                break;
+            case Qt::Checked:
+                changeCheckState( index( i, 0 ), Qt::Unchecked );
+                break;
+            case Qt::PartiallyChecked:
+                for( int j = 0, sizej = m_nzbFiles.at( i )->size(); j < sizej; j++ ){
+                    changeCheckState( index( j, 0, index( i, 0 ) ), m_nzbFiles.at( i )->at( j )->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+                }
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+void NzbModel::invertSelectedRows()
+{
     QModelIndexList list = view->selectionModel()->selectedRows();
 
     /* We want to filter the index list here, since we cannot allow a selection to contain both

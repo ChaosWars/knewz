@@ -24,6 +24,7 @@
 #include <KDE/KIcon>
 #include <KDE/KLocalizedString>
 #include <QHeaderView>
+#include "knewzsettings.h"
 #include "modeltest.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
@@ -38,6 +39,8 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     modeltest = new ModelTest( model );
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+    view->setAnimated( KNewzSettings::animatedExpantion() );
+    view->setExpandsOnDoubleClick( KNewzSettings::expandOnDoubleClick() );
     //Set up the signals
     connect( ok, SIGNAL( clicked() ), SLOT( okSlot() ) );
     connect( checkAll, SIGNAL( clicked() ), model, SLOT( checkAll() ) );

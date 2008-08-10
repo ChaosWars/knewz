@@ -23,9 +23,8 @@
 #include <KDE/KGlobal>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
-#include "directorywidget.h"
+#include "displaywidget.h"
 #include "knewzconfigdialog.h"
-#include "securitywidget.h"
 #include "serverwidget.h"
 #include "knewzsettings.h"
 #include "knewzwallet.h"
@@ -36,12 +35,9 @@ KNewzConfigDialog::KNewzConfigDialog( QWidget *parent, const QString &name, KCon
     : KConfigDialog( parent, name, config ), knewzwallet( NULL )
 {
     setAttribute( Qt::WA_DeleteOnClose );
-    QWidget *directorySettings = new QWidget();
-    directoryWidget = new DirectoryWidget( directorySettings );
-    addPage( directorySettings, i18n( "Directories" ), "folder" );
-    QWidget *securitySettings = new QWidget();
-    securityWidget = new SecurityWidget( securitySettings );
-    addPage( securitySettings, i18n( "Security" ), "folder-locked" );
+    QWidget *displaySettings = new QWidget();
+    displayWidget = new DisplayWidget( displaySettings );
+    addPage( displaySettings, i18n( "Application" ), "preferences-desktop" );
     QWidget *serverSettings = new QWidget();
     serverWidget = new ServerWidget( serverSettings );
     addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );

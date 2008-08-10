@@ -37,6 +37,7 @@
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QMenu>
+#include "dockbuttonwidget.h"
 #include "downloadqueue.h"
 #include "knewz.h"
 #include "knewzconfigdialog.h"
@@ -77,6 +78,8 @@ KNewz::KNewz( QWidget *parent )
     trayIcon->contextMenu()->addAction( preferences );
     connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
     trayIcon->show();
+    //Parse command line arguments
+    parseCommandLineArgs();
     //Give the main window time to show before popping up the KWallet password dialog
     QTimer::singleShot( 1000, this, SLOT( loadSettings() ) );
 }
@@ -122,32 +125,34 @@ void KNewz::checkDirectories()
 
 void KNewz::createDockWidget()
 {
-    dock = new QDockWidget( "", this );
+    dock = new QDockWidget( "Queue Manager", this );
     dock->setObjectName( "DockWidget" );
     dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    dockButtonWidget = new QWidget();
-    dockWidgetLayout = new QHBoxLayout( dockButtonWidget );
-    dockWidgetLayout->addStretch();
-    dockButtonLayout = new QVBoxLayout();
-    dockButtonLayout->addStretch();
-    top = new QPushButton( KIcon( "go-top" ), QString() );
-    top->setFlat( true );
-    dockButtonLayout->addWidget( top );
-    up = new QPushButton( KIcon( "go-up" ), QString() );
-    up->setFlat( true );
-    dockButtonLayout->addWidget( up );
-    down = new QPushButton( KIcon( "go-down" ), QString() );
-    down->setFlat( true );
-    dockButtonLayout->addWidget( down );
-    bottom = new QPushButton( KIcon( "go-bottom" ), QString() );
-    bottom->setFlat( true );
-    dockButtonLayout->addWidget( bottom );
-    dockButtonLayout->addStretch();
-    dockWidgetLayout->addLayout( dockButtonLayout );
-    dockWidgetLayout->addStretch();
-    dockButtonWidget->setLayout( dockWidgetLayout );
+    dockButtonWidget = new DockButtonWidget( dock );
     dock->setWidget( dockButtonWidget );
     addDockWidget( Qt::LeftDockWidgetArea, dock );
+}
+
+void KNewz::loadSettings()
+{
+    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
+
+        if( !knewzwallet ){
+            setupWallet();
+        }
+
+    }
+
+    KNewzSettings::headerOrientationHorizontal() ?
+            dock->setFeatures( QDockWidget::DockWidgetClosable |
+                               QDockWidget::DockWidgetMovable |
+                               QDockWidget::DockWidgetFloatable ) :
+            dock->setFeatures( QDockWidget::DockWidgetClosable |
+                               QDockWidget::DockWidgetMovable |
+                               QDockWidget::DockWidgetFloatable |
+                               QDockWidget::DockWidgetVerticalTitleBar );
+    view->setAnimated( KNewzSettings::animatedExpantion() );
+    view->setExpandsOnDoubleClick( KNewzSettings::expandOnDoubleClick() );
 }
 
 void KNewz::openRecentFile( const KUrl &url )
@@ -194,21 +199,78 @@ void KNewz::optionsConfigure()
     dialog->show();
 }
 
-void KNewz::loadSettings()
+void KNewz::parseCommandLineArgs()
 {
-    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+    NzbReader reader;
+    QList<NzbFile*> nzbFiles;
 
-        if( !knewzwallet ){
-            setupWallet();
+    for( int i = 0, size = args->count(); i < size; i++ ){
+
+        if( !args->arg( i ).isEmpty() ){
+
+            NzbFile *nzbFile = reader.parseData( args->arg( i ) );
+
+            if( nzbFile->size() > 0 ){
+                nzbFiles.append( nzbFile );
+            }
         }
-
     }
+
+    if( nzbFiles.size() > 0 ){
+
+        if( !KNewzSettings::openFilesSilently() ){
+
+            NzbDialog *nzbDialog;
+            nzbDialog = new NzbDialog( this, nzbFiles );
+            nzbDialog->exec();
+
+            if( nzbDialog->result() == QDialog::Accepted ){
+                int count = nzbDialog->files().size();
+
+                if( count < 1 )
+                    return;
+
+                downloadqueue->mutex().lock();
+                int row = model->rowCount();
+                model->insertRows( row, count );
+
+                foreach( NzbFile *nzbFile, nzbDialog->files() ){
+                    QModelIndex idx = model->index( row, 0 );
+                    model->setData( idx, QVariant::fromValue( *nzbFile ) );
+                    row++;
+                }
+
+                downloadqueue->mutex().unlock();
+            }
+
+        }else{
+            int count = nzbFiles.size();
+            downloadqueue->mutex().lock();
+            int row = model->rowCount();
+            model->insertRows( row, count );
+
+            foreach( NzbFile *nzbFile, nzbFiles ){
+                QModelIndex idx = model->index( row, 0 );
+                model->setData( idx, QVariant::fromValue( *nzbFile ) );
+                row++;
+            }
+
+            downloadqueue->mutex().unlock();
+        }
+    }
+
+    args->clear();
 }
 
 void KNewz::setupActions()
 {
     setStandardToolBarMenuEnabled( true );
     createStandardStatusBarAction();
+    toggleDock = dock->toggleViewAction();
+    toggleDock->setObjectName( "toggle_dock" );
+    toggleDock->setText( "Show &Dock" );
+    actionCollection()->addAction( "toggle_dock", toggleDock );
     openFiles = KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
     recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
     KStandardAction::quit( this, SLOT( exit() ), actionCollection() );
@@ -230,7 +292,7 @@ void KNewz::showFileOpenDialog( const QStringList &files )
 
     for( int i = 0, size = files.size(); i < size; i++ ){
 
-        if( files.at( i ).size() > 0 ){
+        if( !files.at( i ).isEmpty() ){
             QString file( files.at( i ) );
 
             NzbFile *nzbFile = reader.parseData( file );
