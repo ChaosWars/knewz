@@ -38,6 +38,28 @@ KNewzModel::KNewzModel( KNewzView *parent )
     rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" ) << i18n( "Status" ) << i18n( "ETA" );
 }
 
+void KNewzModel::cleanSelection( QModelIndexList &selection ) const
+{
+    /* We want to filter the index list here, since we cannot allow a selection to contain both
+    root items and children of those root items. Here we traverse the list, filtering out any
+    children who's parents are also in the list */
+    foreach( QModelIndex index, selection ){
+        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+
+        if( base->type() == "File" ){
+            File *file = dynamic_cast< File* >( base );
+
+            if( file ){
+                //If the current files parent is also in the list, then we don't want to process it
+                if( selection.indexOf( this->index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
+                    selection.removeAt( selection.indexOf( index ) );
+                }
+            }
+        }
+
+    }
+}
+
 int KNewzModel::columnCount( const QModelIndex &/*parent*/ ) const
 {
     return 5;
@@ -329,25 +351,7 @@ QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
     QList< BaseType*> data;
     NzbMimeData *nzbMimeData = new NzbMimeData();
     QModelIndexList list = indexes;
-
-    /* We want to filter the index list here, since we cannot allow a selection to contain both
-       root items and children of those root items. Here we traverse the list, filtering out any
-       children who's parents are also in the list */
-    foreach( QModelIndex index, list ){
-        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-
-        if( base->type() == "File" ){
-            File *file = dynamic_cast< File* >( base );
-
-            if( file ){
-                //If the current files parent is also in the list, then we don't want to process it
-                if( list.indexOf( this->index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
-                    list.removeAt( list.indexOf( index ) );
-                }
-            }
-        }
-
-    }
+    cleanSelection( list );
 
     foreach( QModelIndex index, list ){
         BaseType *base = static_cast< BaseType* >( index.internalPointer() );
@@ -363,6 +367,26 @@ QStringList KNewzModel::mimeTypes() const
     QStringList mimetypes;
     mimetypes << "text/x-nzb";
     return mimetypes;
+}
+
+void KNewzModel::moveToTop( QModelIndexList &selection )
+{
+    cleanSelection( selection );
+}
+
+void KNewzModel::moveUp( QModelIndexList &selection )
+{
+    cleanSelection( selection );
+}
+
+void KNewzModel::moveDown( QModelIndexList &selection )
+{
+    cleanSelection( selection );
+}
+
+void KNewzModel::moveToBottom( QModelIndexList &selection )
+{
+    cleanSelection( selection );
 }
 
 QModelIndex KNewzModel::parent( const QModelIndex &index ) const

@@ -80,9 +80,16 @@ class KNewzModel : public BaseModel
         virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
         virtual Qt::DropActions supportedDropActions() const;
 
+    public Q_SLOTS:
+        void moveToTop( QModelIndexList &selection );
+        void moveUp( QModelIndexList &selection );
+        void moveDown( QModelIndexList &selection );
+        void moveToBottom( QModelIndexList &selection );
+
     private:
         KNewzView *m_parent;
         DownloadQueue *downloadqueue;
+        void cleanSelection( QModelIndexList &selection ) const;
 };
 
 #endif
