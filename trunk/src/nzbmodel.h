@@ -88,6 +88,11 @@ class NzbModel : public BaseModel
         void uncheckSelected();
 
         /**
+         * Invert the selection of the selected rows.
+         */
+        void invertSelectedRows();
+
+        /**
          * Invert the checked state of the selected items. If the selected
          * item is a NZB file, then the checked status of the multiparts
          * is inverted.

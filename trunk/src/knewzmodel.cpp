@@ -177,9 +177,25 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
             return false;
 
         QMutexLocker lock( &downloadqueue->mutex() );
+        /* Note: The list is garuanteed to contain only children who's parents are not in the list.
+           See mimeData()*/
         foreach( BaseType *base, nzbData ){
 
-            if( base->type() == "NzbData" ){
+            if( base->type() == "NzbFile" ){
+                NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
+                /* We can do this without an operator== in NzbFile since although the Qt docs claim
+                   you must have it, the compiler just compares the memory address if it isn't there.
+                   Since QList of pointers just copies the pointer, the memory in all lists will point
+                   to the same object. */
+                int row = downloadqueue->indexOf( nzbFile );
+
+                /* For some fucking irritating reason, Qt sends 5 drop events, 4 with row == -1... */
+                if( row >= 0 && row < downloadqueue->size() ){
+                    nzbFile = downloadqueue->takeAt( row );
+                    row = parent.isValid() ? parent.row() : rowCount();
+                    insertRows( row, 1 );
+                    setData( index( row, 0 ), QVariant::fromValue( *nzbFile ) );
+                }
             }else{
             }
 

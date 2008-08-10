@@ -17,18 +17,21 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef DOCKBUTTONWIDGET_H
+#define DOCKBUTTONWIDGET_H
 
-#include "directorywidget.h"
+#include <QWidget>
+#include "ui_dockbuttonwidget.h"
 
-DirectoryWidget::DirectoryWidget( QWidget *parent )
- : QWidget(parent)
+/**
+ * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
+ */
+class DockButtonWidget : public QWidget, public Ui::DockButtonWidget
 {
-    setupUi( parent );
-}
+    Q_OBJECT
+    public:
+        DockButtonWidget( QWidget *parent = 0 );
+        ~DockButtonWidget();
+};
 
-
-DirectoryWidget::~DirectoryWidget()
-{
-}
-
-#include "directorywidget.moc"
+#endif

@@ -17,22 +17,22 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef DIRECTORYWIDGET_H
-#define DIRECTORYWIDGET_H
+#ifndef DISPLAYWIDGET_H
+#define DISPLAYWIDGET_H
 
 #include <QWidget>
-#include "ui_directorysettings.h"
+#include "ui_displaysettings.h"
 
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class DirectoryWidget : public QWidget, Ui::DirectorySettings
+class DisplayWidget : public QWidget, public Ui::DisplaySettings
 {
     Q_OBJECT
 
     public:
-        DirectoryWidget(QWidget *parent = 0);
-        ~DirectoryWidget();
+        DisplayWidget(QWidget *parent = 0);
+        ~DisplayWidget();
 };
 
 #endif

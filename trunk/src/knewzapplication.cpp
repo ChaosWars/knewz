@@ -18,53 +18,50 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-/**
- * @class KNewzConfigDialog knewzconfigdialog.h
- */
-#ifndef KNEWZCONFIGDIALOG_H
-#define KNEWZCONFIGDIALOG_H
+#include <KDE/KCmdLineArgs>
+#include <KDE/KDebug>
+#include "knewz.h"
+#include "knewzapplication.h"
+#include "knewzsettings.h"
 
-#include <KDE/KConfigDialog>
-
-class QShowEvent;
-class DirectoryWidget;
-class DisplayWidget;
-class SecurityWidget;
-class ServerWidget;
-class KNewzSettings;
-class KNewzWallet;
-
-/**
- * @brief KConfigDialog for KNewz
- *
- * Overridden to provide for saving the login information in KWallet.
- * See the KDE documentation for KConfigDialog for member documentation.
- *
- * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
- */
-class KNewzConfigDialog : public KConfigDialog
-{
-    Q_OBJECT
-
-    public:
-        KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config );
-        ~KNewzConfigDialog();
-
-    protected:
-        void showEvent( QShowEvent *event );
-
-    private:
-        DirectoryWidget *directoryWidget;
-        DisplayWidget *displayWidget;
-        SecurityWidget *securityWidget;
-        ServerWidget *serverWidget;
-        KNewzWallet *knewzwallet;
-        KNewzSettings *settings;
-        void setupWallet();
-
-    private Q_SLOTS:
-        void saveWalletSettings();
-        void walletClosed();
-};
-
+#if defined Q_WS_X11
+#include <KDE/KStartupInfo>
 #endif
+
+KNewz* KNewzApplication::mainWindow = 0;
+
+KNewzApplication::KNewzApplication()
+ : KUniqueApplication()
+{
+    setQuitOnLastWindowClosed( false );
+}
+
+KNewzApplication::~KNewzApplication()
+{
+}
+
+int KNewzApplication::newInstance()
+{
+    if( !mainWindow ){
+        QList<KMainWindow*> allWindows = KMainWindow::memberList();
+
+        if (!allWindows.isEmpty()) {
+                mainWindow = dynamic_cast< KNewz* >( allWindows.first() );
+                KUniqueApplication::newInstance();
+            }
+
+    }else{
+        KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
+        KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
+        if( args->count() > 0 ){
+            mainWindow->parseCommandLineArgs();
+
+        }else{
+            KUniqueApplication::newInstance();
+        }
+
+    }
+
+    return 0;
+}

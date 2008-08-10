@@ -1,3 +1,9 @@
 <!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<kpartgui name="knewz" version="1">
+<gui name="knewz" version="1">
+    <MenuBar>
+        <Menu name="settings">
+            <Merge/>
+            <Action name="toggle_dock"/>
+        </Menu>
+    </MenuBar>
 </kpartgui>

@@ -3,53 +3,82 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
-  <kcfgfile name="knewzrc"/>
-  <include>QDir</include>
-  <group name="DirectorySettings">
-    <entry name="tempDirectory" type="Url">
-        <label>Temp directory</label>
-        <default>QDir::homePath() + "/knewz/temp"</default>
-    </entry>
-    <entry name="downloadDirectory" type="Url">
-        <label>Download directory</label>
-        <default>QDir::homePath() + "/Downloads"</default>
-    </entry>
-  </group>
-  <group name="SecuritySettings">
-    <entry name="saveEncrypted" type="Bool">
-        <label>Save server and login information using KWallet</label>
-        <default>true</default>
-    </entry>
-    <entry name="saveUnencrypted" type="Bool">
-        <label>Save server and login information in the programs configuration file</label>
-        <default>false</default>
-    </entry>
-  </group>
-  <group name="ServerSettings">
-    <entry name="server" type="String">
-	    <label>Server address</label>
-    </entry>
-    <entry name="port" type="Int">
-	    <label>Server port</label>
-	    <default>119</default>
-    </entry>
-    <entry name="connections" type="Int">
-        <label>Server connections</label>
-        <default>8</default>
-    </entry>
-    <entry name="ssl" type="Bool">
-	    <label>Connect to the server using SSL</label>
-	    <default>false</default>
-    </entry>
-    <entry name="authentication" type="Bool">
-	    <label>Server requires authentication</label>
-	    <default>false</default>
-    </entry>
-    <entry name="username" type="String">
-	    <label>Username</label>
-    </entry>
-    <entry name="password" type="String">
-	    <label>Password</label>
-    </entry>
-  </group>
+    <kcfgfile name="knewzrc"/>
+    <include>QDir</include>
+    <group name="DockWidgetSettings">
+        <entry name="headerOrientationHorizontal" type="Bool">
+            <label>Horizontal</label>
+            <default>true</default>
+        </entry>
+        <entry name="headerOrientationVertical" type="Bool">
+            <label>Vertical</label>
+            <default>false</default>
+        </entry>
+    </group>
+    <group name="DirectorySettings">
+        <entry name="tempDirectory" type="Url">
+            <label>Temp directory</label>
+            <default>QDir::homePath() + "/knewz/temp"</default>
+        </entry>
+        <entry name="downloadDirectory" type="Url">
+            <label>Download directory</label>
+            <default>QDir::homePath() + "/Downloads"</default>
+        </entry>
+    </group>
+    <group name="SecuritySettings">
+        <entry name="saveEncrypted" type="Bool">
+            <label>Save server and login information using KWallet</label>
+            <default>true</default>
+        </entry>
+        <entry name="saveUnencrypted" type="Bool">
+            <label>Save server and login information in the programs configuration file</label>
+            <default>false</default>
+        </entry>
+    </group>
+    <group name="ServerSettings">
+        <entry name="server" type="String">
+            <label>Server address</label>
+        </entry>
+        <entry name="port" type="Int">
+            <label>Server port</label>
+            <default>119</default>
+        </entry>
+        <entry name="connections" type="Int">
+            <label>Server connections</label>
+            <default>8</default>
+        </entry>
+        <entry name="ssl" type="Bool">
+            <label>Connect to the server using SSL</label>
+            <default>false</default>
+        </entry>
+        <entry name="authentication" type="Bool">
+            <label>Server requires authentication</label>
+            <default>false</default>
+        </entry>
+        <entry name="username" type="String">
+            <label>Username</label>
+        </entry>
+        <entry name="password" type="String">
+            <label>Password</label>
+        </entry>
+    </group>
+    <group name="SystemTraySettings">
+        <entry name="startMinimized" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="openFilesSilently" type="Bool">
+            <default>false</default>
+        </entry>
+    </group>
+    <group name="ViewSettings">
+        <entry name="expandOnDoubleClick" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="animatedExpantion" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="automaticallyResizeHeaders" type="Bool">
+            <default>false</default>
+        </entry>
+    </group>
 </kcfg>
