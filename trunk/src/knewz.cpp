@@ -43,6 +43,7 @@
 #include "knewzconfigdialog.h"
 #include "knewzmodel.h"
 #include "knewzsettings.h"
+#include "knewztitlewidget.h"
 #include "knewzview.h"
 #include "knewzwallet.h"
 #include "modeltest.h"
@@ -125,9 +126,13 @@ void KNewz::checkDirectories()
 
 void KNewz::createDockWidget()
 {
-    dock = new QDockWidget( "Queue Manager", this );
+    dock = new QDockWidget( QString(), this );
     dock->setObjectName( "DockWidget" );
     dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    titleWidget = new KNewzTitleWidget( dock );
+    titleWidget->setText( "Queue Manager" );
+    titleWidget->setPixmap( KIcon( "view-choose" ).pixmap( 32, 32 ), KTitleWidget::ImageRight );
+    dock->setTitleBarWidget( titleWidget );
     dockButtonWidget = new DockButtonWidget( dock );
     dock->setWidget( dockButtonWidget );
     addDockWidget( Qt::LeftDockWidgetArea, dock );

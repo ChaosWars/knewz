@@ -40,6 +40,7 @@ class QDockWidget;
 class DockButtonWidget;
 class DownloadQueue;
 class KNewzModel;
+class KNewzTitleWidget;
 class KNewzView;
 class KNewzWallet;
 class ModelTest;
@@ -95,6 +96,7 @@ class KNewz : public KXmlGuiWindow
         KRecentFilesAction *recentFiles;
         KAction *openFiles, *preferences;
         KConfigGroup *configGroup;
+        KNewzTitleWidget *titleWidget;
         KNewzWallet *knewzwallet;
         QAction *toggleDock;
         QDockWidget *dock;

@@ -4,15 +4,14 @@ INCLUDE( DBusMacros )
 INCLUDE_DIRECTORIES( ${KDE4_INCLUDES} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 SET( SRC basemodel.cpp
          dockbuttonwidget.cpp
-#          directorywidget.cpp
          displaywidget.cpp
          downloadqueue.cpp
          file.cpp
-#          securitywidget.cpp
          knewz.cpp
          knewzapplication.cpp
          knewzconfigdialog.cpp
          knewzmodel.cpp
+         knewztitlewidget.cpp
          knewzview.cpp
          knewzwallet.cpp
          main.cpp
