@@ -29,9 +29,16 @@
 class DockButtonWidget : public QWidget, public Ui::DockButtonWidget
 {
     Q_OBJECT
+
     public:
         DockButtonWidget( QWidget *parent = 0 );
         ~DockButtonWidget();
+
+    Q_SIGNALS:
+        void moveToTop();
+        void moveUp();
+        void moveDown();
+        void moveToBottom();
 };
 
 #endif

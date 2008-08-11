@@ -3,7 +3,7 @@
     <MenuBar>
         <Menu name="settings">
             <Merge/>
-            <Action name="toggle_dock"/>
+            <Action name="toggle_dock" append="save_merge"/>
         </Menu>
     </MenuBar>
 </kpartgui>

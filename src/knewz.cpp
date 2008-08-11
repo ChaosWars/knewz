@@ -134,6 +134,10 @@ void KNewz::createDockWidget()
     dockButtonWidget = new DockButtonWidget( dock );
     dock->setWidget( dockButtonWidget );
     addDockWidget( Qt::LeftDockWidgetArea, dock );
+    connect( dockButtonWidget, SIGNAL( moveToTop() ), model, SLOT( moveToTop() ) );
+    connect( dockButtonWidget, SIGNAL( moveUp() ), model, SLOT( moveUp() ) );
+    connect( dockButtonWidget, SIGNAL( moveDown() ), model, SLOT( moveDown() ) );
+    connect( dockButtonWidget, SIGNAL( moveToBottom() ), model, SLOT( moveToBottom() ) );
 }
 
 void KNewz::loadSettings()

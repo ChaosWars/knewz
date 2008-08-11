@@ -29,6 +29,10 @@ DockButtonWidget::DockButtonWidget(QWidget *parent)
     up->setIcon( KIcon( "go-up" ) );
     down->setIcon( KIcon( "go-down" ) );
     bottom->setIcon( KIcon( "go-bottom" ) );
+    connect( top, SIGNAL( clicked() ), this, SIGNAL( moveToTop() ) );
+    connect( up, SIGNAL( clicked() ), this, SIGNAL( moveUp() ) );
+    connect( down, SIGNAL( clicked() ), this, SIGNAL( moveDown() ) );
+    connect( bottom, SIGNAL( clicked() ), this, SIGNAL( moveToBottom() ) );
 }
 
 DockButtonWidget::~DockButtonWidget()
