@@ -27,6 +27,7 @@
 #include "basemodel.h"
 
 class DownloadQueue;
+class File;
 class KNewzView;
 class NzbFile;
 
@@ -81,15 +82,15 @@ class KNewzModel : public BaseModel
         virtual Qt::DropActions supportedDropActions() const;
 
     public Q_SLOTS:
-        void moveToTop( QModelIndexList &selection );
-        void moveUp( QModelIndexList &selection );
-        void moveDown( QModelIndexList &selection );
-        void moveToBottom( QModelIndexList &selection );
+        void moveToTop();
+        void moveUp();
+        void moveDown();
+        void moveToBottom();
 
     private:
         KNewzView *m_parent;
         DownloadQueue *downloadqueue;
-        void cleanSelection( QModelIndexList &selection ) const;
+        QList< File* > cleanSelection( QModelIndexList &selection ) const;
 };
 
 #endif
