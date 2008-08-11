@@ -135,14 +135,14 @@ void KNewzView::dropEvent( QDropEvent *event )
 {
     if( event->mimeData()->hasFormat( "text/uri-list" ) ){
         model()->dropMimeData( event->mimeData(), event->proposedAction(), -1, -1, indexAt( event->pos() ) );
-//         QTreeView::dropEvent( event );
         event->acceptProposedAction();
     }else if( event->mimeData()->hasFormat( "text/x-nzb" ) ){
+        event->setDropAction( Qt::MoveAction );
         const NzbMimeData *mimeData = qobject_cast< const NzbMimeData* >( event->mimeData() );
 
         if( mimeData ){
-            model()->dropMimeData( mimeData, event->proposedAction(), -1, -1, indexAt( event->pos() ) );
-            event->acceptProposedAction();
+            model()->dropMimeData( mimeData, event->dropAction(), -1, -1, indexAt( event->pos() ) );
+            event->accept();
         }
     }
 

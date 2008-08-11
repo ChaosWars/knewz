@@ -211,7 +211,8 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                    in all lists will point to the same object. */
                 int row = downloadqueue->indexOf( nzbFile );
 
-                /* For some fucking irritating reason, Qt sends 5 drop events, 4 with row == -1... */
+                /* For some fucking irritating reason, Qt sends 5 drop events,
+                   the last 4 being invalid and row will == -1 for them */
                 if( row >= 0 && row < downloadqueue->size() ){
                     /*We can't use remove/insertRows() here, and we need to implement the
                       begin/endRemove/InsertRows to avoid corruption of the model/view */
@@ -237,9 +238,24 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
             }else{
                 File *file = dynamic_cast< File* >( base );
 
-                //Only process the drop if it is dropped inside it's parent or on another child
-                if( file->parent() == parent.internalPointer() ){
-                }else if( file->parent() == parent.parent().internalPointer()  ){
+                //Only process the drop if it is dropped on it's parent or on another child
+                if( file->parent() == parent.internalPointer() || file->parent() == parent.parent().internalPointer() ){
+                    NzbFile *nzbFile = file->parent();
+                    int row = nzbFile->indexOf( file );
+
+                    if( row >= 0 && row < nzbFile->size() ){
+                        QModelIndex parentIdx = index( downloadqueue->indexOf( nzbFile ), 0 );
+                        QModelIndex idx = index( row, 0, parentIdx );
+                        beginRemoveRows( parentIdx, row, row );
+                        file = nzbFile->takeAt( row );
+                        endRemoveRows();
+                        row = file->parent() == parent.internalPointer() ? 0 : parent.row();
+                        beginInsertRows( parentIdx, row, row );
+                        nzbFile->insert( row, file );
+                        endInsertRows();
+                        emit dataChanged( index( row, 0, parentIdx ), index( row, columnCount(), parentIdx ) );
+                    }
+
                 }
             }
 
@@ -372,6 +388,7 @@ QStringList KNewzModel::mimeTypes() const
 void KNewzModel::moveToTop( QModelIndexList &selection )
 {
     cleanSelection( selection );
+    
 }
 
 void KNewzModel::moveUp( QModelIndexList &selection )

@@ -22,6 +22,8 @@
 
 #include <KDE/KTitleWidget>
 
+class QFrame;
+class QLabel;
 class QMouseEvent;
 class QResizeEvent;
 
@@ -42,6 +44,10 @@ class KNewzTitleWidget : public KTitleWidget
         virtual void mousePressEvent( QMouseEvent *event );
         virtual void mouseReleaseEvent( QMouseEvent *event );
         virtual void resizeEvent( QResizeEvent *event );
+
+    private:
+        QFrame *frame;
+        QLabel *text, *icon;
 };
 
 #endif

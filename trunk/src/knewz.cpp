@@ -130,8 +130,6 @@ void KNewz::createDockWidget()
     dock->setObjectName( "DockWidget" );
     dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     titleWidget = new KNewzTitleWidget( dock );
-    titleWidget->setText( "Queue Manager" );
-    titleWidget->setPixmap( KIcon( "view-choose" ).pixmap( 32, 32 ), KTitleWidget::ImageRight );
     dock->setTitleBarWidget( titleWidget );
     dockButtonWidget = new DockButtonWidget( dock );
     dock->setWidget( dockButtonWidget );
