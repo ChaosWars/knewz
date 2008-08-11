@@ -76,9 +76,9 @@ class File : public QList<Segment*>, public BaseType
         /**
          * Debug function. Prints the content of the queue via kDebug();
          */
-        void dumpQueue();
+        virtual void dumpQueue();
 
-        void print();
+        virtual void print();
 
         /**
          *  The size of the file.

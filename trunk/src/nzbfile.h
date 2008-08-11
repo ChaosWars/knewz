@@ -57,9 +57,9 @@ class NzbFile : public QList<File*>, public BaseType
         /**
          * Debug function. Prints the content of the queue via kDebug();
          */
-        void dumpQueue();
+        virtual void dumpQueue();
 
-        void print();
+        virtual void print();
 
         /**
          *  Sets the filename of the file.

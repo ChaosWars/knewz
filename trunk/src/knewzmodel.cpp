@@ -130,6 +130,7 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
 
 bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent )
 {
+    printf( "dropMimeData\n" );
     if( action == Qt::IgnoreAction )
         return true;
 
@@ -227,8 +228,6 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                    in all lists will point to the same object. */
                 int row = downloadqueue->indexOf( nzbFile );
 
-                /* For some fucking irritating reason, Qt sends 5 drop events,
-                   the last 4 being invalid and row will == -1 for them */
                 if( row >= 0 && row < downloadqueue->size() ){
                     /*We can't use remove/insertRows() here, and we need to implement the
                       begin/endRemove/InsertRows to avoid corruption of the model/view */
@@ -409,9 +408,11 @@ QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
     QModelIndexList list = indexes;
     cleanSelection( list );
 
-    foreach( QModelIndex index, list ){
-        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-        data.append( base );
+    foreach( const QModelIndex &index, list ){
+        if( index.column() == 0 ){
+            BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+            data.append( base );
+        }
     }
 
     nzbMimeData->setNzbData( data );
@@ -433,6 +434,10 @@ void KNewzModel::moveToTop()
     QMutexLocker lock( &downloadqueue->mutex() );
 
     foreach( const QModelIndex &idx, selection ){
+        if( idx.column() > 0 )
+            continue;
+
+        printf( "moveToTop\n" );
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
 
         if( base->type() == "NzbFile" ){

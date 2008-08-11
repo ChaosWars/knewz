@@ -46,7 +46,6 @@
 #include "knewztitlewidget.h"
 #include "knewzview.h"
 #include "knewzwallet.h"
-#include "modeltest.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 #include "nzbreader.h"
@@ -57,7 +56,6 @@ KNewz::KNewz( QWidget *parent )
     : KXmlGuiWindow( parent ),
       view( new KNewzView( this ) ),
       model( new KNewzModel( view ) ),
-      modeltest( new ModelTest( model, this ) ),
       downloadqueue( DownloadQueue::Instance() ),
       knewzwallet( NULL ),
       ok_to_close( false )
@@ -96,7 +94,6 @@ KNewz::~KNewz()
 
     delete configGroup;
     delete dock;
-    delete modeltest;
     delete model;
     delete view;
     delete downloadqueue;

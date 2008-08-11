@@ -15,7 +15,6 @@ SET( SRC basemodel.cpp
          knewzview.cpp
          knewzwallet.cpp
          main.cpp
-         modeltest.cpp
          nzbdialog.cpp
          nzbfile.cpp
          nzbhandler.cpp
