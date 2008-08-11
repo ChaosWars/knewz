@@ -40,10 +40,10 @@ Segment::~Segment()
 
 void Segment::print()
 {
-    kDebug() << "parent:" << m_parent;
-    kDebug() << "id:" << m_id;
-    kDebug() << "nr:" << m_nr;
-    kDebug() << "bytes:" << m_bytes;
+    printf( "parent: %p\n", m_parent );
+    printf( "id: %s\n", m_id.toStdString().c_str() );
+    printf( "nr: %d\n", m_nr );
+    printf( "bytes: %d\n", m_bytes );
 }
 
 Segment& Segment::operator=( const Segment &other )

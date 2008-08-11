@@ -61,6 +61,8 @@ class BaseType
          */
         BaseType( const BaseType &other ) : m_state( other.state() ){}
         virtual ~BaseType(){};
+        virtual void print() = 0;
+        virtual void dumpQueue() = 0;
 
         /**
          * Returns the checked state of the object.

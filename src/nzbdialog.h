@@ -66,7 +66,6 @@ class NzbDialog : public QDialog, public Ui::NzbDialog
         KSharedConfigPtr config;
         KConfigGroup *configGroup;
         NzbModel *model;
-        ModelTest *modeltest;
 
     private Q_SLOTS:
         void okSlot();

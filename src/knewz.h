@@ -43,7 +43,6 @@ class KNewzModel;
 class KNewzTitleWidget;
 class KNewzView;
 class KNewzWallet;
-class ModelTest;
 
 /**
  * @brief The main window of the program.
@@ -89,7 +88,6 @@ class KNewz : public KXmlGuiWindow
     private:
         KNewzView *view;
         KNewzModel *model;
-        ModelTest *modeltest;
         DownloadQueue *downloadqueue;
         KSharedConfigPtr config;
         KSystemTrayIcon *trayIcon;

@@ -50,8 +50,8 @@ void NzbFile::dumpQueue()
 
 void NzbFile::print()
 {
-    kDebug() << "filename:" << m_filename;
-    kDebug() << "bytes:" << m_bytes;
+    printf( "filename: %s\n", m_filename.toStdString().c_str() );
+    printf( "bytes: %d\n", m_bytes );
 }
 
 NzbFile& NzbFile::operator=( const NzbFile &other )

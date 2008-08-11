@@ -58,10 +58,10 @@ void File::dumpQueue()
 
 void File::print()
 {
-    kDebug() << "parent:" << m_parent;
-    kDebug() << "bytes:" << m_bytes;
-    kDebug() << "groups:" << m_groups;
-    kDebug() << "subject" << m_subject;
+    printf( "parent: %p\n", m_parent );
+    printf( "bytes: %d\n", m_bytes );
+    printf( "groups: %s\n", m_groups.join( "," ).toStdString().c_str() );
+    printf( "subject: %s\n", m_subject.toStdString().c_str() );
 }
 
 void File::setParent( NzbFile *parent )

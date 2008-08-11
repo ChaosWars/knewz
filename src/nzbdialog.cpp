@@ -25,7 +25,6 @@
 #include <KDE/KLocalizedString>
 #include <QHeaderView>
 #include "knewzsettings.h"
-#include "modeltest.h"
 #include "nzbdialog.h"
 #include "nzbfile.h"
 
@@ -36,7 +35,6 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     ok->setIcon( KIcon( "dialog-ok" ) );
     cancel->setIcon( KIcon( "dialog-cancel" ) ); 
     model = new NzbModel( view, nzbFiles );
-    modeltest = new ModelTest( model );
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     view->setAnimated( KNewzSettings::animatedExpantion() );
@@ -62,7 +60,6 @@ NzbDialog::~NzbDialog()
     configGroup->writeEntry( "size", size() );
     delete configGroup;
     delete model;
-    delete modeltest;
 }
 
 void NzbDialog::okSlot()
