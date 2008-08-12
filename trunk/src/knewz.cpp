@@ -31,12 +31,14 @@
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
 #include <KDE/KSystemTrayIcon>
+#include <KDE/KTabWidget>
 #include <QPushButton>
 #include <QDockWidget>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QMenu>
+#include "browserwidget.h"
 #include "dockbuttonwidget.h"
 #include "downloadqueue.h"
 #include "knewz.h"
@@ -54,15 +56,19 @@ using namespace KWallet;
 
 KNewz::KNewz( QWidget *parent )
     : KXmlGuiWindow( parent ),
-      view( new KNewzView( this ) ),
+      mainWidget( new KTabWidget( this ) ),
+      view( new KNewzView( mainWidget ) ),
       model( new KNewzModel( view ) ),
+      browserWidget( new BrowserWidget( mainWidget ) ),
       downloadqueue( DownloadQueue::Instance() ),
       knewzwallet( NULL ),
       ok_to_close( false )
 {
     view->setModel( model );
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
-    setCentralWidget( view );
+    mainWidget->addTab( view, KIcon( "view-list-text" ), "View" );
+    mainWidget->addTab( browserWidget, KIcon( "internet-web-browser" ), "Browser" );
+    setCentralWidget( mainWidget );
     createDockWidget();
     setupActions();
     setupGUI();
@@ -125,7 +131,7 @@ void KNewz::createDockWidget()
 {
     dock = new QDockWidget( QString(), this );
     dock->setObjectName( "DockWidget" );
-    dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+//     dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
     titleWidget = new KNewzTitleWidget( dock );
     dock->setTitleBarWidget( titleWidget );
     dockButtonWidget = new DockButtonWidget( dock );

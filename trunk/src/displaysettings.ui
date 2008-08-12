@@ -184,7 +184,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="dockWidgetSettings" >
+    <widget class="QGroupBox" name="queueManagerWidgetSettings" >
      <property name="minimumSize" >
       <size>
        <width>390</width>
