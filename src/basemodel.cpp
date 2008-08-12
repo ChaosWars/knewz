@@ -21,6 +21,7 @@
 #include <QTreeView>
 #include "basemodel.h"
 #include "basetype.h"
+#include "downloadqueue.h"
 #include "file.h"
 #include "nzbfile.h"
 
@@ -29,10 +30,12 @@ BaseModel::BaseModel( QTreeView *parent )
 {
     view = parent;
     connect( view, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
+    downloadqueue = DownloadQueue::Instance();
 }
 
 BaseModel::~BaseModel()
 {
+    downloadqueue->close();
 }
 
 QVariant BaseModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -83,6 +86,46 @@ void BaseModel::changeCheckState( const QModelIndex &idx, Qt::CheckState state, 
         counter == nzbFile->size() ? nzbFile->setState( m_state ) : nzbFile->setState( Qt::PartiallyChecked );
         view->update( idx.parent() );
     }
+}
+
+QList< File* > BaseModel::cleanSelection( QModelIndexList &selection ) const
+{
+    /* We want to filter the index list here, since we cannot allow a selection to contain both
+    root items and children of those root items. Here we traverse the list, filtering out any
+    children who's parents are also in the list */
+    QList< File* > files;
+    QMutableListIterator< QModelIndex > it( selection );
+
+    while( it.hasNext() ){
+        QModelIndex idx = it.next();
+        if( idx.column() > 0 ){
+            it.remove();
+            continue;
+        }
+
+    }
+
+    //List is now 4x shorter, so N^2 pays off
+    it.toFront();
+
+    while( it.hasNext() ){
+        QModelIndex idx = it.next();
+        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+
+        if( base->type() == "File" ){
+            File *file = dynamic_cast< File* >( base );
+
+            if( file ){
+                //If the current files parent is also in the list, then we don't want to process it
+                if( selection.indexOf( index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
+                    files.append( file );
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    return files;
 }
 
 #include "basemodel.moc"

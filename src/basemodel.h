@@ -27,8 +27,10 @@
 #include <QAbstractItemModel>
 #include <QStringList>
 
-class BaseType;
 class QTreeView;
+class BaseType;
+class DownloadQueue;
+class File;
 
 /**
  * @brief Base class for the internal models used by the program
@@ -46,7 +48,13 @@ class BaseModel : public QAbstractItemModel
 
         BaseModel( QTreeView *parent );
         virtual ~BaseModel() = 0;
+        virtual QList< File* > cleanSelection( QModelIndexList &selection ) const;
         virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+    protected:
+        QStringList rootItem;
+        QTreeView *view;
+        virtual void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
 
     protected Q_SLOTS:
 
@@ -58,10 +66,8 @@ class BaseModel : public QAbstractItemModel
          */
         virtual void clicked( const QModelIndex &index );
 
-    protected:
-        QStringList rootItem;
-        QTreeView *view;
-        virtual void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
+    private:
+        DownloadQueue *downloadqueue;
 
 };
 

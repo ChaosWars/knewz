@@ -90,7 +90,6 @@ class KNewzModel : public BaseModel
     private:
         KNewzView *m_parent;
         DownloadQueue *downloadqueue;
-        QList< File* > cleanSelection( QModelIndexList &selection ) const;
 };
 
 #endif

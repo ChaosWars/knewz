@@ -26,7 +26,7 @@ BrowserWidget::BrowserWidget(QWidget *parent)
  : QWidget(parent)
 {
     setupUi( this );
-    kcfg_navbar->setDuplicatesEnabled( false );
+    kcfg_searchBox->setEditable( false );
     back->setIcon( KIcon( "go-previous" ) );
     forward->setIcon( KIcon( "go-next" ) );
     reload->setIcon( KIcon( "view-refresh" ) );
@@ -36,8 +36,7 @@ BrowserWidget::BrowserWidget(QWidget *parent)
     forwardAction = webView->page()->action( QWebPage::Forward );
     reloadAction = webView->page()->action( QWebPage::Reload );
     stopAction = webView->page()->action( QWebPage::Stop );
-    connect( kcfg_navbar, SIGNAL( activated( const QString& ) ), this, SLOT( load( const QString& ) ) );
-    connect( kcfg_navbar, SIGNAL( activated( const QString& ) ), kcfg_navbar, SLOT( addToHistory( const QString& ) ) );
+    connect( kcfg_searchBox, SIGNAL( activated( const QString& ) ), this, SLOT( load( const QString& ) ) );
     connect( back, SIGNAL( clicked() ), backAction, SIGNAL( triggered() ) );
     connect( forward, SIGNAL( clicked() ), forwardAction, SIGNAL( triggered() ) );
     connect( reload, SIGNAL( clicked() ), reloadAction, SIGNAL( triggered() ) );
@@ -50,12 +49,12 @@ BrowserWidget::~BrowserWidget()
 
 void BrowserWidget::goSlot()
 {
-    QString url( kcfg_navbar->currentText() );
+    QString url( kcfg_searchBox->currentText() );
 
     if( url.left( 6 ) != "http://" )
             url.prepend( "http://" );
 
-    kcfg_navbar->changeURL( KUrl( url ), 0 );
+    kcfg_searchBox->changeURL( KUrl( url ), 0 );
     webView->load( QUrl(  ) );
 }
 
@@ -66,7 +65,7 @@ void BrowserWidget::load( const QString &string )
     if( url.left( 6 ) != "http://" )
         url.prepend( "http://" );
 
-    kcfg_navbar->changeURL( KUrl( url ), 0 );
+    kcfg_searchBox->changeURL( KUrl( url ), 0 );
     webView->load( QUrl( url ) );
 }
 
