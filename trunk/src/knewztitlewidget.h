@@ -20,21 +20,20 @@
 #ifndef KNEWZTITLEWIDGET_H
 #define KNEWZTITLEWIDGET_H
 
-#include <KDE/KTitleWidget>
+#include <QFrame>
 #include <QLabel>
 #include <QSizePolicy>
-#include <QStyleOptionFrameV2>
 
-class QFrame;
 class QMouseEvent;
 class QPaintEvent;
 class QResizeEvent;
+class QStyleOptionFrameV2;
 class TitleWidgetLabel;
 
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class KNewzTitleWidget : public KTitleWidget
+class KNewzTitleWidget : public QFrame
 {
     Q_OBJECT
 
@@ -42,7 +41,7 @@ class KNewzTitleWidget : public KTitleWidget
         KNewzTitleWidget(QWidget *parent = 0);
         ~KNewzTitleWidget();
         QSize minimumSizeHint() const;
-        Qt::Orientation orientation();
+        Qt::Orientation orientation(){ return m_orientation; }
         void setOrientation( Qt::Orientation orientation ){ m_orientation = orientation; }
         QSize sizeHint() const;
         QSizePolicy sizePolicy() const;
@@ -53,7 +52,6 @@ class KNewzTitleWidget : public KTitleWidget
 
     private:
         Qt::Orientation m_orientation;
-        QFrame *frame;
         TitleWidgetLabel *text, *icon;
         QHBoxLayout *hlayout;
         QVBoxLayout *vlayout;
@@ -68,11 +66,10 @@ class TitleWidgetLabel : public QLabel{
     Q_OBJECT
 
     public:
-        TitleWidgetLabel( QWidget *parent = 0, Qt::WindowFlags f = 0 );
-        TitleWidgetLabel( const QString & text, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+        TitleWidgetLabel( KNewzTitleWidget *parent = 0, Qt::WindowFlags f = 0 );
+        TitleWidgetLabel( const QString & text, KNewzTitleWidget * parent = 0, Qt::WindowFlags f = 0 );
         virtual ~TitleWidgetLabel(){};
         QSize minimumSizeHint() const;
-        void setParent( KNewzTitleWidget *parent );
         QSize sizeHint() const;
         QSizePolicy sizePolicy() const;
 
@@ -81,7 +78,7 @@ class TitleWidgetLabel : public QLabel{
         virtual void resizeEvent( QResizeEvent *event );
 
     private:
-        QStyleOption getStyleOption() const;
+//         QStyleOption getStyleOption() const;
         KNewzTitleWidget *m_parent;
 };
 

@@ -45,7 +45,7 @@
 #include "knewzconfigdialog.h"
 #include "knewzmodel.h"
 #include "knewzsettings.h"
-#include "knewztitlewidget.h"
+// #include "knewztitlewidget.h"
 #include "knewzview.h"
 #include "knewzwallet.h"
 #include "nzbdialog.h"
@@ -98,11 +98,11 @@ KNewz::~KNewz()
     if( knewzwallet )
         knewzwallet->close();
 
+    downloadqueue->close();
     delete configGroup;
     delete dock;
     delete model;
     delete view;
-    delete downloadqueue;
     delete trayIcon;
 }
 
@@ -131,9 +131,9 @@ void KNewz::createDockWidget()
 {
     dock = new QDockWidget( QString(), this );
     dock->setObjectName( "DockWidget" );
-//     dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    titleWidget = new KNewzTitleWidget( dock );
-    dock->setTitleBarWidget( titleWidget );
+    dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+//     titleWidget = new KNewzTitleWidget( dock );
+//     dock->setTitleBarWidget( titleWidget );
     dockButtonWidget = new DockButtonWidget( dock );
     dock->setWidget( dockButtonWidget );
     addDockWidget( Qt::LeftDockWidgetArea, dock );

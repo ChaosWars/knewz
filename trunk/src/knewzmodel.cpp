@@ -38,32 +38,6 @@ KNewzModel::KNewzModel( KNewzView *parent )
     rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" ) << i18n( "Status" ) << i18n( "ETA" );
 }
 
-QList< File* > KNewzModel::cleanSelection( QModelIndexList &selection ) const
-{
-    /* We want to filter the index list here, since we cannot allow a selection to contain both
-    root items and children of those root items. Here we traverse the list, filtering out any
-    children who's parents are also in the list */
-    QList< File* > files;
-    foreach( QModelIndex idx, selection ){
-        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
-
-        if( base->type() == "File" ){
-            File *file = dynamic_cast< File* >( base );
-
-            if( file ){
-                //If the current files parent is also in the list, then we don't want to process it
-                if( selection.indexOf( index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
-                    files.append( file );
-                    selection.takeAt( selection.indexOf( idx ) );
-                }
-            }
-        }
-
-    }
-
-    return files;
-}
-
 int KNewzModel::columnCount( const QModelIndex &/*parent*/ ) const
 {
     return 5;
@@ -130,7 +104,6 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
 
 bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int /*row*/, int /*column*/, const QModelIndex &parent )
 {
-    printf( "dropMimeData\n" );
     if( action == Qt::IgnoreAction )
         return true;
 
@@ -409,10 +382,11 @@ QMimeData* KNewzModel::mimeData(const QModelIndexList &indexes) const
     cleanSelection( list );
 
     foreach( const QModelIndex &index, list ){
-        if( index.column() == 0 ){
-            BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-            data.append( base );
-        }
+        if( index.column() > 0 )
+            continue;
+
+        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+        data.append( base );
     }
 
     nzbMimeData->setNzbData( data );
@@ -434,10 +408,7 @@ void KNewzModel::moveToTop()
     QMutexLocker lock( &downloadqueue->mutex() );
 
     foreach( const QModelIndex &idx, selection ){
-        if( idx.column() > 0 )
-            continue;
-
-        printf( "moveToTop\n" );
+        printf( "root row: %d\n", root.row() );
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
 
         if( base->type() == "NzbFile" ){

@@ -220,6 +220,7 @@ void NzbModel::checkNone()
 void NzbModel::checkSelected()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
+    cleanSelection( list );
 
     foreach( QModelIndex idx, list ){
         changeCheckState( idx, Qt::Checked );
@@ -229,6 +230,7 @@ void NzbModel::checkSelected()
 void NzbModel::uncheckSelected()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
+    cleanSelection( list );
 
     foreach( QModelIndex idx, list ){
         changeCheckState( idx, Qt::Unchecked );
@@ -260,26 +262,7 @@ void NzbModel::invertSelection()
 void NzbModel::invertSelectedRows()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
-
-    /* We want to filter the index list here, since we cannot allow a selection to contain both
-    root items and children of those root items. Here we traverse the list, filtering out any
-    children who's parents are also in the list */
-    foreach( QModelIndex idx, list ){
-        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
-
-        if( base->type() == "File" ){
-            File *file = dynamic_cast< File* >( base );
-
-            if( file ){
-                /* If the current files parent is also in the list, then we don't want to process it.
-                 */
-                if( list.indexOf( index( m_nzbFiles.indexOf( file->parent() ), 0 ) ) != -1 ){
-                    list.removeAt( list.indexOf( idx ) );
-                }
-            }
-        }
-
-    }
+    cleanSelection( list );
 
     foreach( QModelIndex idx, list ){
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );

@@ -25,9 +25,11 @@
 #include <KDE/KMessageBox>
 #include "displaywidget.h"
 #include "knewzconfigdialog.h"
-#include "serverwidget.h"
 #include "knewzsettings.h"
 #include "knewzwallet.h"
+#include "searchwidget.h"
+#include "serverwidget.h"
+
 
 using namespace KWallet;
 
@@ -36,11 +38,14 @@ KNewzConfigDialog::KNewzConfigDialog( QWidget *parent, const QString &name, KCon
 {
     setAttribute( Qt::WA_DeleteOnClose );
     QWidget *displaySettings = new QWidget();
-    displayWidget = new DisplayWidget( displaySettings );
+    DisplayWidget *displayWidget = new DisplayWidget( displaySettings );
     addPage( displaySettings, i18n( "Application" ), "preferences-desktop" );
     QWidget *serverSettings = new QWidget();
     serverWidget = new ServerWidget( serverSettings );
     addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );
+    QWidget *searchSettings = new QWidget();
+    SearchWidget *searchWidget = new SearchWidget( searchSettings );
+    addPage( searchSettings, i18n( "Search" ), "edit-find" );
     settings = KNewzSettings::self();
     connect( this, SIGNAL( applyClicked() ), SLOT( saveWalletSettings() ) );
 

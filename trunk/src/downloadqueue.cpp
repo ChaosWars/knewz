@@ -26,6 +26,7 @@
 
 DownloadQueue* DownloadQueue::m_instance = NULL;
 QMutex DownloadQueue::m_mutex;
+int DownloadQueue::m_count = 0;
 
 DownloadQueue::DownloadQueue()
 {
@@ -42,6 +43,7 @@ DownloadQueue* DownloadQueue::Instance()
         }
     }
 
+    m_count++;
     return m_instance;
 }
 
@@ -50,6 +52,17 @@ DownloadQueue::~DownloadQueue()
     QMutexLocker lock( &m_mutex );
     qDeleteAll( *this );
     clear();
+}
+
+void DownloadQueue::close()
+{
+    QMutexLocker lock( &m_mutex );
+    m_count--;
+
+    if( m_count < 1 ){
+        delete m_instance;
+        m_instance = 0;
+    }
 }
 
 void DownloadQueue::dumpQueue()

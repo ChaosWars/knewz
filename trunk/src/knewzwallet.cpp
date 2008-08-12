@@ -28,8 +28,8 @@ using namespace KWallet;
 
 QMutex KNewzWallet::m_mutex;
 int KNewzWallet::m_ref = 0;
-KNewzWallet* KNewzWallet::m_instance = NULL;
-Wallet* KNewzWallet::m_wallet = NULL;
+KNewzWallet* KNewzWallet::m_instance = 0;
+Wallet* KNewzWallet::m_wallet = 0;
 
 KNewzWallet::KNewzWallet( QWidget *parent )
     : QObject( parent )
@@ -61,9 +61,9 @@ void KNewzWallet::close()
     QMutexLocker lock( &m_mutex );
     m_ref--;
 
-    if( m_ref == 0 ){
+    if( m_ref < 1 ){
         delete m_wallet;
-        m_wallet = NULL;
+        m_wallet = 0;
     }
 }
 

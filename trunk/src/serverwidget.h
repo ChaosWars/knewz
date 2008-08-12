@@ -24,8 +24,8 @@
 #ifndef SERVERWIDGET_H
 #define SERVERWIDGET_H
 
-#include <QtGui/QWidget>
-#include <ui_serversettings.h>
+#include <QWidget>
+#include <ui_serverwidget.h>
 
 /**
  * @brief A widget for the NNTP server settings.
@@ -36,7 +36,7 @@
  *
  * @author Lawrence Lee
  */
-class ServerWidget : public QWidget, public Ui::ServerSettings
+class ServerWidget : public QWidget, public Ui::ServerWidget
 {
     Q_OBJECT
 

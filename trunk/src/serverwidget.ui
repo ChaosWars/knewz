@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>ServerSettings</class>
- <widget class="QWidget" name="ServerSettings" >
+ <class>ServerWidget</class>
+ <widget class="QWidget" name="ServerWidget" >
   <property name="windowModality" >
    <enum>Qt::NonModal</enum>
   </property>

@@ -81,8 +81,8 @@
             <default>false</default>
         </entry>
     </group>
-    <group name="WebBrowser">
-        <entry name="navbar" type="StringList">
+    <group name="SearchSettings">
+        <entry name="searchEngines" type="StringList">
         </entry>
     </group>
 </kcfg>

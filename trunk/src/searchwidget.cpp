@@ -18,47 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-/**
- * @class KNewzConfigDialog knewzconfigdialog.h
- */
-#ifndef KNEWZCONFIGDIALOG_H
-#define KNEWZCONFIGDIALOG_H
+#include <KDE/KIcon>
+#include "searchwidget.h"
 
-#include <KDE/KConfigDialog>
-
-class QShowEvent;
-class KNewzSettings;
-class KNewzWallet;
-class ServerWidget;
-
-/**
- * @brief KConfigDialog for KNewz
- *
- * Overridden to provide for saving the login information in KWallet.
- * See the KDE documentation for KConfigDialog for member documentation.
- *
- * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
- */
-class KNewzConfigDialog : public KConfigDialog
+SearchWidget::SearchWidget( QWidget *parent )
+ : QWidget( parent )
 {
-    Q_OBJECT
+    setupUi( parent );
+    add->setIcon( KIcon( "list-add" ) );
+    remove->setIcon( KIcon( "list-remove" ) );
+    moveToTop->setIcon( KIcon( "go-top" ) );
+    moveUp->setIcon( KIcon( "go-up" ) );
+    moveDown->setIcon( KIcon( "go-down" ) );
+    moveToBottom->setIcon( KIcon( "go-bottom" ) );
+}
 
-    public:
-        KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config );
-        ~KNewzConfigDialog();
+SearchWidget::~SearchWidget()
+{
+}
 
-    protected:
-        void showEvent( QShowEvent *event );
+void SearchWidget::addSearchEngine()
+{
+    
+}
 
-    private:
-        KNewzWallet *knewzwallet;
-        KNewzSettings *settings;
-        ServerWidget *serverWidget;
-        void setupWallet();
-
-    private Q_SLOTS:
-        void saveWalletSettings();
-        void walletClosed();
-};
-
-#endif
+#include "searchwidget.moc"

@@ -17,48 +17,25 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef SEARCHWIDGET_H
+#define SEARCHWIDGET_H
+
+#include <QWidget>
+#include "ui_searchwidget.h"
 
 /**
- * @class KNewzConfigDialog knewzconfigdialog.h
- */
-#ifndef KNEWZCONFIGDIALOG_H
-#define KNEWZCONFIGDIALOG_H
-
-#include <KDE/KConfigDialog>
-
-class QShowEvent;
-class KNewzSettings;
-class KNewzWallet;
-class ServerWidget;
-
-/**
- * @brief KConfigDialog for KNewz
- *
- * Overridden to provide for saving the login information in KWallet.
- * See the KDE documentation for KConfigDialog for member documentation.
- *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class KNewzConfigDialog : public KConfigDialog
+class SearchWidget : public QWidget, public Ui::SearchWidget
 {
     Q_OBJECT
 
     public:
-        KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config );
-        ~KNewzConfigDialog();
-
-    protected:
-        void showEvent( QShowEvent *event );
+        SearchWidget( QWidget *parent = 0 );
+        ~SearchWidget();
 
     private:
-        KNewzWallet *knewzwallet;
-        KNewzSettings *settings;
-        ServerWidget *serverWidget;
-        void setupWallet();
-
-    private Q_SLOTS:
-        void saveWalletSettings();
-        void walletClosed();
+        void addSearchEngine();
 };
 
 #endif

@@ -50,7 +50,8 @@ class DownloadQueue : public QList< NzbFile* >{
          * @returns The singleton instance of the download queue.
          */
         static DownloadQueue* Instance();
-        ~DownloadQueue();
+        
+        void close();
 
         /**
          * Returns the internal mutex that should be used to obtain a lock on the
@@ -70,8 +71,10 @@ class DownloadQueue : public QList< NzbFile* >{
 
     protected:
         DownloadQueue();
+        ~DownloadQueue();
 
     private:
+        static int m_count;
         static QMutex m_mutex;
         static DownloadQueue* m_instance;
 };
