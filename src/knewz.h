@@ -35,8 +35,10 @@ class KAction;
 class KConfigGroup;
 class KRecentFilesAction;
 class KSystemTrayIcon;
+class KTabWidget;
 class QAction;
 class QDockWidget;
+class BrowserWidget;
 class DockButtonWidget;
 class DownloadQueue;
 class KNewzModel;
@@ -86,14 +88,16 @@ class KNewz : public KXmlGuiWindow
         virtual bool queryExit();
 
     private:
+        KTabWidget *mainWidget;
         KNewzView *view;
         KNewzModel *model;
+        BrowserWidget *browserWidget;
         DownloadQueue *downloadqueue;
-        KSharedConfigPtr config;
-        KSystemTrayIcon *trayIcon;
-        KRecentFilesAction *recentFiles;
         KAction *openFiles, *preferences;
         KConfigGroup *configGroup;
+        KRecentFilesAction *recentFiles;
+        KSharedConfigPtr config;
+        KSystemTrayIcon *trayIcon;
         KNewzTitleWidget *titleWidget;
         KNewzWallet *knewzwallet;
         QAction *toggleDock;
