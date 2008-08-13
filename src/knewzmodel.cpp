@@ -404,11 +404,10 @@ void KNewzModel::moveToTop()
 {
     QModelIndexList selection = view->selectionModel()->selectedIndexes();
     QList< File* > files = cleanSelection( selection );
-    QModelIndex root = index( 0, 0 );
     QMutexLocker lock( &downloadqueue->mutex() );
+    NzbFile *root = downloadqueue->first();
 
     foreach( const QModelIndex &idx, selection ){
-        printf( "root row: %d\n", root.row() );
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
 
         if( base->type() == "NzbFile" ){
@@ -426,7 +425,7 @@ void KNewzModel::moveToTop()
                 nzbFile = downloadqueue->takeAt( row );
                 int rows = nzbFile->size();
                 endRemoveRows();
-                row = root.row();
+                row = downloadqueue->indexOf( root );
                 beginInsertRows( QModelIndex(), row, row );
                 downloadqueue->insert( row, nzbFile );
                 endInsertRows();
@@ -438,8 +437,8 @@ void KNewzModel::moveToTop()
 
                     if( firstChild.isValid() ){
                         /* Check if any children were selected. We can't just ignore them now,
-                        because this action can legally operate on both children an top-level
-                        items simultaneously */
+                           because this action can legally operate on both children and their top-level
+                           parent simultaneously */
                         QMutableListIterator< File* > it( files );
 
                         while( it.hasNext() ){
@@ -515,6 +514,100 @@ void KNewzModel::moveToBottom()
 {
     QModelIndexList selection = view->selectionModel()->selectedIndexes();
     QList< File* > files = cleanSelection( selection );
+    QMutexLocker lock( &downloadqueue->mutex() );
+    NzbFile *root = downloadqueue->last();
+
+    foreach( const QModelIndex &idx, selection ){
+        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+
+        if( base->type() == "NzbFile" ){
+            NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
+
+            if( !nzbFile )
+                continue;
+
+            int row = downloadqueue->indexOf( nzbFile );
+
+            if( row >= 0 && row < downloadqueue->size() ){
+                QModelIndex idx = index( row, 0 );
+                bool expanded = view->isExpanded( idx );
+                beginRemoveRows( QModelIndex(), row, row );
+                nzbFile = downloadqueue->takeAt( row );
+                int rows = nzbFile->size();
+                endRemoveRows();
+                row = downloadqueue->size();
+                beginInsertRows( QModelIndex(), row, row );
+                downloadqueue->append( nzbFile );
+                endInsertRows();
+                QModelIndex newIdx = index( row, 0 );
+                emit dataChanged( newIdx, index( rows, columnCount(), newIdx ) );
+
+                if( files.size() > 0 ){
+                    QModelIndex firstChild = index( 0, 0, newIdx );
+
+                    if( firstChild.isValid() ){
+                        /* Check if any children were selected. We can't just ignore them now,
+                        because this action can legally operate on both children and their top-level
+                        parent simultaneously */
+                        QMutableListIterator< File* > it( files );
+
+                        while( it.hasNext() ){
+                            File *file = it.next();
+
+                            if( file->parent() == nzbFile ){
+                                it.remove();
+                                int row = nzbFile->indexOf( file );
+
+                                if( row >= 0 && row < nzbFile->size() ){
+                                    beginRemoveRows( newIdx, row, row );
+                                    file = nzbFile->takeAt( row );
+                                    endRemoveRows();
+                                    row = firstChild.row();
+                                    beginInsertRows( newIdx, row, row );
+                                    nzbFile->insert( row, file );
+                                    endInsertRows();
+                                    emit dataChanged( index( row, 0, newIdx ), index( row, columnCount(), newIdx ) );
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if( expanded )
+                    view->setExpanded( newIdx, true );
+            }
+
+            root = nzbFile;
+        }else{
+            File *file = dynamic_cast< File* >( base );
+            NzbFile *nzbFile = file->parent();
+            QModelIndex parent = index( downloadqueue->indexOf( nzbFile ), 0 );
+
+            if( !parent.isValid() )
+                break;
+
+            QModelIndex firstChild = index( 0, 0, parent );
+
+            if( !firstChild.isValid() )
+                break;
+
+            int row = nzbFile->indexOf( file );
+
+            if( row >= 0 && row < nzbFile->size() ){
+                beginRemoveRows( parent, row, row );
+                file = nzbFile->takeAt( row );
+                endRemoveRows();
+                row = firstChild.row();
+                beginInsertRows( parent, row, row );
+                nzbFile->insert( row, file );
+                endInsertRows();
+                emit dataChanged( index( row, 0, parent ), index( row, columnCount(), parent ) );
+            }
+        }
+
+    }
+
+    view->selectionModel()->clearSelection();
 }
 
 QModelIndex KNewzModel::parent( const QModelIndex &index ) const

@@ -34,7 +34,7 @@
 class KAction;
 class KComboBox;
 class KConfigGroup;
-class KLineEdit;
+class KHistoryComboBox;
 class KRecentFilesAction;
 class KSystemTrayIcon;
 class KTabWidget;
@@ -112,7 +112,7 @@ class KNewz : public KXmlGuiWindow
 //         KNewzTitleWidget *titleWidget;
         //Search toolbar
         KComboBox *searchBox;
-        KLineEdit *searchLine;
+        KHistoryComboBox *searchLine;
         KAction *searchAction, *searchLineAction, *searchBoxAction;
         //Functions
         bool ok_to_close;

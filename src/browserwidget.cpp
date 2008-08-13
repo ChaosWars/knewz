@@ -18,14 +18,63 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include <KDE/KIcon>
+#include <KDE/KStandardDirs>
+#include <QFile>
+#include <QDataStream>
+#include <QNetworkCookie>
 #include <QUrl>
 #include "browserwidget.h"
+
+KNewzCookieJar::KNewzCookieJar( QObject *parent )
+    : QNetworkCookieJar( parent )
+{
+    QFile file( KStandardDirs::locateLocal( "appdata", "cookies/" ) + "cookies.dat" );
+    QByteArray cookies;
+
+    if( file.open( QIODevice::ReadOnly ) ){
+        QDataStream stream( &file );
+        stream >> cookies;
+
+//         quint32 size;
+//         while( !stream.atEnd() ){
+//             stream >> size;
+//             char *s = new char[size];
+// 
+//             if( stream.readRawData( s, size ) != -1 ){
+//                 cookies.append( s );
+//             }
+// 
+//         }
+    }
+
+    file.close();
+    QList< QNetworkCookie > cookieList = QNetworkCookie::parseCookies( cookies );
+    kDebug() << cookieList;
+    setAllCookies( cookieList );
+}
+
+KNewzCookieJar::~KNewzCookieJar()
+{
+    QFile file( KStandardDirs::locateLocal( "appdata", "cookies/" ) + "cookies.dat" );
+
+    if( file.open( QIODevice::WriteOnly ) ){
+        QDataStream stream( &file );
+
+        foreach( const QNetworkCookie &cookie, allCookies() ){
+            stream << cookie.toRawForm();
+        }
+    }
+    file.close();
+}
 
 BrowserWidget::BrowserWidget(QWidget *parent)
  : QWidget(parent)
 {
     setupUi( this );
+    QNetworkAccessManager *nam = webView->page()->networkAccessManager();
+    nam->setCookieJar( new KNewzCookieJar( nam ) );
     back->setIcon( KIcon( "go-previous" ) );
     forward->setIcon( KIcon( "go-next" ) );
     reload->setIcon( KIcon( "view-refresh" ) );
