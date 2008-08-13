@@ -32,7 +32,9 @@
 #include <KDE/KUrl>
 
 class KAction;
+class KComboBox;
 class KConfigGroup;
+class KLineEdit;
 class KRecentFilesAction;
 class KSystemTrayIcon;
 class KTabWidget;
@@ -42,7 +44,7 @@ class BrowserWidget;
 class DockButtonWidget;
 class DownloadQueue;
 class KNewzModel;
-class KNewzTitleWidget;
+// class KNewzTitleWidget;
 class KNewzView;
 class KNewzWallet;
 
@@ -88,31 +90,43 @@ class KNewz : public KXmlGuiWindow
         virtual bool queryExit();
 
     private:
+        //Variables
+        //Widgets
         KTabWidget *mainWidget;
         KNewzView *view;
         KNewzModel *model;
         BrowserWidget *browserWidget;
+        //Download queue instance
         DownloadQueue *downloadqueue;
+        //Actions
         KAction *openFiles, *preferences;
         KConfigGroup *configGroup;
         KRecentFilesAction *recentFiles;
         KSharedConfigPtr config;
         KSystemTrayIcon *trayIcon;
-        KNewzTitleWidget *titleWidget;
         KNewzWallet *knewzwallet;
+        //Dock Widget
         QAction *toggleDock;
         QDockWidget *dock;
         DockButtonWidget *dockButtonWidget;
+//         KNewzTitleWidget *titleWidget;
+        //Search toolbar
+        KComboBox *searchBox;
+        KLineEdit *searchLine;
+        KAction *searchAction, *searchLineAction, *searchBoxAction;
+        //Functions
         bool ok_to_close;
         void checkDirectories();
         void createDockWidget();
         void setupActions();
+        void setupToolbars();
         void setupWallet();
 
     private Q_SLOTS:
         void exit();
         void openRecentFile( const KUrl &url );
         void optionsConfigure();
+        void search();
         void urlOpen();
         void walletClosed();
 };
