@@ -21,8 +21,19 @@
 #ifndef BROWSER_H
 #define BROWSER_H
 
+#include <QNetworkCookieJar>
 #include <QWidget>
 #include "ui_browserwidget.h"
+
+class KNewzCookieJar : public QNetworkCookieJar
+{
+    Q_OBJECT
+
+    public:
+        KNewzCookieJar( QObject *parent = 0 );
+        ~KNewzCookieJar();
+};
+
 
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>

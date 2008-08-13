@@ -27,11 +27,12 @@
 #include <KDE/KConfigDialog>
 #include <KDE/KFileDialog>
 #include <KDE/KGlobal>
-#include <KDE/KLineEdit>
+#include <KDE/KHistoryComboBox>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
+#include <KDE/KStandardDirs>
 #include <KDE/KSystemTrayIcon>
 #include <KDE/KTabWidget>
 #include <KDE/KToolBar>
@@ -78,8 +79,6 @@ KNewz::KNewz( QWidget *parent )
     setAutoSaveSettings();
     checkDirectories();
     config = KGlobal::config();
-    configGroup = new KConfigGroup( config, "RecentFiles" );
-    recentFiles->loadEntries( *configGroup );
     trayIcon = new KSystemTrayIcon( "knewz", this );
     trayIcon->contextMenu()->addAction( openFiles );
     trayIcon->contextMenu()->addAction( recentFiles );
@@ -97,6 +96,9 @@ KNewz::~KNewz()
     //Save the recent files entries
     configGroup->changeGroup( "RecentFiles" );
     recentFiles->saveEntries( *configGroup );
+    configGroup->changeGroup( "SearchSettings" );
+    configGroup->writeEntry( "SearchHistory", searchLine->historyItems() );
+    configGroup->writeEntry( "CompletionHistory", searchLine->completionObject()->items() );
 
     if( knewzwallet )
         knewzwallet->close();
@@ -148,6 +150,12 @@ void KNewz::createDockWidget()
 
 void KNewz::loadSettings()
 {
+    configGroup = new KConfigGroup( config, "RecentFiles" );
+    recentFiles->loadEntries( *configGroup );
+    configGroup->changeGroup( "SearchSettings" );
+    searchLine->setHistoryItems( configGroup->readEntry( "SearchHistory", QStringList() ) );
+    searchLine->completionObject()->setItems( configGroup->readEntry( "CompletionHistory", QStringList() ) );
+
     if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
 
         if( !knewzwallet ){
@@ -278,7 +286,7 @@ void KNewz::parseCommandLineArgs()
 
 void KNewz::search()
 {
-    browserWidget->load( searchLine->text() );
+    browserWidget->load( searchLine->currentText() );
 }
 
 void KNewz::setupActions()
@@ -306,10 +314,11 @@ void KNewz::setupToolbars()
 {
     setStandardToolBarMenuEnabled( true );
     //Set up the search line
-    searchLine = new KLineEdit( this );
+    searchLine = new KHistoryComboBox( this );
+    searchLine->setInsertPolicy( QComboBox::InsertAtBottom );
+    searchLine->setDuplicatesEnabled( false );
     searchLine->setMinimumSize( 200, 30 );
     searchLine->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-    searchLine->setClearButtonShown(true);
     connect( searchLine, SIGNAL( returnPressed() ), this, SLOT( search() ) );
     searchLineAction = new KAction( i18n( "Search Text" ), this );
     searchLineAction->setDefaultWidget( searchLine );
