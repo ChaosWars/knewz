@@ -22,22 +22,24 @@
 #include <KDE/KActionCollection>
 #include <KDE/KApplication>
 #include <KDE/KCmdLineArgs>
+#include <KDE/KComboBox>
 #include <KDE/KConfig>
 #include <KDE/KConfigDialog>
 #include <KDE/KFileDialog>
 #include <KDE/KGlobal>
+#include <KDE/KLineEdit>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
 #include <KDE/KRecentFilesAction>
 #include <KDE/KStandardAction>
 #include <KDE/KSystemTrayIcon>
 #include <KDE/KTabWidget>
-#include <QPushButton>
+#include <KDE/KToolBar>
 #include <QDockWidget>
-#include <QHBoxLayout>
 #include <QHeaderView>
-#include <QVBoxLayout>
+#include <QLabel>
 #include <QMenu>
+#include <QSizePolicy>
 #include "browserwidget.h"
 #include "dockbuttonwidget.h"
 #include "downloadqueue.h"
@@ -71,6 +73,7 @@ KNewz::KNewz( QWidget *parent )
     setCentralWidget( mainWidget );
     createDockWidget();
     setupActions();
+    setupToolbars();
     setupGUI();
     setAutoSaveSettings();
     checkDirectories();
@@ -273,9 +276,13 @@ void KNewz::parseCommandLineArgs()
     args->clear();
 }
 
+void KNewz::search()
+{
+    browserWidget->load( searchLine->text() );
+}
+
 void KNewz::setupActions()
 {
-    setStandardToolBarMenuEnabled( true );
     createStandardStatusBarAction();
     toggleDock = dock->toggleViewAction();
     toggleDock->setObjectName( "toggle_dock" );
@@ -293,6 +300,35 @@ void KNewz::setupWallet()
         knewzwallet = KNewzWallet::Instance( this );
         connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
     }
+}
+
+void KNewz::setupToolbars()
+{
+    setStandardToolBarMenuEnabled( true );
+    //Set up the search line
+    searchLine = new KLineEdit( this );
+    searchLine->setMinimumSize( 200, 30 );
+    searchLine->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    searchLine->setClearButtonShown(true);
+    connect( searchLine, SIGNAL( returnPressed() ), this, SLOT( search() ) );
+    searchLineAction = new KAction( i18n( "Search Text" ), this );
+    searchLineAction->setDefaultWidget( searchLine );
+    actionCollection()->addAction( "search_line_action", searchLineAction );
+    //Set up the search action button
+    searchAction = new KAction( KIcon( "edit-find" ), i18n( "Search" ), this );
+    connect( searchAction, SIGNAL( triggered() ), this, SLOT( search() ) );
+    actionCollection()->addAction( "search_action", searchAction );
+    //Set up the label
+    QLabel *searchLabel = new QLabel( "Search Engine:", this );
+    KAction *searchLabelAction = new KAction( i18n( "Search Label" ), this );
+    searchLabelAction->setDefaultWidget( searchLabel );
+    actionCollection()->addAction( "search_label", searchLabelAction );
+    //Set up the search box
+    searchBox = new KComboBox( this );
+    searchBox->setMinimumSize( 200, 30 );
+    searchBoxAction = new KAction( i18n( "Search Engine" ), this );
+    searchBoxAction->setDefaultWidget( searchBox );
+    actionCollection()->addAction( "search_box_action", searchBoxAction );
 }
 
 void KNewz::showFileOpenDialog( const QStringList &files )

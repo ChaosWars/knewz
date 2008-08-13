@@ -26,46 +26,30 @@ BrowserWidget::BrowserWidget(QWidget *parent)
  : QWidget(parent)
 {
     setupUi( this );
-    kcfg_searchBox->setEditable( false );
     back->setIcon( KIcon( "go-previous" ) );
     forward->setIcon( KIcon( "go-next" ) );
     reload->setIcon( KIcon( "view-refresh" ) );
     stop->setIcon( KIcon( "process-stop" ) );
-    go->setIcon( KIcon( "go-jump-locationbar" ) );
     backAction = webView->page()->action( QWebPage::Back );
     forwardAction = webView->page()->action( QWebPage::Forward );
     reloadAction = webView->page()->action( QWebPage::Reload );
     stopAction = webView->page()->action( QWebPage::Stop );
-    connect( kcfg_searchBox, SIGNAL( activated( const QString& ) ), this, SLOT( load( const QString& ) ) );
     connect( back, SIGNAL( clicked() ), backAction, SIGNAL( triggered() ) );
     connect( forward, SIGNAL( clicked() ), forwardAction, SIGNAL( triggered() ) );
     connect( reload, SIGNAL( clicked() ), reloadAction, SIGNAL( triggered() ) );
-    connect( go, SIGNAL( clicked() ), this, SLOT( goSlot() ) );
 }
 
 BrowserWidget::~BrowserWidget()
 {
 }
 
-void BrowserWidget::goSlot()
-{
-    QString url( kcfg_searchBox->currentText() );
-
-    if( url.left( 6 ) != "http://" )
-            url.prepend( "http://" );
-
-    kcfg_searchBox->changeURL( KUrl( url ), 0 );
-    webView->load( QUrl(  ) );
-}
-
 void BrowserWidget::load( const QString &string )
 {
     QString url = string;
 
-    if( url.left( 6 ) != "http://" )
+    if( url.left( 7 ) != "http://" )
         url.prepend( "http://" );
 
-    kcfg_searchBox->changeURL( KUrl( url ), 0 );
     webView->load( QUrl( url ) );
 }
 

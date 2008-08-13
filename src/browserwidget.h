@@ -35,8 +35,7 @@ class BrowserWidget : public QWidget, Ui::BrowserWidget
         BrowserWidget(QWidget *parent = 0);
         ~BrowserWidget();
 
-    private Q_SLOTS:
-        void goSlot();
+    public Q_SLOTS:
         void load( const QString &string );
 
     private:
