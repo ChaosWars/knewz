@@ -36,20 +36,10 @@ KNewzCookieJar::KNewzCookieJar( QObject *parent )
     if( file.open( QIODevice::ReadOnly ) ){
         QDataStream stream( &file );
         stream >> cookies;
-
-//         quint32 size;
-//         while( !stream.atEnd() ){
-//             stream >> size;
-//             char *s = new char[size];
-// 
-//             if( stream.readRawData( s, size ) != -1 ){
-//                 cookies.append( s );
-//             }
-// 
-//         }
     }
 
     file.close();
+    kDebug() << cookies;
     QList< QNetworkCookie > cookieList = QNetworkCookie::parseCookies( cookies );
     kDebug() << cookieList;
     setAllCookies( cookieList );
@@ -61,8 +51,9 @@ KNewzCookieJar::~KNewzCookieJar()
 
     if( file.open( QIODevice::WriteOnly ) ){
         QDataStream stream( &file );
+        QList< QNetworkCookie > cookies = allCookies();
 
-        foreach( const QNetworkCookie &cookie, allCookies() ){
+        foreach( const QNetworkCookie &cookie, cookies ){
             stream << cookie.toRawForm();
         }
     }
