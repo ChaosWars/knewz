@@ -93,7 +93,7 @@ QList< File* > BaseModel::cleanSelection( QModelIndexList &selection ) const
     /* We want to filter the index list here, since we cannot allow a selection to contain both
     root items and children of those root items. Here we traverse the list, filtering out any
     children who's parents are also in the list */
-    QList< File* > files;
+
     QMutableListIterator< QModelIndex > it( selection );
 
     while( it.hasNext() ){
@@ -105,8 +105,11 @@ QList< File* > BaseModel::cleanSelection( QModelIndexList &selection ) const
 
     }
 
+    qSort( selection.begin(), selection.end() );
+
     //List is now 4x shorter, so N^2 pays off
     it.toFront();
+    QList< File* > files;
 
     while( it.hasNext() ){
         QModelIndex idx = it.next();
