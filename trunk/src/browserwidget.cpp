@@ -31,17 +31,25 @@ KNewzCookieJar::KNewzCookieJar( QObject *parent )
     : QNetworkCookieJar( parent )
 {
     QFile file( KStandardDirs::locateLocal( "appdata", "cookies/" ) + "cookies.dat" );
-    QByteArray cookies;
+    QByteArray buffer;
+    QList<QByteArray> cookies;
 
     if( file.open( QIODevice::ReadOnly ) ){
         QDataStream stream( &file );
-        stream >> cookies;
+
+        while( stream.status() == QDataStream::Ok ){
+            stream >> buffer;
+            cookies << buffer;
+        }
     }
 
     file.close();
-    kDebug() << cookies;
-    QList< QNetworkCookie > cookieList = QNetworkCookie::parseCookies( cookies );
-    kDebug() << cookieList;
+    QList< QNetworkCookie > cookieList;
+
+    foreach( const QByteArray &cookie, cookies ){
+        cookieList << QNetworkCookie::parseCookies( cookie );
+    }
+
     setAllCookies( cookieList );
 }
 
@@ -56,7 +64,9 @@ KNewzCookieJar::~KNewzCookieJar()
         foreach( const QNetworkCookie &cookie, cookies ){
             stream << cookie.toRawForm();
         }
+
     }
+
     file.close();
 }
 
