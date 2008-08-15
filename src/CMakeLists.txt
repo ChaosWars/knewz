@@ -4,6 +4,7 @@ INCLUDE( DBusMacros )
 INCLUDE_DIRECTORIES( ${KDE4_INCLUDES} ${QT_INCLUDES} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} )
 SET( SRC basemodel.cpp
          browserwidget.cpp
+         connection.cpp
          dockbuttonwidget.cpp
          displaywidget.cpp
          downloadqueue.cpp
@@ -24,7 +25,8 @@ SET( SRC basemodel.cpp
          nzbreader.cpp
          searchwidget.cpp
          segment.cpp
-         serverwidget.cpp )
+         serverwidget.cpp
+         socket.cpp )
 SET( DBUS_SERVICE_SRC com.googlecode.knewz.service.in )
 PKGCONFIG_GETVAR( dbus-1 session_bus_services_dir dbus_service_file_install_dir )
 KDE4_ADD_UI_FILES( SRC browserwidget.ui displaysettings.ui dockbuttonwidget.ui nzbdialog.ui searchwidget.ui serverwidget.ui )
