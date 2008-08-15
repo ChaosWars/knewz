@@ -23,6 +23,7 @@
 #include <KDE/KGlobal>
 #include <KDE/KLocale>
 #include <KDE/KMessageBox>
+#include <KDE/KStandardDirs>
 #include "displaywidget.h"
 #include "knewzconfigdialog.h"
 #include "knewzsettings.h"
@@ -38,20 +39,20 @@ KNewzConfigDialog::KNewzConfigDialog( QWidget *parent, const QString &name, KCon
 {
     setAttribute( Qt::WA_DeleteOnClose );
     QWidget *displaySettings = new QWidget();
-    DisplayWidget *displayWidget = new DisplayWidget( displaySettings );
+    displayWidget = new DisplayWidget( displaySettings );
     addPage( displaySettings, i18n( "Application" ), "preferences-desktop" );
     QWidget *serverSettings = new QWidget();
     serverWidget = new ServerWidget( serverSettings );
     addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );
     QWidget *searchSettings = new QWidget();
-    SearchWidget *searchWidget = new SearchWidget( searchSettings );
+    searchWidget = new SearchWidget( searchSettings );
     addPage( searchSettings, i18n( "Search" ), "edit-find" );
-    settings = KNewzSettings::self();
     connect( this, SIGNAL( applyClicked() ), SLOT( saveWalletSettings() ) );
 
     if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication()){
         setupWallet();
     }
+
 }
 
 

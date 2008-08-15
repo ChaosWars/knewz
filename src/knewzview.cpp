@@ -30,6 +30,7 @@
 #include "basetype.h"
 #include "downloadqueue.h"
 #include "file.h"
+#include "knewzmodel.h"
 #include "knewzview.h"
 #include "nzbfile.h"
 #include "nzbmimedata.h"
@@ -44,33 +45,13 @@ bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
         QKeyEvent *keyEvent = dynamic_cast< QKeyEvent* >( event );
 
         if( keyEvent->key() == Qt::Key_Delete ){
-            DownloadQueue *downloadqueue = DownloadQueue::Instance();
-            QModelIndexList list = m_parent->selectionModel()->selectedRows();
-            QList< BaseType* > rows;
-
-            foreach( QModelIndex index, list ){
-                BaseType *base = static_cast< BaseType* >( index.internalPointer() );
-
-                if( base->type() == "File" ){
-                    File *file = dynamic_cast< File* >( base );
-
-                    if( file ){
-                        /* If the current files parent is also in the list, then we don't want to process it.
-                         * A return value of -1 means it's parent wasn't found, so we can add it.
-                         */
-                        if( list.indexOf( m_parent->model()->index( downloadqueue->indexOf( file->parent() ), 0 ) ) == -1 ){
-                            rows.append( base );
-                        }
-                    }
-                }else{
-                    rows.append( base );
-                }
-
-            }
-
+            DownloadQueue *downloadqueue = m_parent->model()->downloadqueue;
             QMutexLocker lock( &downloadqueue->mutex() );
+            QModelIndexList list = m_parent->selectionModel()->selectedRows();
+            m_parent->model()->cleanSelection( list );
 
-            foreach( BaseType *base, rows ){
+            foreach( const QModelIndex &index, list ){
+                BaseType *base = static_cast< BaseType* >( index.internalPointer() );
 
                 if( base->type() == "NzbFile" ){
                     NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
@@ -81,18 +62,28 @@ bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
 
                 }else{
                     File *file = dynamic_cast< File* >( base );
+                    NzbFile *parent = file->parent();
 
-                    if( file ){
-                        QModelIndex parent = m_parent->model()->index( downloadqueue->indexOf( file->parent() ), 0 );
-                        m_parent->model()->removeRows( file->parent()->indexOf( file ), 1, parent );
-                    }
+                    if( file )
+                        m_parent->model()->removeRows( parent->indexOf( file ), 1, index.parent() );
+
+                    if( parent->size() == 0 )
+                        m_parent->model()->removeRows( downloadqueue->indexOf( parent ), 1 );
+
                 }
 
             }
+        }else if( keyEvent->key() == Qt::Key_Space ){
+            QModelIndexList list = m_parent->selectionModel()->selectedRows();
+            m_parent->model()->cleanSelection( list );
 
-        }else{
-            return QObject::eventFilter( obj, event );
+            foreach( const QModelIndex &index, list ){
+                BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+                m_parent->model()->changeCheckState( index, base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked, base );
+            }
         }
+
+        return QObject::eventFilter( obj, event );
     }
 
     return QObject::eventFilter( obj, event );
