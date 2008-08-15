@@ -383,6 +383,10 @@ QStringList KNewzModel::mimeTypes() const
 void KNewzModel::moveToTop()
 {
     QModelIndexList selection = view->selectionModel()->selectedIndexes();
+
+    if( selection.size() < 1 )
+        return;
+
     QList< File* > files = cleanSelection( selection );
     QMutexLocker lock( &downloadqueue->mutex() );
     QModelIndex rootIdx = index( 0, 0 );
@@ -491,6 +495,10 @@ void KNewzModel::moveDown()
 void KNewzModel::moveToBottom()
 {
     QModelIndexList selection = view->selectionModel()->selectedIndexes();
+
+    if( selection.size() < 1 )
+        return;
+
     QList< File* > files = cleanSelection( selection );
     QMutexLocker lock( &downloadqueue->mutex() );
     NzbFile *root = downloadqueue->last();

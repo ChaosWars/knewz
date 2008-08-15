@@ -75,6 +75,7 @@ BrowserWidget::BrowserWidget(QWidget *parent)
 {
     setupUi( this );
     progressBar->setVisible( false );
+//     progressIcon->setIcon( KIcon( "process-idle-kde" ) );
     QNetworkAccessManager *nam = webView->page()->networkAccessManager();
     nam->setCookieJar( new KNewzCookieJar( nam ) );
     back->setIcon( KIcon( "go-previous" ) );
@@ -111,11 +112,17 @@ void BrowserWidget::load( const QString &string )
 void BrowserWidget::loadStarted()
 {
     progressBar->setVisible( true );
+    stop->setEnabled( true );
+//     progressIcon->setIcon( KIcon( "process-working-kde" ) );
+//     progressIcon->updateIcons();
 }
 
 void BrowserWidget::loadFinished( bool /*ok*/ )
 {
     progressBar->setVisible( false );
+    stop->setEnabled( false );
+//     progressIcon->setIcon( KIcon( "process-idle-kde" ) );
+//     progressIcon->updateIcons();
 }
 
 #include "browserwidget.moc"
