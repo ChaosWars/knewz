@@ -18,49 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-/**
- * @class KNewzConfigDialog knewzconfigdialog.h
- */
-#ifndef KNEWZCONFIGDIALOG_H
-#define KNEWZCONFIGDIALOG_H
+#include "knewzsettings.h"
+#include "socket.h"
 
-#include <KDE/KConfigDialog>
-
-class QShowEvent;
-class DisplayWidget;
-class KNewzWallet;
-class SearchWidget;
-class ServerWidget;
-
-/**
- * @brief KConfigDialog for KNewz
- *
- * Overridden to provide for saving the login information in KWallet.
- * See the KDE documentation for KConfigDialog for member documentation.
- *
- * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
- */
-class KNewzConfigDialog : public KConfigDialog
+Socket::Socket( QObject *parent )
+ : QSslSocket( parent )
 {
-    Q_OBJECT
+    server = KNewzSettings::server();
+    port = KNewzSettings::port();
+    useSsl = KNewzSettings::ssl();
+}
 
-    public:
-        KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config );
-        ~KNewzConfigDialog();
+Socket::~Socket()
+{
+}
 
-    protected:
-        void showEvent( QShowEvent *event );
 
-    private:
-        DisplayWidget *displayWidget;
-        KNewzWallet *knewzwallet;
-        SearchWidget *searchWidget;
-        ServerWidget *serverWidget;
-        void setupWallet();
 
-    private Q_SLOTS:
-        void saveWalletSettings();
-        void walletClosed();
-};
-
-#endif
+#include "socket.moc"

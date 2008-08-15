@@ -36,6 +36,10 @@ class SearchWidget : public QWidget, public Ui::SearchWidget
 
     private:
         void addSearchEngine();
+        void loadSearchEngines();
+
+    private Q_SLOTS:
+        void editSelection();
 };
 
 #endif

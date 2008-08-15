@@ -30,7 +30,7 @@
 KNewzCookieJar::KNewzCookieJar( QObject *parent )
     : QNetworkCookieJar( parent )
 {
-    QFile file( KStandardDirs::locateLocal( "appdata", "cookies/" ) + "cookies.dat" );
+    QFile file( KStandardDirs::locateLocal( "appdata", "browser/" ) + "cookies.dat" );
     QByteArray buffer;
     QList<QByteArray> cookies;
 
@@ -55,7 +55,7 @@ KNewzCookieJar::KNewzCookieJar( QObject *parent )
 
 KNewzCookieJar::~KNewzCookieJar()
 {
-    QFile file( KStandardDirs::locateLocal( "appdata", "cookies/" ) + "cookies.dat" );
+    QFile file( KStandardDirs::locateLocal( "appdata", "browser/" ) + "cookies.dat" );
 
     if( file.open( QIODevice::WriteOnly ) ){
         QDataStream stream( &file );
@@ -74,6 +74,7 @@ BrowserWidget::BrowserWidget(QWidget *parent)
  : QWidget(parent)
 {
     setupUi( this );
+    progressBar->setVisible( false );
     QNetworkAccessManager *nam = webView->page()->networkAccessManager();
     nam->setCookieJar( new KNewzCookieJar( nam ) );
     back->setIcon( KIcon( "go-previous" ) );
@@ -87,6 +88,10 @@ BrowserWidget::BrowserWidget(QWidget *parent)
     connect( back, SIGNAL( clicked() ), backAction, SIGNAL( triggered() ) );
     connect( forward, SIGNAL( clicked() ), forwardAction, SIGNAL( triggered() ) );
     connect( reload, SIGNAL( clicked() ), reloadAction, SIGNAL( triggered() ) );
+    connect( stop, SIGNAL( clicked() ), webView, SLOT( stop() ) );
+    connect( webView, SIGNAL( loadStarted() ), this, SLOT( loadStarted() ) );
+    connect( webView, SIGNAL( loadFinished( bool ) ), this, SLOT( loadFinished( bool ) ) );
+    connect( webView, SIGNAL( loadProgress( int ) ), progressBar, SLOT( setValue( int ) ) );
 }
 
 BrowserWidget::~BrowserWidget()
@@ -101,6 +106,16 @@ void BrowserWidget::load( const QString &string )
         url.prepend( "http://" );
 
     webView->load( QUrl( url ) );
+}
+
+void BrowserWidget::loadStarted()
+{
+    progressBar->setVisible( true );
+}
+
+void BrowserWidget::loadFinished( bool /*ok*/ )
+{
+    progressBar->setVisible( false );
 }
 
 #include "browserwidget.moc"

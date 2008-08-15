@@ -51,6 +51,10 @@ class BrowserWidget : public QWidget, Ui::BrowserWidget
 
     private:
         QAction *backAction, *forwardAction, *reloadAction, *stopAction;
+
+    private Q_SLOTS:
+            void loadStarted();
+            void loadFinished( bool ok );
 };
 
 #endif

@@ -29,6 +29,7 @@
 class DownloadQueue;
 class File;
 class KNewzView;
+class KNewzViewEventFilter;
 class NzbFile;
 
 /**
@@ -90,6 +91,8 @@ class KNewzModel : public BaseModel
     private:
         KNewzView *m_parent;
         DownloadQueue *downloadqueue;
+
+        friend class KNewzViewEventFilter;
 };
 
 #endif

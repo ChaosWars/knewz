@@ -1,0 +1,1 @@
+INSTALL( FILES searchengines.txt DESTINATION ${DATA_INSTALL_DIR}/knewz/search/ )

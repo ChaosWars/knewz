@@ -64,6 +64,7 @@ class KNewzView : public QTreeView
          */
         KNewzView( QWidget *parent );
         ~KNewzView();
+        virtual KNewzModel* model(){ return dynamic_cast< KNewzModel* >( QTreeView::model() );}
 
     protected:
         virtual void dragEnterEvent ( QDragEnterEvent * event );

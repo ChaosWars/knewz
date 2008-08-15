@@ -1,3 +1,4 @@
+ADD_SUBDIRECTORY( search )
 ADD_SUBDIRECTORY( icons )
 FIND_PACKAGE( PkgConfig REQUIRED )
 INCLUDE( DBusMacros )
@@ -14,6 +15,7 @@ SET( SRC basemodel.cpp
          knewzconfigdialog.cpp
          knewzmodel.cpp
 #          knewztitlewidget.cpp
+         knewzsearchmodel.cpp
          knewzview.cpp
          knewzwallet.cpp
          main.cpp
