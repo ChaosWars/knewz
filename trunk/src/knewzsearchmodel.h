@@ -42,6 +42,8 @@ class KNewzSearchModel : public QStandardItemModel
     private:
         static KNewzSearchModel *m_instance;
         static QMutex m_mutex;
+
+    friend class KNewzApplication;
 };
 
 #endif

@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include "nzbreader.h"
 
 NzbReader::NzbReader()
@@ -30,7 +31,20 @@ NzbReader::~NzbReader()
 {
 }
 
-NzbFile* NzbReader::parseData( const QString &path )
+NzbFile* NzbReader::parseNetworkData( QByteArray &data, const QString &filename  )
+{
+    QXmlInputSource source;
+    source.setData( data );
+    handler.setFilename( filename );
+
+    if( reader.parse( &source ) ){
+        return handler.nzbFile();
+    }else{
+        return new NzbFile();
+    }
+}
+
+NzbFile* NzbReader::parseLocalData( const QString &path )
 {
     QString p( path.split( "/" ).last() );
     p.chop( 4 );

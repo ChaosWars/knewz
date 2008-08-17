@@ -51,6 +51,7 @@ KNewzApplication::KNewzApplication()
 KNewzApplication::~KNewzApplication()
 {
     downloadqueue->detach();
+    delete searchModel;
 }
 
 int KNewzApplication::newInstance()
