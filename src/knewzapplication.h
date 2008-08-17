@@ -22,7 +22,9 @@
 
 #include <KDE/KUniqueApplication>
 
+class DownloadQueue;
 class KNewz;
+class KNewzSearchModel;
 
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
@@ -36,6 +38,8 @@ class KNewzApplication : public KUniqueApplication
 
     private:
         static KNewz *mainWindow;
+        static DownloadQueue *downloadqueue;
+        static KNewzSearchModel *searchModel;
 };
 
 #endif

@@ -35,7 +35,7 @@ BaseModel::BaseModel( QTreeView *parent )
 
 BaseModel::~BaseModel()
 {
-    downloadqueue->close();
+    downloadqueue->detach();
 }
 
 QVariant BaseModel::headerData( int section, Qt::Orientation orientation, int role ) const

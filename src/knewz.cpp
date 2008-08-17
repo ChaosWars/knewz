@@ -47,6 +47,7 @@
 #include "knewz.h"
 #include "knewzconfigdialog.h"
 #include "knewzmodel.h"
+#include "knewzsearchmodel.h"
 #include "knewzsettings.h"
 // #include "knewztitlewidget.h"
 #include "knewzview.h"
@@ -103,7 +104,7 @@ KNewz::~KNewz()
     if( knewzwallet )
         knewzwallet->close();
 
-    downloadqueue->close();
+    downloadqueue->detach();
     delete configGroup;
     delete dock;
     delete model;
@@ -286,7 +287,15 @@ void KNewz::parseCommandLineArgs()
 
 void KNewz::search()
 {
-    browserWidget->load( searchLine->currentText() );
+    QString searchTerm = searchLine->currentText();
+    searchTerm = searchTerm.trimmed();
+    searchTerm.replace( " ", "+" );
+    QStandardItem *item = KNewzSearchModel::self()->item( searchBox->currentIndex(), 1 );
+    Q_ASSERT( item );
+    QString url = item->text();
+    url.replace( "FOOBAR", searchTerm );
+    url = url.trimmed();
+    browserWidget->load( url );
 }
 
 void KNewz::setupActions()
@@ -335,6 +344,7 @@ void KNewz::setupToolbars()
     //Set up the search box
     searchBox = new KComboBox( this );
     searchBox->setMinimumSize( 200, 30 );
+    searchBox->setModel( KNewzSearchModel::self() );
     searchBoxAction = new KAction( i18n( "Search Engine" ), this );
     searchBoxAction->setDefaultWidget( searchBox );
     actionCollection()->addAction( "search_box_action", searchBoxAction );

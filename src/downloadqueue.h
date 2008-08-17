@@ -51,7 +51,7 @@ class DownloadQueue : public QList< NzbFile* >{
          */
         static DownloadQueue* Instance();
         
-        void close();
+        void detach();
 
         /**
          * Returns the internal mutex that should be used to obtain a lock on the

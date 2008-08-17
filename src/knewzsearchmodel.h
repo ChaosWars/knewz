@@ -20,6 +20,7 @@
 #ifndef KNEWZSEARCHMODEL_H
 #define KNEWZSEARCHMODEL_H
 
+#include <QMutex>
 #include <QStandardItemModel>
 
 /**
@@ -30,8 +31,17 @@ class KNewzSearchModel : public QStandardItemModel
     Q_OBJECT
 
     public:
+        static KNewzSearchModel* self();
+        static void loadEngines();
+        static void saveEngines();
+
+    protected:
         KNewzSearchModel( QObject *parent = 0 );
         ~KNewzSearchModel();
+
+    private:
+        static KNewzSearchModel *m_instance;
+        static QMutex m_mutex;
 };
 
 #endif

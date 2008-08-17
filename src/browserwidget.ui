@@ -96,9 +96,21 @@
       </spacer>
      </item>
      <item>
-      <widget class="KAnimatedButton" name="progressIcon" >
-       <property name="autoRaise" >
-        <bool>true</bool>
+      <widget class="QLabel" name="progressIcon" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize" >
+        <size>
+         <width>22</width>
+         <height>22</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string/>
        </property>
       </widget>
      </item>
@@ -162,11 +174,6 @@
    <class>QWebView</class>
    <extends>QWidget</extends>
    <header>QtWebKit/QWebView</header>
-  </customwidget>
-  <customwidget>
-   <class>KAnimatedButton</class>
-   <extends>QToolButton</extends>
-   <header>kanimatedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>KPushButton</class>

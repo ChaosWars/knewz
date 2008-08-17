@@ -20,9 +20,11 @@
 
 #include <KDE/KDebug>
 #include <KDE/KIcon>
+#include <KDE/KIconLoader>
 #include <KDE/KStandardDirs>
 #include <QFile>
 #include <QDataStream>
+#include <QMovie>
 #include <QNetworkCookie>
 #include <QUrl>
 #include "browserwidget.h"
@@ -75,7 +77,10 @@ BrowserWidget::BrowserWidget(QWidget *parent)
 {
     setupUi( this );
     progressBar->setVisible( false );
-//     progressIcon->setIcon( KIcon( "process-idle-kde" ) );
+    KIconLoader *iconLoader = KIconLoader::global();
+    idleMovie = iconLoader->loadMovie( "process-idle-kde", KIconLoader::Small );
+    loadingMovie = iconLoader->loadMovie( "process-working-kde", KIconLoader::Toolbar );
+    progressIcon->setMovie( idleMovie );
     QNetworkAccessManager *nam = webView->page()->networkAccessManager();
     nam->setCookieJar( new KNewzCookieJar( nam ) );
     back->setIcon( KIcon( "go-previous" ) );
@@ -113,16 +118,14 @@ void BrowserWidget::loadStarted()
 {
     progressBar->setVisible( true );
     stop->setEnabled( true );
-//     progressIcon->setIcon( KIcon( "process-working-kde" ) );
-//     progressIcon->updateIcons();
+    progressIcon->setMovie( loadingMovie );
 }
 
 void BrowserWidget::loadFinished( bool /*ok*/ )
 {
     progressBar->setVisible( false );
     stop->setEnabled( false );
-//     progressIcon->setIcon( KIcon( "process-idle-kde" ) );
-//     progressIcon->updateIcons();
+    progressIcon->setMovie( idleMovie );
 }
 
 #include "browserwidget.moc"

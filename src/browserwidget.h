@@ -25,6 +25,8 @@
 #include <QWidget>
 #include "ui_browserwidget.h"
 
+class QMovie;
+
 class KNewzCookieJar : public QNetworkCookieJar
 {
     Q_OBJECT
@@ -51,6 +53,7 @@ class BrowserWidget : public QWidget, Ui::BrowserWidget
 
     private:
         QAction *backAction, *forwardAction, *reloadAction, *stopAction;
+        QMovie *idleMovie, *loadingMovie;
 
     private Q_SLOTS:
             void loadStarted();
