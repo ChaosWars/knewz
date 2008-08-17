@@ -24,7 +24,7 @@
 #include "nzbfile.h"
 #include "segment.h"
 
-DownloadQueue* DownloadQueue::m_instance = NULL;
+DownloadQueue* DownloadQueue::m_instance = 0;
 QMutex DownloadQueue::m_mutex;
 int DownloadQueue::m_count = 0;
 
@@ -54,7 +54,7 @@ DownloadQueue::~DownloadQueue()
     clear();
 }
 
-void DownloadQueue::close()
+void DownloadQueue::detach()
 {
     QMutexLocker lock( &m_mutex );
     m_count--;

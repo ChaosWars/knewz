@@ -19,9 +19,10 @@
  ***************************************************************************/
 
 #include <KDE/KCmdLineArgs>
-#include <KDE/KDebug>
+#include "downloadqueue.h"
 #include "knewz.h"
 #include "knewzapplication.h"
+#include "knewzsearchmodel.h"
 #include "knewzsettings.h"
 
 #if defined Q_WS_X11
@@ -29,15 +30,27 @@
 #endif
 
 KNewz* KNewzApplication::mainWindow = 0;
+DownloadQueue* KNewzApplication::downloadqueue = 0;
+KNewzSearchModel* KNewzApplication::searchModel = 0;
 
 KNewzApplication::KNewzApplication()
  : KUniqueApplication()
 {
     setQuitOnLastWindowClosed( false );
+
+    //Initialize the static classes
+    if( !downloadqueue )
+        downloadqueue = DownloadQueue::Instance();
+
+    if( !searchModel ){
+        searchModel = KNewzSearchModel::self();
+        searchModel->loadEngines();
+    }
 }
 
 KNewzApplication::~KNewzApplication()
 {
+    downloadqueue->detach();
 }
 
 int KNewzApplication::newInstance()
@@ -46,18 +59,20 @@ int KNewzApplication::newInstance()
         QList<KMainWindow*> allWindows = KMainWindow::memberList();
 
         if (!allWindows.isEmpty()) {
-                mainWindow = dynamic_cast< KNewz* >( allWindows.first() );
-                KUniqueApplication::newInstance();
-            }
+            mainWindow = dynamic_cast< KNewz* >( allWindows.first() );
+            KUniqueApplication::newInstance();
+        }
 
     }else{
         KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
         KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
         if( args->count() > 0 ){
+            //Parse the command line options
             mainWindow->parseCommandLineArgs();
 
         }else{
+            //Let KUniqueApplication show the window
             KUniqueApplication::newInstance();
         }
 
