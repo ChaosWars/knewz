@@ -42,6 +42,7 @@ SearchWidget::SearchWidget( QWidget *parent )
 
 SearchWidget::~SearchWidget()
 {
+    static_cast< KNewzSearchModel* >( engines->model() )->saveEngines();
 }
 
 void SearchWidget::addSearchEngine()

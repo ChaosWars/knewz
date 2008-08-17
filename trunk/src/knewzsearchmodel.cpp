@@ -61,7 +61,12 @@ void KNewzSearchModel::loadEngines()
     KConfigGroup configGroup( KGlobal::config(), "SearchEngines" );
 
     if( configGroup.exists() ){
-        searchEngines = configGroup.entryMap();
+        QMapIterator<QString, QString> it( configGroup.entryMap() );
+
+        while( it.hasNext() ){
+            it.next();
+            searchEngines.insert( it.key(), it.value() );
+        }
     }
 
     m_instance->clear();
