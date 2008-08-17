@@ -1,1 +1,7 @@
+alt.binaries.nl,http://alt.binaries.nl/search.html?q=FOOBAR
+BinSearch,http://www.binsearch.info/?q=FOOBAR&max=250&adv_age=&server=
+BinaryNewz,http://www.binarynewz.com/search.php?query=FOOBAR&image.x=0&image.y=0
+GigaNewz,http://www.giganews.com/search.html?search_phrase=FOOBAR&go=Search
 NewzBin,http://www.newzbin.com/search/query/?q=FOOBAR&area=-1&fpn=p&searchaction=Go&areadone=-1
+NewzLeech,http://www.newzleech.com/usenet/?group=&minage=&age=&min=min&max=max&q=FOOBAR&mode=usenet&adv=
+ngindex,http://www.ngindex.com/search.php?str=FOOBAR&ft=&srchgrp=&age_n=Any&age=Any&fs=Any&fs_m=Any&fcnt=Any&fcnt_m=Any&type=1&f_nfos=a&f_complete=a&f_postinfo=a&outputstyle=m&edit=&sname=&Category=0&Category=0
