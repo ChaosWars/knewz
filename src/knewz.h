@@ -30,6 +30,7 @@
 #include <KDE/KSharedConfig>
 #include <KDE/KXmlGuiWindow>
 #include <KDE/KUrl>
+#include <QMutex>
 
 class KAction;
 class KComboBox;
@@ -40,6 +41,8 @@ class KSystemTrayIcon;
 class KTabWidget;
 class QAction;
 class QDockWidget;
+class QNetworkReply;
+class QNetworkRequest;
 class BrowserWidget;
 class DockButtonWidget;
 class DownloadQueue;
@@ -61,7 +64,6 @@ class KNewz : public KXmlGuiWindow
     Q_OBJECT
 
     public:
-
         /**
          * Constructor.
          * @param parent
@@ -69,7 +71,10 @@ class KNewz : public KXmlGuiWindow
          */
         KNewz( QWidget *parent = 0 );
         virtual ~KNewz();
+//         static KNewz* self();
         void parseCommandLineArgs();
+        KNewzView* view(){ return m_view; }
+        KNewzModel* model(){ return m_model; }
 
     public Q_SLOTS:
 
@@ -83,7 +88,7 @@ class KNewz : public KXmlGuiWindow
          * @param files
          *      The list of files to open.
          */
-        void showFileOpenDialog( const QStringList &files);
+        void openFiles( const QStringList &files, bool silently = false );
 
     protected:
         virtual bool queryClose();
@@ -93,13 +98,13 @@ class KNewz : public KXmlGuiWindow
         //Variables
         //Widgets
         KTabWidget *mainWidget;
-        KNewzView *view;
-        KNewzModel *model;
         BrowserWidget *browserWidget;
+        KNewzView *m_view;
+        KNewzModel *m_model;
         //Download queue instance
         DownloadQueue *downloadqueue;
         //Actions
-        KAction *openFiles, *preferences;
+        KAction *openFilesAction, *preferences;
         KConfigGroup *configGroup;
         KRecentFilesAction *recentFiles;
         KSharedConfigPtr config;
@@ -114,6 +119,8 @@ class KNewz : public KXmlGuiWindow
         KComboBox *searchBox;
         KHistoryComboBox *searchLine;
         KAction *searchAction, *searchLineAction, *searchBoxAction;
+        static KNewz *m_instance;
+        static QMutex m_mutex;
         //Functions
         bool ok_to_close;
         void checkDirectories();

@@ -125,7 +125,7 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                 if( files.at( i ).size() > 0 ){
                     QString file( files.at( i ) );
 
-                    NzbFile *nzbFile = reader.parseData( file );
+                    NzbFile *nzbFile = reader.parseLocalData( file );
 
                     if( nzbFile->size() > 0 ){
                         nzbFiles.append( nzbFile );
