@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>420</width>
-    <height>455</height>
+    <height>641</height>
    </rect>
   </property>
   <property name="minimumSize" >
@@ -19,6 +19,36 @@
    <string>Search Settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5" >
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4" >
+     <item>
+      <widget class="KPushButton" name="clearSearchHistoryButton" >
+       <property name="minimumSize" >
+        <size>
+         <width>140</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="text" >
+        <string>Clear search history</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer" >
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item>
     <widget class="QGroupBox" name="searchEngines" >
      <property name="minimumSize" >
@@ -228,9 +258,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>clearSearchHistoryButton</tabstop>
   <tabstop>site</tabstop>
   <tabstop>siteurl</tabstop>
   <tabstop>add</tabstop>
+  <tabstop>engines</tabstop>
   <tabstop>remove</tabstop>
   <tabstop>moveToTop</tabstop>
   <tabstop>moveUp</tabstop>

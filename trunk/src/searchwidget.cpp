@@ -32,12 +32,14 @@ SearchWidget::SearchWidget( QWidget *parent )
     QAbstractItemModel *oldModel = engines->model();
     engines->setModel( KNewzSearchModel::self() );
     delete oldModel;
+    clearSearchHistoryButton->setIcon( KIcon( "edit-clear-list" ) );
     add->setIcon( KIcon( "list-add" ) );
     remove->setIcon( KIcon( "list-remove" ) );
     moveToTop->setIcon( KIcon( "go-top" ) );
     moveUp->setIcon( KIcon( "go-up" ) );
     moveDown->setIcon( KIcon( "go-down" ) );
     moveToBottom->setIcon( KIcon( "go-bottom" ) );
+    connect( clearSearchHistoryButton, SIGNAL( clicked() ), this, SLOT( clearHistory() ) );
 }
 
 SearchWidget::~SearchWidget()
@@ -47,12 +49,16 @@ SearchWidget::~SearchWidget()
 
 void SearchWidget::addSearchEngine()
 {
-    
+}
+
+void SearchWidget::clearHistory()
+{
+    clearSearchHistoryButton->setEnabled( false );
+    emit clearSearchHistory();
 }
 
 void SearchWidget::editSelection()
 {
-    
 }
 
 #include "searchwidget.moc"

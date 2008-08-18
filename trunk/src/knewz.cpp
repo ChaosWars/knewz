@@ -190,6 +190,19 @@ void KNewz::loadSettings()
                                QDockWidget::DockWidgetVerticalTitleBar );
     m_view->setAnimated( KNewzSettings::animatedExpantion() );
     m_view->setExpandsOnDoubleClick( KNewzSettings::expandOnDoubleClick() );
+    int columnCount = m_view->model()->columnCount();
+
+    if( KNewzSettings::automaticallyResizeHeaders() ){
+
+        for( int i = 1; i < columnCount; i++){
+            m_view->header()->setResizeMode( i, QHeaderView::ResizeToContents );
+        }
+
+    }else{
+        for( int i = 1; i < columnCount; i++){
+            m_view->header()->setResizeMode( i, QHeaderView::Interactive );
+        }
+    }
 }
 
 void KNewz::openRecentFile( const KUrl &url )
@@ -232,6 +245,7 @@ void KNewz::optionsConfigure()
     }
 
     KNewzConfigDialog *dialog = new KNewzConfigDialog( this, "settings", KNewzSettings::self() );
+    connect( dialog, SIGNAL( clearSearchHistory() ), searchLine, SLOT( clearHistory() ) );
     connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( loadSettings() ) );
     dialog->show();
 }

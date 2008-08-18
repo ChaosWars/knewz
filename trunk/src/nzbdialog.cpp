@@ -39,6 +39,21 @@ NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
     view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     view->setAnimated( KNewzSettings::animatedExpantion() );
     view->setExpandsOnDoubleClick( KNewzSettings::expandOnDoubleClick() );
+
+    int columnCount = view->model()->columnCount();
+
+    if( KNewzSettings::automaticallyResizeHeaders() ){
+
+        for( int i = 1; i < columnCount; i++){
+            view->header()->setResizeMode( i, QHeaderView::ResizeToContents );
+        }
+
+    }else{
+        for( int i = 1; i < columnCount; i++){
+            view->header()->setResizeMode( i, QHeaderView::Interactive );
+        }
+    }
+
     //Set up the signals
     connect( ok, SIGNAL( clicked() ), SLOT( okSlot() ) );
     connect( checkAll, SIGNAL( clicked() ), model, SLOT( checkAll() ) );

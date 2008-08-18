@@ -219,12 +219,7 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                 endRemoveRows();
                 /* Chaining ternary expressions...besides looking cool, it also deals with wankers who think dropping
                     top-level items on other peoples children is funny */
-                kDebug() << "parent:" << parent;
-                kDebug() << "parent.isValid():" << parent.isValid();
-                kDebug() << "parent.parent():" << parent.parent();
-                kDebug() << "parent.parent().isValid():" << parent.parent().isValid();
                 row = parent.parent().isValid() ? parent.parent().row() : ( parent.isValid() ? parent.row() : rowCount() );
-                kDebug() << row;
                 Q_ASSERT( row >= 0 && row <= downloadqueue->size() );
                 beginInsertRows( QModelIndex(), row, row );
                 downloadqueue->insert( row, nzbFile );
