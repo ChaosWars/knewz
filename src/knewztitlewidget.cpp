@@ -46,15 +46,15 @@ TitleWidgetLabel::TitleWidgetLabel( const QString &text, KNewzTitleWidget *paren
 // {
 //     QStyleOption opt;
 //     opt.initFrom( this );
-// 
+//
 //     if( m_parent->m_orientation & Qt::Vertical ){
 //         QSize size = opt.rect.size();
 //         size.transpose();
 //         opt.rect.setSize( size );
 //     }
-// 
+//
 //     return opt;
-// 
+//
 // }
 
 QSize TitleWidgetLabel::minimumSizeHint() const
@@ -82,8 +82,8 @@ void TitleWidgetLabel::paintEvent( QPaintEvent *event )
             break;
     }
 
-    pixmap() ? p.drawItemPixmap( QRect( QPoint( 0, 0 ), sizeHint() ), Qt::AlignCenter, *pixmap() ) :
-            p.drawItemText( QRect( QPoint( 0, 10 ), sizeHint() ), Qt::AlignCenter, palette(), true, text() );
+    pixmap() ? p.drawItemPixmap( QRect( QPoint( 0, 0 ), size() ), Qt::AlignCenter, *pixmap() ) :
+            p.drawItemText( QRect( QPoint( 0, 10 ), size() ), Qt::AlignCenter, palette(), true, text() );
 }
 
 void TitleWidgetLabel::resizeEvent( QResizeEvent *event )
