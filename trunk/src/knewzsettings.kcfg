@@ -48,6 +48,10 @@
             <label>Server connections</label>
             <default>8</default>
         </entry>
+        <entry name="timeout" type="Int">
+            <label>Server timeout</label>
+            <default>30</default>
+        </entry>
         <entry name="ssl" type="Bool">
             <label>Connect to the server using SSL</label>
             <default>false</default>
