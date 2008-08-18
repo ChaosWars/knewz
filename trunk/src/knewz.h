@@ -134,6 +134,7 @@ class KNewz : public KXmlGuiWindow
         void openRecentFile( const KUrl &url );
         void optionsConfigure();
         void search();
+        void searchTextChanged( const QString &text );
         void urlOpen();
         void walletClosed();
 };

@@ -328,6 +328,14 @@ void KNewz::search()
     browserWidget->load( url );
 }
 
+void KNewz::searchTextChanged( const QString &text )
+{
+    if( !text.isEmpty() )
+        searchAction->setEnabled( true );
+    else
+        searchAction->setEnabled( false );
+}
+
 void KNewz::setupActions()
 {
     createStandardStatusBarAction();
@@ -357,8 +365,10 @@ void KNewz::setupToolbars()
     searchLine->setDuplicatesEnabled( false );
     searchLine->setMinimumSize( 200, 30 );
     searchLine->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    searchLine->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
     connect( searchLine, SIGNAL( returnPressed() ), this, SLOT( search() ) );
     connect( searchLine, SIGNAL( activated( const QString& ) ), searchLine, SLOT( addToHistory( const QString& ) ) );
+    connect( searchLine, SIGNAL( editTextChanged( const QString& ) ), this, SLOT( searchTextChanged( const QString& ) ) );
     searchLineAction = new KAction( i18n( "Search Text" ), this );
     searchLineAction->setDefaultWidget( searchLine );
     actionCollection()->addAction( "search_line_action", searchLineAction );
@@ -366,6 +376,7 @@ void KNewz::setupToolbars()
     searchAction = new KAction( KIcon( "edit-find" ), i18n( "Search" ), this );
     connect( searchAction, SIGNAL( triggered() ), this, SLOT( search() ) );
     actionCollection()->addAction( "search_action", searchAction );
+    searchAction->setEnabled( false );
     //Set up the label
     QLabel *searchLabel = new QLabel( "Search Engine:", this );
     KAction *searchLabelAction = new KAction( i18n( "Search Label" ), this );
