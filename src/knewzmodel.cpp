@@ -206,6 +206,11 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                     begin/endRemove/InsertRows to avoid corruption of the model/view */
                 QModelIndex idx = index( row, 0 );
                 Q_ASSERT( idx.isValid() );
+
+                //Naughty user, no dropping items on themselves or their children
+                if( idx == parent || idx == parent.parent() )
+                    continue;
+
                 bool expanded = view->isExpanded( idx );
                 beginRemoveRows( QModelIndex(), row, row );
                 //Essentially take yourself...oh, the innuendo inherent in this operation :p
@@ -214,7 +219,12 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
                 endRemoveRows();
                 /* Chaining ternary expressions...besides looking cool, it also deals with wankers who think dropping
                     top-level items on other peoples children is funny */
+                kDebug() << "parent:" << parent;
+                kDebug() << "parent.isValid():" << parent.isValid();
+                kDebug() << "parent.parent():" << parent.parent();
+                kDebug() << "parent.parent().isValid():" << parent.parent().isValid();
                 row = parent.parent().isValid() ? parent.parent().row() : ( parent.isValid() ? parent.row() : rowCount() );
+                kDebug() << row;
                 Q_ASSERT( row >= 0 && row <= downloadqueue->size() );
                 beginInsertRows( QModelIndex(), row, row );
                 downloadqueue->insert( row, nzbFile );
