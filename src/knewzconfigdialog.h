@@ -61,6 +61,9 @@ class KNewzConfigDialog : public KConfigDialog
     private Q_SLOTS:
         void saveWalletSettings();
         void walletClosed();
+
+    Q_SIGNALS:
+        void clearSearchHistory();
 };
 
 #endif

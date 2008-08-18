@@ -48,6 +48,7 @@ KNewzConfigDialog::KNewzConfigDialog( QWidget *parent, const QString &name, KCon
     searchWidget = new SearchWidget( searchSettings );
     addPage( searchSettings, i18n( "Search" ), "edit-find" );
     connect( this, SIGNAL( applyClicked() ), SLOT( saveWalletSettings() ) );
+    connect( searchWidget, SIGNAL( clearSearchHistory() ), this, SIGNAL( clearSearchHistory() ) );
 
     if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication()){
         setupWallet();

@@ -39,7 +39,11 @@ class SearchWidget : public QWidget, public Ui::SearchWidget
         void loadSearchEngines();
 
     private Q_SLOTS:
+        void clearHistory();
         void editSelection();
+
+    Q_SIGNALS:
+        void clearSearchHistory();
 };
 
 #endif
