@@ -115,15 +115,15 @@ BrowserWidget::~BrowserWidget()
 
 void BrowserWidget::finishedDownload()
 {
+    QString header = reply->rawHeader( "Content-Disposition" );
+    QRegExp regexp( "filename=\".*\"" );
+    int index = regexp.indexIn( header ) + 10; //compensate for filename="
+    int len = regexp.matchedLength() - 15; //strip filename=" and trailing .nzb"
+    QString filename = header.mid( index, len );
     NzbReader reader;
     QList< NzbFile* > nzbFiles;
     QByteArray data( reply->readAll() );
-
-//     foreach( const QByteArray &header, reply->rawHeaderList() ){
-        kDebug() << reply->header( QNetworkRequest::LocationHeader );
-//     }
-
-    nzbFiles.append( reader.parseNetworkData( data, QString( "muut" ) ) );
+    nzbFiles.append( reader.parseNetworkData( data, filename ) );
 
     if( nzbFiles.size() < 1 )
         return;
