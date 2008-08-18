@@ -317,6 +317,7 @@ void KNewz::parseCommandLineArgs()
 void KNewz::search()
 {
     QString searchTerm = searchLine->currentText();
+    searchLine->addToHistory( searchTerm );
     searchTerm = searchTerm.trimmed();
     searchTerm.replace( " ", "+" );
     QStandardItem *item = KNewzSearchModel::self()->item( searchBox->currentIndex(), 1 );
@@ -352,12 +353,12 @@ void KNewz::setupToolbars()
 {
     setStandardToolBarMenuEnabled( true );
     //Set up the search line
-    searchLine = new KHistoryComboBox( this );
-    searchLine->setInsertPolicy( QComboBox::InsertAtBottom );
+    searchLine = new KHistoryComboBox( true, this );
     searchLine->setDuplicatesEnabled( false );
     searchLine->setMinimumSize( 200, 30 );
     searchLine->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
     connect( searchLine, SIGNAL( returnPressed() ), this, SLOT( search() ) );
+    connect( searchLine, SIGNAL( activated( const QString& ) ), searchLine, SLOT( addToHistory( const QString& ) ) );
     searchLineAction = new KAction( i18n( "Search Text" ), this );
     searchLineAction->setDefaultWidget( searchLine );
     actionCollection()->addAction( "search_line_action", searchLineAction );
