@@ -236,8 +236,6 @@ void KNewz::openRecentFile( const KUrl &url )
         }
     }
 
-    downloadqueue->dumpQueue();
-
 }
 
 void KNewz::optionsConfigure()
