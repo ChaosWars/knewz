@@ -61,8 +61,7 @@ class File : public QList<Segment*>, public BaseType
          * @param subject
          *      The subject of the file.
          */
-        File( NzbFile *parent = NULL, quint32 bytes = 0, const QStringList &groups = QStringList(),
-              const QString &subject = QString() );
+        explicit File( NzbFile *parent = 0, const QString &subject = QString(), quint32 bytes = 0, const QStringList &groups = QStringList() );
 
         /**
          * Constructs a copy of \c other with a new parent \c parent
@@ -166,9 +165,9 @@ class File : public QList<Segment*>, public BaseType
 
     private:
         NzbFile *m_parent;
+        QString m_subject;
         quint32 m_bytes;
         QStringList m_groups;
-        QString m_subject;
 };
 
 Q_DECLARE_METATYPE(File);

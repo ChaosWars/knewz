@@ -42,9 +42,9 @@ Segment::~Segment()
 
 void Segment::print()
 {
-    printf( "parent: %p\n", m_parent );
     printf( "id: %s\n", m_id.toStdString().c_str() );
     printf( "nr: %d\n", m_nr );
+    printf( "parent: %p\n", m_parent );
     printf( "bytes: %d\n", m_bytes );
 }
 

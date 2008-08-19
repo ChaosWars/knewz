@@ -133,7 +133,7 @@ class NzbHandler : public QXmlDefaultHandler
          *      represents a file that is made up of one or more parts. The whole represents
          *      the total contents of a *.nzb file.
          */
-        NzbFile* nzbFile(){ return nzbFiles; }
+        NzbFile* nzbFile(){ return m_nzbFile; }
 
         /**
          * Set the file to be processed. You must call this function before processing a file.
@@ -144,11 +144,13 @@ class NzbHandler : public QXmlDefaultHandler
         void setFilename( const QString &filename ){ m_filename = filename; }
 
     private:
-        QString currentSubject, currentBytes, currentNumber, currentText, m_filename;
+        QString currentNumber, currentText, m_filename;
         QStringList groups;
+        NzbFile *m_nzbFile;
         File *currentFile;
-        NzbFile *nzbFiles;
-        quint32 file_bytes, nzbfile_bytes;
+        quint32 file_bytes;
+        quint64 nzbfile_bytes;
+        quint32 currentBytes;
 };
 
 #endif

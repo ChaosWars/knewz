@@ -49,7 +49,7 @@ class NzbFile : public QList<File*>, public BaseType
          * @param bytes
          *      The total size of the parts in the NZB file.
          */
-        NzbFile( const QString &filename = QString(), quint32 bytes = 0 );
+        explicit NzbFile( const QString &filename = QString(), quint64 bytes = 0 );
 
         NzbFile( const NzbFile &other );
         ~NzbFile();
@@ -80,14 +80,14 @@ class NzbFile : public QList<File*>, public BaseType
          *  @param bytes
          *      the size of the file in bytes.
          */
-        void setBytes( quint32 bytes ){ m_bytes = bytes; }
+        void setBytes( quint64 bytes ){ m_bytes = bytes; }
 
         /**
          *  Access function for the size of the file.
          *  @return
          *      the size of the file in bytes.
          */
-        quint32 bytes() const{ return m_bytes; }
+        quint64 bytes() const{ return m_bytes; }
 
         /**
          * Returns the type of the object.
@@ -107,7 +107,7 @@ class NzbFile : public QList<File*>, public BaseType
 
     private:
         QString m_filename;
-        quint32 m_bytes;
+        quint64 m_bytes;
 };
 
 Q_DECLARE_METATYPE(NzbFile);

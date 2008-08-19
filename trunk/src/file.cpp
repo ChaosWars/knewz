@@ -23,13 +23,13 @@
 #include "nzbfile.h"
 #include "segment.h"
 
-File::File( NzbFile *parent, quint32 bytes, const QStringList &groups, const QString &subject )
+File::File( NzbFile *parent, const QString &subject, quint32 bytes, const QStringList &groups )
     : QList<Segment*>(),
       BaseType(),
       m_parent( parent ),
+      m_subject( subject ),
       m_bytes( bytes ),
-      m_groups( groups ),
-      m_subject( subject )
+      m_groups( groups )
 {
 }
 
@@ -59,10 +59,10 @@ void File::dumpQueue()
 
 void File::print()
 {
+    printf( "subject: %s\n", m_subject.toStdString().c_str() );
     printf( "parent: %p\n", m_parent );
     printf( "bytes: %d\n", m_bytes );
     printf( "groups: %s\n", m_groups.join( "," ).toStdString().c_str() );
-    printf( "subject: %s\n", m_subject.toStdString().c_str() );
 }
 
 void File::setParent( NzbFile *parent )
