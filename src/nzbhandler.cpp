@@ -18,14 +18,15 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
 #include "nzbhandler.h"
 #include "file.h"
 #include "nzbfile.h"
 #include "segment.h"
 
-NzbHandler::NzbHandler() : nzbFiles( NULL )
+NzbHandler::NzbHandler()
+    : m_nzbFile( 0 ), currentFile( 0 ), file_bytes( 0 ), nzbfile_bytes( 0 ), currentBytes( 0 )
 {
-    file_bytes = nzbfile_bytes = 0;
 }
 
 NzbHandler::~NzbHandler()
@@ -34,7 +35,7 @@ NzbHandler::~NzbHandler()
 
 bool NzbHandler::startDocument()
 {
-    if( m_filename.isEmpty() || m_filename.isNull() )
+    if( m_filename.isEmpty() )
         return false;
 
     return true;
@@ -42,7 +43,7 @@ bool NzbHandler::startDocument()
 
 bool NzbHandler::endDocument()
 {
-    if( nzbFiles->size() == 0 || groups.size() == 0 )
+    if( m_nzbFile->size() == 0 )
         return false;
 
     return true;
@@ -51,21 +52,19 @@ bool NzbHandler::endDocument()
 bool NzbHandler::startElement( const QString &/*namespaceURI*/, const QString &/*localName*/,
                                const QString &qName, const QXmlAttributes &atts )
 {
-    if( qName == "nzb" ){
-        nzbFiles = new NzbFile( m_filename );
+    if( qName == "file" ){
+        currentFile = new File( m_nzbFile, atts.value( "subject" ) );
         return true;
     }
 
-    if( qName == "file" ){
-        currentFile = new File();
-        currentSubject = atts.value( "subject" );
-        currentFile->setSubject( currentSubject );
+    if( qName == "nzb" ){
+        m_nzbFile = new NzbFile( m_filename );
         return true;
     }
 
     if( qName == "segment" ){
-        currentBytes = atts.value( "bytes" );
-        file_bytes += atts.value( "bytes" ).toULong();
+        currentBytes = atts.value( "bytes" ).toULong();
+        file_bytes += currentBytes;
         currentNumber = atts.value( "number" );
         return true;
     }
@@ -91,25 +90,26 @@ bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*l
     if( qName == "file" ){
         currentFile->setBytes( file_bytes );
         currentFile->setGroups( groups );
-        nzbFiles->append( currentFile );
-        nzbfile_bytes += file_bytes;
-        currentText.clear();
+        m_nzbFile->append( currentFile );
+        nzbfile_bytes += static_cast<quint64>( file_bytes );
+        groups.clear();
         file_bytes = 0;
         return true;
     }
 
     if( qName == "segment" ){
-        currentFile->append( new Segment( currentFile, currentText, currentNumber.toInt(), currentBytes.toULong() ) );
+        currentFile->append( new Segment( currentFile, currentText, currentNumber.toInt(), currentBytes ) );
+        currentBytes = 0;
         currentText.clear();
         return true;
     }
 
     if( qName == "nzb" ){
-        nzbFiles->setBytes( nzbfile_bytes );
+        m_nzbFile->setBytes( nzbfile_bytes );
         nzbfile_bytes = 0;
 
-        for( int i = 0, size = nzbFiles->size(); i < size; i++ ){
-            nzbFiles->at( i )->setParent( nzbFiles );
+        for( int i = 0, size = m_nzbFile->size(); i < size; i++ ){
+            m_nzbFile->at( i )->setParent( m_nzbFile );
         }
 
         return true;

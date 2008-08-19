@@ -213,21 +213,20 @@ void KNewz::openRecentFile( const KUrl &url )
 
     if( nzbFile->size() > 0 ){
         nzbFiles.append( nzbFile );
-        NzbDialog *nzbDialog;
-        nzbDialog = new NzbDialog( this, nzbFiles );
-        nzbDialog->exec();
+        NzbDialog nzbDialog( this, nzbFiles );
+        nzbDialog.exec();
 
-        if( nzbDialog->result() == QDialog::Accepted ){
+        if( nzbDialog.result() == QDialog::Accepted ){
             downloadqueue->mutex().lock();
             int row = m_model->rowCount();
-            int count = nzbDialog->files().size();
+            int count = nzbDialog.files().size();
 
             if( count < 1 )
                 return;
 
             m_model->insertRows( row, count );
 
-            foreach( NzbFile *nzbFile, nzbDialog->files() ){
+            foreach( NzbFile *nzbFile, nzbDialog.files() ){
                 QModelIndex idx = m_model->index( row, 0 );
                 m_model->setData( idx, QVariant::fromValue( *nzbFile ) );
                 row++;
@@ -236,6 +235,9 @@ void KNewz::openRecentFile( const KUrl &url )
             downloadqueue->mutex().unlock();
         }
     }
+
+    downloadqueue->dumpQueue();
+
 }
 
 void KNewz::optionsConfigure()
@@ -272,12 +274,11 @@ void KNewz::parseCommandLineArgs()
 
         if( !KNewzSettings::openFilesSilently() ){
 
-            NzbDialog *nzbDialog;
-            nzbDialog = new NzbDialog( this, nzbFiles );
-            nzbDialog->exec();
+            NzbDialog nzbDialog( this, nzbFiles );
+            nzbDialog.exec();
 
-            if( nzbDialog->result() == QDialog::Accepted ){
-                int count = nzbDialog->files().size();
+            if( nzbDialog.result() == QDialog::Accepted ){
+                int count = nzbDialog.files().size();
 
                 if( count < 1 )
                     return;
@@ -286,7 +287,7 @@ void KNewz::parseCommandLineArgs()
                 int row = m_model->rowCount();
                 m_model->insertRows( row, count );
 
-                foreach( NzbFile *nzbFile, nzbDialog->files() ){
+                foreach( NzbFile *nzbFile, nzbDialog.files() ){
                     QModelIndex idx = m_model->index( row, 0 );
                     m_model->setData( idx, QVariant::fromValue( *nzbFile ) );
                     row++;

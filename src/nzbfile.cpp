@@ -22,7 +22,7 @@
 #include "file.h"
 #include "nzbfile.h"
 
-NzbFile::NzbFile( const QString &filename, quint32 bytes )
+NzbFile::NzbFile( const QString &filename, quint64 bytes )
     : QList<File*>(), BaseType(), m_filename( filename ), m_bytes( bytes )
 {
 }
@@ -51,7 +51,7 @@ void NzbFile::dumpQueue()
 void NzbFile::print()
 {
     printf( "filename: %s\n", m_filename.toStdString().c_str() );
-    printf( "bytes: %d\n", m_bytes );
+    printf( "bytes: %llu\n", m_bytes );
 }
 
 NzbFile& NzbFile::operator=( const NzbFile &other )
