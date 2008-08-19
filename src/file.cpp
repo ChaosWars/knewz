@@ -88,9 +88,13 @@ File& File::operator=( const File &other )
         BaseType::operator=( other );
         QList<Segment*>::operator=( other );
 
-        for( int i = 0, size = this->size(); i < size; i++ ){
-            (*this)[i]->m_parent = this;
+        foreach( Segment *segment, *this ){
+            segment->m_parent = this;
         }
+
+//         for( int i = 0, size = this->size(); i < size; i++ ){
+//             (*this)[i]->m_parent = this;
+//         }
 
     }
 
