@@ -62,9 +62,13 @@ NzbFile& NzbFile::operator=( const NzbFile &other )
         BaseType::operator=( other );
         QList<File*>::operator=( other );
 
-        for( int i = 0, size = this->size(); i < size; i++ ){
-            (*this)[i]->m_parent = this;
+        foreach( File *file, *this ){
+            file->m_parent = this;
         }
+
+//         for( int i = 0, size = this->size(); i < size; i++ ){
+//             (*this)[i]->m_parent = this;
+//         }
     }
 
     return *this;
