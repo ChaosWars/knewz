@@ -45,6 +45,7 @@ File::File( const File &other )
 
 File::~File()
 {
+    m_parent->setBytes( m_parent->bytes() - m_bytes );
 }
 
 void File::dumpQueue()

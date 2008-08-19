@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include <KDE/KDebug>
+#include "file.h"
 #include "segment.h"
 
 Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
@@ -36,6 +37,7 @@ Segment::Segment( const Segment &other )
 
 Segment::~Segment()
 {
+    m_parent->setBytes( m_parent->bytes() - m_bytes );
 }
 
 void Segment::print()

@@ -643,7 +643,9 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
         NzbFile *nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
 
         while( beginRow <= rows ){
+            File *file = nzbFile->at( row );
             nzbFile->removeAt( row );
+            delete file;
             beginRow++;
         }
 
@@ -653,11 +655,14 @@ bool KNewzModel::removeRows( int row, int count, const QModelIndex &parent )
             QMutableListIterator< File* > it( *(downloadqueue->at( row ) ) );
 
             while( it.hasNext() ){
-                it.next();
+                File *file = it.next();
                 it.remove();
+                delete file;
             }
 
+            NzbFile *nzbFile = downloadqueue->at( row );
             downloadqueue->removeAt( row );
+            delete nzbFile;
             beginRow++;
         }
 
