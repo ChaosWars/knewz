@@ -27,13 +27,13 @@ NzbFile::NzbFile( const QString &filename, quint64 bytes )
 {
 }
 
-NzbFile::NzbFile( const NzbFile &other )
-    : QList<File*>( other ),
-      BaseType( other )
-{
-    m_filename = other.m_filename;
-    m_bytes = other.m_bytes;
-}
+// NzbFile::NzbFile( const NzbFile &other )
+//     : QList<File*>( other ),
+//       BaseType( other )
+// {
+//     m_filename = other.m_filename;
+//     m_bytes = other.m_bytes;
+// }
 
 NzbFile::~NzbFile()
 {
