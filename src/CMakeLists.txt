@@ -35,13 +35,7 @@ PKGCONFIG_GETVAR( dbus-1 session_bus_services_dir dbus_service_file_install_dir 
 KDE4_ADD_UI_FILES( SRC browserwidget.ui displaysettings.ui dockbuttonwidget.ui nzbdialog.ui searchwidget.ui serverwidget.ui )
 KDE4_ADD_KCFG_FILES( SRC knewzsettings.kcfgc )
 KDE4_ADD_EXECUTABLE( knewz ${SRC} )
-
-IF( WIN32 )
-TARGET_LINK_LIBRARIES( knewz ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTWEBKIT_LIBRARY} icons/knewz.res )
-ELSE( WIN32 )
 TARGET_LINK_LIBRARIES( knewz ${KDE4_KDEUI_LIBS} ${KDE4_KDECORE_LIBS} ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${QT_QTWEBKIT_LIBRARY} )
-ENDIF( WIN32 )
-
 DBUS_ADD_ACTIVATION_SERVICE( DBUS_SRC ${DBUS_SERVICE_SRC} )
 INSTALL(TARGETS knewz DESTINATION ${KDE4_BIN_INSTALL_DIR} )
 INSTALL( FILES knewz.desktop  DESTINATION ${KDE4_XDG_APPS_INSTALL_DIR} )
