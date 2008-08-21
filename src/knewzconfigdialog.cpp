@@ -117,8 +117,9 @@ void KNewzConfigDialog::setupWallet()
     enableButtonApply( false );
 }
 
-void KNewzConfigDialog::showEvent( QShowEvent */*event*/ )
+void KNewzConfigDialog::showEvent( QShowEvent *event )
 {
+	Q_UNUSED( event )
 }
 
 void KNewzConfigDialog::walletClosed()
