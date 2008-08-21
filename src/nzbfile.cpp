@@ -66,9 +66,6 @@ NzbFile& NzbFile::operator=( const NzbFile &other )
             file->m_parent = this;
         }
 
-//         for( int i = 0, size = this->size(); i < size; i++ ){
-//             (*this)[i]->m_parent = this;
-//         }
     }
 
     return *this;
