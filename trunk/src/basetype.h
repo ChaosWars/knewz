@@ -59,7 +59,7 @@ class BaseType
          * @param other
          *      The object to copy.
          */
-        BaseType( const BaseType &other ) : m_state( other.state() ){}
+//         BaseType( const BaseType &other ) : m_state( other.state() ){}
         virtual ~BaseType(){};
         virtual void print() = 0;
         virtual void dumpQueue() = 0;
@@ -105,9 +105,9 @@ class BaseType
                 m_state = other.m_state;
             return *this;
         }
-
-        friend class NzbFile;
-        friend class File;
+// 
+//         friend class NzbFile;
+//         friend class File;
 
     private:
         Qt::CheckState m_state;
