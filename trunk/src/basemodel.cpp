@@ -64,7 +64,7 @@ void BaseModel::changeCheckState( const QModelIndex &idx, Qt::CheckState state, 
     base->setState( state );
     view->update( idx );
 
-    if( base->type() == "NzbFile" ){
+    if( base->type() == BaseType::nzbfile ){
         NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
 
         for( int i = 0, size = nzbFile->size(); i < size; i++ ){
@@ -98,11 +98,9 @@ QList< File* > BaseModel::cleanSelection( QModelIndexList &selection ) const
 
     while( it.hasNext() ){
         QModelIndex idx = it.next();
-        if( idx.column() > 0 ){
-            it.remove();
-            continue;
-        }
 
+        if( idx.column() > 0 )
+            it.remove();
     }
 
     qSort( selection.begin(), selection.end() );
@@ -115,7 +113,7 @@ QList< File* > BaseModel::cleanSelection( QModelIndexList &selection ) const
         QModelIndex idx = it.next();
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
 
-        if( base->type() == "File" ){
+        if( base->type() == BaseType::file ){
             File *file = dynamic_cast< File* >( base );
 
             if( file ){

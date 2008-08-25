@@ -111,7 +111,7 @@ QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) co
     BaseType *base = static_cast< BaseType* >( parent.internalPointer() );
     NzbFile *nzbFile;
 
-    if( base->type() == "NzbFile" ){
+    if( base->type() == BaseType::nzbfile ){
         nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
     }else{
         return QModelIndex();
@@ -133,7 +133,7 @@ QModelIndex NzbModel::parent( const QModelIndex &index ) const
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     File *file;
 
-    if( base->type() == "File" ){
+    if( base->type() == BaseType::file ){
         file = static_cast< File* >( index.internalPointer() );
     }else{
         return QModelIndex();
@@ -268,7 +268,7 @@ void NzbModel::invertSelectedRows()
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
 
         /* We know the children are all filtered out, so we traverse them all now and flip their checkstates */
-        if( base->type() =="NzbFile" ){
+        if( base->type() == BaseType::nzbfile ){
             NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
 
             if( nzbFile ){

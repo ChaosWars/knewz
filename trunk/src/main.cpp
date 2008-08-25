@@ -61,5 +61,4 @@ int main( int argc, char **argv )
     KNewz *mainWindow = new KNewz();
     KNewzSettings::startMinimized() ? mainWindow->hide() : mainWindow->show();
     return app.exec();
-
 }
