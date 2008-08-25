@@ -59,17 +59,22 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
     const QModelIndex parentIndex = index.parent();
 
     if( !parentIndex.isValid() ){
+        NzbFile *nzbFile = downloadqueue->at( index.row() );
 
         switch( index.column() ){
             case 0:
                 break;
             case 1:
-                return downloadqueue->at( index.row() )->filename();
+                return nzbFile->filename();
                 break;
             case 2:
-                return QString().setNum( downloadqueue->at( index.row() )->bytes() /1048576.00, 'f', 2 );
+                return QString().setNum( nzbFile->bytes()/1048576.00, 'f', 2 );
                 break;
             case 3:
+                if( nzbFile->status() > 0 )
+                    return QString().setNum( nzbFile->status()/1048576.00, 'f', 2 );
+                else
+                    return "Queued";
                 break;
             case 4:
                 break;
@@ -79,16 +84,22 @@ QVariant KNewzModel::data( const QModelIndex &index, int role ) const
         }
 
     }else{
+        File *file = downloadqueue->at( parentIndex.row() )->at( index.row() );
+
         switch( index.column() ){
             case 0:
                 break;
             case 1:
-                return downloadqueue->at( parentIndex.row() )->at( index.row() )->subject();
+                return file->subject();
                 break;
             case 2:
-                return QString().setNum( downloadqueue->at( parentIndex.row() )->at( index.row() )->bytes() /1048576.00, 'f', 2 );
+                return QString().setNum( file->bytes() /1048576.00, 'f', 2 );
                 break;
             case 3:
+                if( file->status() > 0 )
+                    return QString().setNum( file->status()/1048576.00, 'f', 2 );
+                else
+                    return "Queued";
                 break;
             case 4:
                 break;
@@ -189,7 +200,7 @@ bool KNewzModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int
            See mimeData()*/
         foreach( BaseType *base, nzbData ){
 
-            if( base->type() == "NzbFile" ){
+            if( base->type() == BaseType::nzbfile ){
                 NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
 
                 if( !nzbFile )
@@ -287,7 +298,7 @@ QModelIndex KNewzModel::index( int row, int column, const QModelIndex &parent ) 
     BaseType *base = static_cast< BaseType* >( parent.internalPointer() );
     NzbFile *nzbFile;
 
-    if( base->type() == "NzbFile" ){
+    if( base->type() == BaseType::nzbfile ){
         nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
     }else{
         return QModelIndex();
@@ -400,7 +411,7 @@ void KNewzModel::moveToTop()
     foreach( const QModelIndex &idx, selection ){
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
 
-        if( base->type() == "NzbFile" ){
+        if( base->type() == BaseType::nzbfile ){
             NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
 
             if( !nzbFile )
@@ -512,7 +523,7 @@ void KNewzModel::moveToBottom()
     foreach( const QModelIndex &idx, selection ){
         BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
 
-        if( base->type() == "NzbFile" ){
+        if( base->type() == BaseType::nzbfile ){
             NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
 
             if( !nzbFile )
@@ -616,7 +627,7 @@ QModelIndex KNewzModel::parent( const QModelIndex &index ) const
     BaseType *base = static_cast< BaseType* >( index.internalPointer() );
     File *file;
 
-    if( base->type() == "File" ){
+    if( base->type() == BaseType::file ){
         file = static_cast< File* >( index.internalPointer() );
     }else{
         return QModelIndex();
@@ -696,7 +707,7 @@ bool KNewzModel::setData( const QModelIndex& index, const QVariant& value, int r
 
     BaseType *base = static_cast<BaseType*>( index.internalPointer() );
 
-    if( value.canConvert<NzbFile>() && ( base->type() == "NzbFile" ) ){
+    if( value.canConvert<NzbFile>() && ( base->type() == BaseType::nzbfile ) ){
         NzbFile n_data = value.value<NzbFile>();
         /* Wacky syntax is due to downloadqueue being a pointer to a list
            of pointers to objects.
@@ -710,7 +721,7 @@ bool KNewzModel::setData( const QModelIndex& index, const QVariant& value, int r
         /* Note that since File is also a registered data type, all child rows have
            now been inserted and had their data set as well */
         return true;
-    }else if( value.canConvert<File>() && ( base->type() == "File" ) ){
+    }else if( value.canConvert<File>() && ( base->type() == BaseType::file ) ){
         File data = value.value<File>();
         QModelIndex parent = index.parent();
         /* Same story here as above, except we need to go one step further and

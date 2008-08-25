@@ -89,6 +89,10 @@ class NzbFile : public QList<File*>, public BaseType
          */
         quint64 bytes() const{ return m_bytes; }
 
+        void setStatus( quint64 status ){ m_status = status; }
+
+        quint64 status() const{ return m_status; }
+
         /**
          * Returns the type of the object.
          *
@@ -96,7 +100,7 @@ class NzbFile : public QList<File*>, public BaseType
          *      The type of the object. This is the same as the name of the class,
          *      in this case "NzbFile"
          */
-        const QString type() const{ return QString( "NzbFile" ); }
+//         const QString type() const{ return QString( "NzbFile" ); }
 
         NzbFile& operator=( const NzbFile &other );
 
@@ -108,6 +112,7 @@ class NzbFile : public QList<File*>, public BaseType
     private:
         QString m_filename;
         quint64 m_bytes;
+        quint64 m_status;
 };
 
 Q_DECLARE_METATYPE(NzbFile);

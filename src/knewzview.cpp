@@ -53,7 +53,7 @@ bool KNewzViewEventFilter::eventFilter( QObject *obj, QEvent *event )
             foreach( const QModelIndex &index, list ){
                 BaseType *base = static_cast< BaseType* >( index.internalPointer() );
 
-                if( base->type() == "NzbFile" ){
+                if( base->type() == BaseType::nzbfile ){
                     NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
 
                     if( nzbFile ){

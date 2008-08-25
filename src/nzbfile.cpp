@@ -23,7 +23,11 @@
 #include "nzbfile.h"
 
 NzbFile::NzbFile( const QString &filename, quint64 bytes )
-    : QList<File*>(), BaseType(), m_filename( filename ), m_bytes( bytes )
+    : QList<File*>(),
+      BaseType( BaseType::nzbfile ),
+      m_filename( filename ),
+      m_bytes( bytes ),
+      m_status( 0 )
 {
 }
 

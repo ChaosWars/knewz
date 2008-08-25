@@ -25,10 +25,11 @@
 
 File::File( NzbFile *parent, const QString &subject, quint32 bytes, const QStringList &groups )
     : QList<Segment*>(),
-      BaseType(),
+      BaseType( BaseType::file ),
       m_parent( parent ),
       m_subject( subject ),
       m_bytes( bytes ),
+      m_status( 0 ),
       m_groups( groups )
 {
 }

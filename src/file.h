@@ -144,6 +144,10 @@ class File : public QList<Segment*>, public BaseType
          */
         void setSubject( const QString &subject ){ m_subject = subject; }
 
+        void setStatus( quint32 status ){ m_status = status; }
+
+        quint32 status() const{ return m_status; }
+
         /**
          * Returns the type of the File.
          *
@@ -152,7 +156,7 @@ class File : public QList<Segment*>, public BaseType
          *
          * \see NzbFile, Segment
          */
-        const QString type() const{ return QString( "File" ); }
+//         const QString type() const{ return QString( "File" ); }
 
 //         File& operator=( const File &other );
 // 
@@ -167,6 +171,7 @@ class File : public QList<Segment*>, public BaseType
         NzbFile *m_parent;
         QString m_subject;
         quint32 m_bytes;
+        quint32 m_status;
         QStringList m_groups;
 };
 
