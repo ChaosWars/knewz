@@ -17,10 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "connection.h"
+#include "socket.h"
 
 Connection::Connection(QObject *parent)
- : QThread(parent)
+ : QThread(parent), quit( false )
 {
 }
 
@@ -31,6 +33,19 @@ Connection::~Connection()
 
 void Connection::run()
 {
+    while( !quit ){
+        socket = new Socket();
+        socket->connectToHost();
+
+        if( !socket->waitForConnected( socket->timeout() ) ){
+        }
+
+        if( !socket->waitForEncrypted( socket->timeout() ) ){
+            //Reconnect and try again
+        }
+
+        
+    }
 }
 
 #include "connection.moc"

@@ -24,15 +24,24 @@
 Socket::Socket( QObject *parent )
  : QSslSocket( parent )
 {
-    server = KNewzSettings::server();
-    port = KNewzSettings::port();
-    useSsl = KNewzSettings::ssl();
+    m_server = KNewzSettings::server();
+    m_port = KNewzSettings::port();
+    m_timeout = KNewzSettings::timeout() * 1000;
+    m_ssl = KNewzSettings::ssl();
 }
 
 Socket::~Socket()
 {
 }
 
+void Socket::connectToHost()
+{
+    m_ssl ? QSslSocket::connectToHostEncrypted( m_server, m_port ) :
+            QSslSocket::connectToHost( m_server, m_port );
+}
 
+void Socket::parseReply( const QString &reply )
+{
+}
 
 #include "socket.moc"
