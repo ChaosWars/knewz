@@ -30,13 +30,23 @@ class Socket : public QSslSocket
     Q_OBJECT
 
     public:
-        Socket(QObject *parent = 0);
+        Socket( QObject *parent = 0 );
         ~Socket();
+        void connectToHost();
+        void parseReply( const QString &reply );
+        QString server() const{ return m_server; }
+        void setServer( const QString &server ){ m_server = server; }
+        int port() const{ return m_port; }
+        void setPort( int port ){ m_port = port; }
+        int timeout() const{ return m_timeout; }
+        bool useSsl() const{ return m_ssl; }
+        void setUseSsl( bool useSsl ){ m_ssl = useSsl; }
 
     private:
-        QString server;
-        int port;
-        bool useSsl;
+        QString m_server;
+        int m_port;
+        int m_timeout;
+        bool m_ssl;
 };
 
 #endif

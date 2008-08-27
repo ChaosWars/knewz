@@ -21,6 +21,9 @@
 #define CONNECTION_H
 
 #include <QThread>
+#include <QWaitCondition>
+
+class Socket;
 
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
@@ -30,11 +33,16 @@ class Connection : public QThread
     Q_OBJECT
 
     public:
-        Connection(QObject *parent = 0);
+        Connection( QObject *parent = 0 );
         ~Connection();
 
     protected:
         void run();
+
+    private:
+        bool quit;
+        Socket *socket;
+        QWaitCondition cond;
 };
 
 #endif
