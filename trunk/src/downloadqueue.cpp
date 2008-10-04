@@ -28,7 +28,7 @@ DownloadQueue* DownloadQueue::m_instance = 0;
 QMutex DownloadQueue::m_mutex;
 int DownloadQueue::m_count = 0;
 
-DownloadQueue::DownloadQueue()
+DownloadQueue::DownloadQueue() : QObject(), QList<NzbFile*>()
 {
 }
 
