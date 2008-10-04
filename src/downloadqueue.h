@@ -26,6 +26,7 @@
 
 #include <QList>
 #include <QMutex>
+#include <QObject>
 
 class NzbFile;
 
@@ -41,7 +42,10 @@ class NzbFile;
  *
  *  @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class DownloadQueue : public QList< NzbFile* >{
+class DownloadQueue : public QObject, public QList< NzbFile* >{
+
+    Q_OBJECT
+
     public:
 
         /**
@@ -50,7 +54,7 @@ class DownloadQueue : public QList< NzbFile* >{
          * @returns The singleton instance of the download queue.
          */
         static DownloadQueue* Instance();
-        
+
         void detach();
 
         /**
@@ -68,6 +72,9 @@ class DownloadQueue : public QList< NzbFile* >{
         static void dumpQueue();
 
         static void dumpQueueTopLevel();
+
+    Q_SIGNALS:
+        void fileAdded();
 
     protected:
         DownloadQueue();
