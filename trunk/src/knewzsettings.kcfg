@@ -19,11 +19,11 @@
     <group name="DirectorySettings">
         <entry name="tempDirectory" type="Url">
             <label>Temp directory</label>
-            <default>KStandardDirs::locateLocal( "appdata", "temp/" )</default>
+            <default code="true">KStandardDirs::locateLocal( "appdata", "temp/" )</default>
         </entry>
         <entry name="downloadDirectory" type="Url">
             <label>Download directory</label>
-            <default>QDir::homePath() + "/Downloads"</default>
+            <default code="true">QDir::homePath() + "/Downloads"</default>
         </entry>
     </group>
     <group name="SecuritySettings">
