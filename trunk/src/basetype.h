@@ -18,9 +18,9 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
- /**
- * @class BaseType basetype.h
-  */
+/**
+* @class BaseType basetype.h
+ */
 #ifndef BASETYPE_H
 #define BASETYPE_H
 
@@ -42,11 +42,12 @@
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class BaseType
 {
     public:
 
-        enum Type{ nzbfile, file };
+        enum Type { nzbfile, file };
 
         /**
          * Creates a BaseType object with a default checked state.
@@ -54,7 +55,7 @@ class BaseType
          * @param state
          *      Optional state parameter. The default is checked.
          */
-        BaseType( Type type, Qt::CheckState state = Qt::Checked ) : m_type( type ), m_state( state ){}
+        BaseType(Type type, Qt::CheckState state = Qt::Checked) : m_type(type), m_state(state) {}
 
         /**
          * Copy constructor.
@@ -62,7 +63,8 @@ class BaseType
          *      The object to copy.
          */
 //         BaseType( const BaseType &other ) : m_state( other.state() ){}
-        virtual ~BaseType(){};
+        virtual ~BaseType() {};
+
         virtual void print() = 0;
         virtual void dumpQueue() = 0;
 
@@ -72,7 +74,7 @@ class BaseType
          * @return
          *      The checked state of the oject.
          */
-        Qt::CheckState state() const{ return m_state; }
+        Qt::CheckState state() const { return m_state; }
 
         /**
          * Update the checked state of the object.
@@ -80,7 +82,7 @@ class BaseType
          * @param state
          *      The new checked state of the object.
          */
-        void setState( Qt::CheckState state ){ m_state = state; }
+        void setState(Qt::CheckState state) { m_state = state; }
 
         /**
          * Returns the type of the object. Classes that inherit from BaseType
@@ -96,19 +98,22 @@ class BaseType
          *
          * \see NzbFile, File, Segment
          */
-        BaseType::Type type() const{ return m_type; }
+        BaseType::Type type() const { return m_type; }
 
         /**
          * Assigns @p other to this object and returns a reference.
          */
-        BaseType& operator=( const BaseType &other )
+        BaseType& operator=(const BaseType &other)
         {
-            if( this != & other ){
+            if (this != & other)
+            {
                 m_state = other.m_state;
             }
+
             return *this;
         }
-// 
+
+//
 //         friend class NzbFile;
 //         friend class File;
 

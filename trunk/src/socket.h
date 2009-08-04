@@ -25,27 +25,32 @@
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class Socket : public QSslSocket
 {
     Q_OBJECT
 
     public:
-        Socket( QObject *parent = 0 );
+        Socket(QObject *parent = 0);
         ~Socket();
         void connectToHost();
-        void parseReply( const QString &reply );
-        QString server() const{ return m_server; }
-        void setServer( const QString &server ){ m_server = server; }
-        int port() const{ return m_port; }
-        void setPort( int port ){ m_port = port; }
-        int timeout() const{ return m_timeout; }
-        bool useSsl() const{ return m_ssl; }
-        void setUseSsl( bool useSsl ){ m_ssl = useSsl; }
+        void parseReply(const QString &reply);
+        QString server() const { return m_server; }
+        void setServer(const QString &server) { m_server = server; }
+        int port() const { return m_port; }
+        void setPort(int port) { m_port = port; }
+        int timeout() const { return m_timeout; }
+        int retryAttempts() const { return m_retry_attempts; }
+        int retryDelay() const { return m_retry_delay; }
+        bool useSsl() const { return m_ssl; }
+        void setUseSsl(bool useSsl) { m_ssl = useSsl; }
 
     private:
         QString m_server;
         int m_port;
         int m_timeout;
+        int m_retry_attempts;
+        int m_retry_delay;
         bool m_ssl;
 };
 

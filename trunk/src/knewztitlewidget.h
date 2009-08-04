@@ -25,30 +25,37 @@
 #include <QSizePolicy>
 
 class QMouseEvent;
+
 class QPaintEvent;
+
 class QResizeEvent;
+
 class QStyleOptionFrameV2;
+
 class TitleWidgetLabel;
 
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class KNewzTitleWidget : public QFrame
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         KNewzTitleWidget(QWidget *parent = 0);
         ~KNewzTitleWidget();
         QSize minimumSizeHint() const;
-        Qt::Orientation orientation(){ return m_orientation; }
-        void setOrientation( Qt::Orientation orientation ){ m_orientation = orientation; }
+        Qt::Orientation orientation() { return m_orientation; }
+
+        void setOrientation(Qt::Orientation orientation) { m_orientation = orientation; }
+
         QSize sizeHint() const;
         QSizePolicy sizePolicy() const;
 
     protected:
-        virtual void paintEvent( QPaintEvent *event );
-        virtual void resizeEvent( QResizeEvent *event );
+        virtual void paintEvent(QPaintEvent *event);
+        virtual void resizeEvent(QResizeEvent *event);
 
     private:
         Qt::Orientation m_orientation;
@@ -57,25 +64,27 @@ class KNewzTitleWidget : public QFrame
         QVBoxLayout *vlayout;
         QStyleOptionFrameV2 getStyleOption() const;
 
-    friend class TitleWidgetLabel;
+        friend class TitleWidgetLabel;
 
 };
 
-class TitleWidgetLabel : public QLabel{
+class TitleWidgetLabel : public QLabel
+{
 
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        TitleWidgetLabel( KNewzTitleWidget *parent = 0, Qt::WindowFlags f = 0 );
-        TitleWidgetLabel( const QString & text, KNewzTitleWidget * parent = 0, Qt::WindowFlags f = 0 );
-        virtual ~TitleWidgetLabel(){};
+        TitleWidgetLabel(KNewzTitleWidget *parent = 0, Qt::WindowFlags f = 0);
+        TitleWidgetLabel(const QString & text, KNewzTitleWidget * parent = 0, Qt::WindowFlags f = 0);
+        virtual ~TitleWidgetLabel() {};
+
         QSize minimumSizeHint() const;
         QSize sizeHint() const;
         QSizePolicy sizePolicy() const;
 
     protected:
-        virtual void paintEvent( QPaintEvent *event );
-        virtual void resizeEvent( QResizeEvent *event );
+        virtual void paintEvent(QPaintEvent *event);
+        virtual void resizeEvent(QResizeEvent *event);
 
     private:
 //         QStyleOption getStyleOption() const;

@@ -27,6 +27,7 @@
 #include "basemodel.h"
 
 class BaseType;
+
 class NzbFile;
 
 /**
@@ -37,9 +38,10 @@ class NzbFile;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class NzbModel : public BaseModel
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
 
@@ -51,17 +53,18 @@ class NzbModel : public BaseModel
          * @param nzbFiles
          *      The NZB files of which the content should be displayed.
          */
-        NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles );
-        virtual ~NzbModel(){};
-        virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-        virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-        virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-        virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-        virtual QModelIndex parent( const QModelIndex &index ) const;
-        virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+        NzbModel(QTreeView *parent, const QList<NzbFile*> &nzbFiles);
+        virtual ~NzbModel() {};
+
+        virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+        virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+        virtual QModelIndex parent(const QModelIndex &index) const;
+        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
 
         /**
-         * 
+         *
          */
         void trimNzbFiles();
 
@@ -104,7 +107,7 @@ class NzbModel : public BaseModel
          * @return
          *      The selected files in the model.
          */
-        const QList< NzbFile* >& files(){ return m_files; }
+        const QList< NzbFile* >& files() { return m_files; }
 
     private:
         QList< NzbFile* > m_nzbFiles;

@@ -23,14 +23,14 @@
 #include "nzbfile.h"
 #include "segment.h"
 
-File::File( NzbFile *parent, const QString &subject, quint32 bytes, const QStringList &groups )
-    : QList<Segment*>(),
-      BaseType( BaseType::file ),
-      m_parent( parent ),
-      m_subject( subject ),
-      m_bytes( bytes ),
-      m_status( 0 ),
-      m_groups( groups )
+File::File(NzbFile *parent, const QString &subject, quint32 bytes, const QStringList &groups)
+        : QList<Segment*>(),
+        BaseType(BaseType::file),
+        m_parent(parent),
+        m_subject(subject),
+        m_bytes(bytes),
+        m_status(0),
+        m_groups(groups)
 {
 }
 
@@ -46,35 +46,39 @@ File::File( NzbFile *parent, const QString &subject, quint32 bytes, const QStrin
 
 File::~File()
 {
-    m_parent->setBytes( m_parent->bytes() - m_bytes );
+    m_parent->setBytes(m_parent->bytes() - m_bytes);
 }
 
 void File::dumpQueue()
 {
     print();
 
-    for( int i = 0, size = this->size(); i < size; i++ ){
-        at( i )->print();
+    for (int i = 0, size = this->size(); i < size; i++)
+    {
+        at(i)->print();
     }
 }
 
 void File::print()
 {
-    printf( "subject: %s\n", m_subject.toStdString().c_str() );
-    printf( "parent: %p\n", m_parent );
-    printf( "bytes: %d\n", m_bytes );
-    printf( "groups: %s\n", m_groups.join( "," ).toStdString().c_str() );
+    printf("subject: %s\n", m_subject.toStdString().c_str());
+    printf("parent: %p\n", m_parent);
+    printf("bytes: %d\n", m_bytes);
+    printf("groups: %s\n", m_groups.join(",").toStdString().c_str());
 }
 
-void File::setParent( NzbFile *parent )
+void File::setParent(NzbFile *parent)
 {
-    if( m_parent ){
-        m_parent->setBytes( m_parent->bytes() - m_bytes );
+    if (m_parent)
+    {
+        m_parent->setBytes(m_parent->bytes() - m_bytes);
     }
 
     m_parent = parent;
-    if( parent ){
-        parent->setBytes( parent->bytes() + m_bytes );
+
+    if (parent)
+    {
+        parent->setBytes(parent->bytes() + m_bytes);
     }
 }
 
@@ -88,15 +92,15 @@ void File::setParent( NzbFile *parent )
 //         m_subject = other.m_subject;
 //         BaseType::operator=( other );
 //         QList<Segment*>::operator=( other );
-// 
+//
 //         foreach( Segment *segment, *this ){
 //             segment->m_parent = this;
 //         }
-// 
+//
 // //         for( int i = 0, size = this->size(); i < size; i++ ){
 // //             (*this)[i]->m_parent = this;
 // //         }
-// 
+//
 //     }
 //
 //    return *this;

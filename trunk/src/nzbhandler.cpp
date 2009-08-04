@@ -25,7 +25,7 @@
 #include "segment.h"
 
 NzbHandler::NzbHandler()
-    : m_nzbFile( 0 ), currentFile( 0 ), file_bytes( 0 ), nzbfile_bytes( 0 ), currentBytes( 0 )
+        : m_nzbFile(0), currentFile(0), file_bytes(0), nzbfile_bytes(0), currentBytes(0)
 {
 }
 
@@ -35,7 +35,7 @@ NzbHandler::~NzbHandler()
 
 bool NzbHandler::startDocument()
 {
-    if( m_filename.isEmpty() )
+    if (m_filename.isEmpty())
         return false;
 
     return true;
@@ -43,96 +43,108 @@ bool NzbHandler::startDocument()
 
 bool NzbHandler::endDocument()
 {
-    if( m_nzbFile->size() == 0 )
+    if (m_nzbFile->size() == 0)
         return false;
 
     return true;
 }
 
-bool NzbHandler::startElement( const QString &/*namespaceURI*/, const QString &/*localName*/,
-                               const QString &qName, const QXmlAttributes &atts )
+bool NzbHandler::startElement(const QString &/*namespaceURI*/, const QString &/*localName*/,
+                              const QString &qName, const QXmlAttributes &atts)
 {
-    if( qName == "file" ){
-        currentFile = new File( m_nzbFile, atts.value( "subject" ) );
+    if (qName == "file")
+    {
+        currentFile = new File(m_nzbFile, atts.value("subject"));
         return true;
     }
 
-    if( qName == "nzb" ){
-        m_nzbFile = new NzbFile( m_filename );
+    if (qName == "nzb")
+    {
+        m_nzbFile = new NzbFile(m_filename);
         return true;
     }
 
-    if( qName == "segment" ){
-        currentBytes = atts.value( "bytes" ).toULong();
+    if (qName == "segment")
+    {
+        currentBytes = atts.value("bytes").toULong();
         file_bytes += currentBytes;
-        currentNumber = atts.value( "number" );
+        currentNumber = atts.value("number");
         return true;
     }
 
-    if( qName == "groups" || qName == "group" || qName == "segments" ){
+    if (qName == "groups" || qName == "group" || qName == "segments")
+    {
         return true;
     }
 
     return false;
 }
 
-bool NzbHandler::endElement( const QString &/*namespaceURI*/, const QString &/*localName*/, const QString &qName )
+bool NzbHandler::endElement(const QString &/*namespaceURI*/, const QString &/*localName*/, const QString &qName)
 {
-    if( qName == "group" ){
-        if( !groups.contains( currentText ) ){
-            groups.append( currentText );
+    if (qName == "group")
+    {
+        if (!groups.contains(currentText))
+        {
+            groups.append(currentText);
         }
 
         currentText.clear();
+
         return true;
     }
 
-    if( qName == "file" ){
-        currentFile->setBytes( file_bytes );
-        currentFile->setGroups( groups );
-        m_nzbFile->append( currentFile );
-        nzbfile_bytes += static_cast<quint64>( file_bytes );
+    if (qName == "file")
+    {
+        currentFile->setBytes(file_bytes);
+        currentFile->setGroups(groups);
+        m_nzbFile->append(currentFile);
+        nzbfile_bytes += static_cast<quint64>(file_bytes);
         groups.clear();
         file_bytes = 0;
         return true;
     }
 
-    if( qName == "segment" ){
-        currentFile->append( new Segment( currentFile, currentText, currentNumber.toInt(), currentBytes ) );
+    if (qName == "segment")
+    {
+        currentFile->append(new Segment(currentFile, currentText, currentNumber.toInt(), currentBytes));
         currentBytes = 0;
         currentText.clear();
         return true;
     }
 
-    if( qName == "nzb" ){
-        m_nzbFile->setBytes( nzbfile_bytes );
+    if (qName == "nzb")
+    {
+        m_nzbFile->setBytes(nzbfile_bytes);
         nzbfile_bytes = 0;
 
-        for( int i = 0, size = m_nzbFile->size(); i < size; i++ ){
-            m_nzbFile->at( i )->setParent( m_nzbFile );
+        for (int i = 0, size = m_nzbFile->size(); i < size; i++)
+        {
+            m_nzbFile->at(i)->setParent(m_nzbFile);
         }
 
         return true;
     }
 
-    if( qName == "groups" || qName == "segments" ){
+    if (qName == "groups" || qName == "segments")
+    {
         return true;
     }
 
     return false;
 }
 
-bool NzbHandler::characters ( const QString &ch )
+bool NzbHandler::characters(const QString &ch)
 {
     currentText = ch;
     return true;
 }
 
-bool NzbHandler::fatalError( const QXmlParseException& exception )
+bool NzbHandler::fatalError(const QXmlParseException& exception)
 {
     qWarning() << "Fatal error on line" << exception.lineNumber()
-               << ", column" << exception.columnNumber() << ":"
-               << exception.message();
+    << ", column" << exception.columnNumber() << ":"
+    << exception.message();
 
     return false;
 }

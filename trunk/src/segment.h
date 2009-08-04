@@ -37,6 +37,7 @@ class File;
  *
  * @see NzbFile, File
  */
+
 class Segment
 {
     public:
@@ -54,7 +55,7 @@ class Segment
          * @param bytes
          *      The size of the Segment.
          */
-        Segment( File *parent = NULL, const QString &id = QString(), int nr = 0, quint32 bytes = 0 );
+        Segment(File *parent = NULL, const QString &id = QString(), int nr = 0, quint32 bytes = 0);
 
 //         Segment( const Segment &other );
         ~Segment();
@@ -69,7 +70,7 @@ class Segment
          * @return
          *      The size of the segment.
          */
-        quint32 bytes() const{ return m_bytes; }
+        quint32 bytes() const { return m_bytes; }
 
         /**
          * The id of the Segment. This corresponds to the parts id on the
@@ -77,14 +78,14 @@ class Segment
          * @return
          *      The id of the segment.
          */
-        const QString id() const{ return m_id; }
+        const QString id() const { return m_id; }
 
         /**
          * The number of the segment in the File.
          * @return
          *      The number of the segment.
          */
-        int nr() const{ return m_nr; }
+        int nr() const { return m_nr; }
 
         /**
          * The parent of the Segment. This is the multipart file opf which
@@ -92,7 +93,7 @@ class Segment
          * @return
          *      The parent of the Segment.
          */
-        File *parent() const{ return m_parent; }
+        File *parent() const { return m_parent; }
 
         /**
          * Returns the type of the Segment.
@@ -102,12 +103,12 @@ class Segment
          *
          * \see NzbFile, File
          */
-        const QString type() const{ return QString( "Segment" ); }
+        const QString type() const { return QString("Segment"); }
 
         /* QVariant stream operators */
 //         Segment& operator=( const Segment &other );
 //         friend QDataStream& operator>>( QDataStream &in, Segment &data );
-// 
+//
 //         friend QDataStream& operator<<( QDataStream &out, const Segment &data );
 
 //         friend class File;

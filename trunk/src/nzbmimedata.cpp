@@ -23,7 +23,7 @@
 #include "nzbmimedata.h"
 
 NzbMimeData::NzbMimeData()
- : QMimeData()
+        : QMimeData()
 {
 }
 
@@ -31,7 +31,7 @@ NzbMimeData::~NzbMimeData()
 {
 }
 
-void NzbMimeData::setNzbData( const QList< BaseType* > &data )
+void NzbMimeData::setNzbData(const QList< BaseType* > &data)
 {
     m_data = data;
 }
@@ -48,9 +48,10 @@ QStringList NzbMimeData::formats() const
     return m_formats;
 }
 
-bool NzbMimeData::hasFormat( const QString &mimeType ) const
+bool NzbMimeData::hasFormat(const QString &mimeType) const
 {
-    if( mimeType == "text/x-nzb" ){
+    if (mimeType == "text/x-nzb")
+    {
         return true;
     }
 
@@ -60,15 +61,15 @@ bool NzbMimeData::hasFormat( const QString &mimeType ) const
 // QVariant NzbMimeData::retrieveData( const QString &mimeType, QVariant::Type type) const
 // {
 //     kDebug();
-// 
+//
 //     if( mimeType != "text/x-nzb" )
 //         return QVariant();
-// 
+//
 //     if( type != QVariant::UserType )
 //         return QVariant();
-// 
+//
 //     return QVariant();
-// 
+//
 // }
 
 #include "nzbmimedata.moc"

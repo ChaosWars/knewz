@@ -33,17 +33,18 @@ class BaseType;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class NzbMimeData : public QMimeData
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         NzbMimeData();
         ~NzbMimeData();
-        void setNzbData( const QList< BaseType* > &data );
+        void setNzbData(const QList< BaseType* > &data);
         QList< BaseType* > getNzbData() const;
         virtual QStringList formats() const;
-        virtual bool hasFormat( const QString &mimeType ) const;
+        virtual bool hasFormat(const QString &mimeType) const;
 
 //     protected:
 //         virtual QVariant retrieveData( const QString &mimeType, QVariant::Type type) const;

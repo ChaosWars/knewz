@@ -26,59 +26,65 @@
 #include "nzbfile.h"
 #include "nzbmodel.h"
 
-NzbModel::NzbModel( QTreeView *parent, const QList<NzbFile*> &nzbFiles )
-    : BaseModel( parent ),
-      m_nzbFiles( nzbFiles )
+NzbModel::NzbModel(QTreeView *parent, const QList<NzbFile*> &nzbFiles)
+        : BaseModel(parent),
+        m_nzbFiles(nzbFiles)
 {
-    rootItem << "" << i18n( "Subject" ) << i18n( "Size (MiB)" );
+    rootItem << "" << i18n("Subject") << i18n("Size (MiB)");
 }
 
-int NzbModel::columnCount( const QModelIndex &/*parent*/ ) const
+int NzbModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return 3;
 }
 
-QVariant NzbModel::data( const QModelIndex &index, int role ) const
+QVariant NzbModel::data(const QModelIndex &index, int role) const
 {
-    if ( !index.isValid() )
+    if (!index.isValid())
         return QVariant();
 
-    if( role == Qt::CheckStateRole && index.column() == 0 ){
-        BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+    if (role == Qt::CheckStateRole && index.column() == 0)
+    {
+        BaseType *base = static_cast< BaseType* >(index.internalPointer());
         return base->state();
     }
 
-    if ( role != Qt::DisplayRole )
+    if (role != Qt::DisplayRole)
         return QVariant();
 
     const QModelIndex parentIndex = index.parent();
 
-    if( !parentIndex.isValid() ){
+    if (!parentIndex.isValid())
+    {
 
-        switch( index.column() ){
+        switch (index.column())
+        {
             case 0:
                 break;
             case 1:
-                return m_nzbFiles.at( index.row() )->filename();
+                return m_nzbFiles.at(index.row())->filename();
                 break;
             case 2:
-                return QString().setNum( m_nzbFiles.at( index.row() )->bytes() /1048576.00, 'f', 2 );
+                return QString().setNum(m_nzbFiles.at(index.row())->bytes() / 1048576.00, 'f', 2);
                 break;
             default:
                 return QVariant();
                 break;
         }
 
-    }else{
+    }
+    else
+    {
 
-        switch( index.column() ){
+        switch (index.column())
+        {
             case 0:
                 break;
             case 1:
-                return m_nzbFiles.at( parentIndex.row() )->at( index.row() )->subject();
+                return m_nzbFiles.at(parentIndex.row())->at(index.row())->subject();
                 break;
             case 2:
-                return QString().setNum( m_nzbFiles.at( parentIndex.row() )->at( index.row() )->bytes() /1048576.00, 'f', 2 );
+                return QString().setNum(m_nzbFiles.at(parentIndex.row())->at(index.row())->bytes() / 1048576.00, 'f', 2);
                 break;
             default:
                 return QVariant();
@@ -90,95 +96,110 @@ QVariant NzbModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 }
 
-Qt::ItemFlags NzbModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags NzbModel::flags(const QModelIndex &index) const
 {
-    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags( index );
+    Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
 
-    if ( !index.isValid() )
+    if (!index.isValid())
         return 0;
 
     return defaultFlags;
 }
 
-QModelIndex NzbModel::index( int row, int column, const QModelIndex &parent ) const
+QModelIndex NzbModel::index(int row, int column, const QModelIndex &parent) const
 {
-    if( !hasIndex( row, column, parent ) )
+    if (!hasIndex(row, column, parent))
         return QModelIndex();
 
-    if( !parent.isValid() )
-        return createIndex( row, column, m_nzbFiles.at( row ) );
+    if (!parent.isValid())
+        return createIndex(row, column, m_nzbFiles.at(row));
 
-    BaseType *base = static_cast< BaseType* >( parent.internalPointer() );
+    BaseType *base = static_cast< BaseType* >(parent.internalPointer());
+
     NzbFile *nzbFile;
 
-    if( base->type() == BaseType::nzbfile ){
-        nzbFile = static_cast< NzbFile* >( parent.internalPointer() );
-    }else{
+    if (base->type() == BaseType::nzbfile)
+    {
+        nzbFile = static_cast< NzbFile* >(parent.internalPointer());
+    }
+    else
+    {
         return QModelIndex();
     }
 
-    File *file = nzbFile->value( row );
+    File *file = nzbFile->value(row);
 
-    if( !file )
+    if (!file)
         return QModelIndex();
 
-    return createIndex( row, column, file );
+    return createIndex(row, column, file);
 }
 
-QModelIndex NzbModel::parent( const QModelIndex &index ) const
+QModelIndex NzbModel::parent(const QModelIndex &index) const
 {
-    if ( !index.isValid() )
+    if (!index.isValid())
         return QModelIndex();
 
-    BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+    BaseType *base = static_cast< BaseType* >(index.internalPointer());
+
     File *file;
 
-    if( base->type() == BaseType::file ){
-        file = static_cast< File* >( index.internalPointer() );
-    }else{
+    if (base->type() == BaseType::file)
+    {
+        file = static_cast< File* >(index.internalPointer());
+    }
+    else
+    {
         return QModelIndex();
     }
 
     NzbFile *nzbFile = file->parent();
-    return createIndex( m_nzbFiles.indexOf( nzbFile ), 0, nzbFile );
+
+    return createIndex(m_nzbFiles.indexOf(nzbFile), 0, nzbFile);
 }
 
-int NzbModel::rowCount( const QModelIndex &parent ) const
+int NzbModel::rowCount(const QModelIndex &parent) const
 {
-    if( parent.column() > 0 )
+    if (parent.column() > 0)
         return 0;
 
-    if ( !parent.isValid() )
+    if (!parent.isValid())
         return m_nzbFiles.size();
 
-    if( !parent.parent().isValid() )
-        return m_nzbFiles.at( parent.row() )->size();
+    if (!parent.parent().isValid())
+        return m_nzbFiles.at(parent.row())->size();
 
     return 0;
 }
 
 void NzbModel::trimNzbFiles()
 {
-    for( int i = 0, size = m_nzbFiles.size(); i < size; i++ ){
-        NzbFile *currentNzbFile = m_nzbFiles.at( i );
+    for (int i = 0, size = m_nzbFiles.size(); i < size; i++)
+    {
+        NzbFile *currentNzbFile = m_nzbFiles.at(i);
         NzbFile *nzbFile;
 
-        switch( currentNzbFile->state() ){
+        switch (currentNzbFile->state())
+        {
             case Qt::Checked:
-                m_files.append( currentNzbFile );
+                m_files.append(currentNzbFile);
                 break;
             case Qt::PartiallyChecked:
-                nzbFile = new NzbFile( currentNzbFile->filename() );
+                nzbFile = new NzbFile(currentNzbFile->filename());
 
-                for( int j = 0, size = currentNzbFile->size(); j < size; j++ ){
-                    File *file = currentNzbFile->at( j );
-                    if( file->state() == Qt::Checked ){
-                        nzbFile->append( new File( *file ) );
-                        nzbFile->last()->setParent( nzbFile );
+                for (int j = 0, size = currentNzbFile->size(); j < size; j++)
+                {
+                    File *file = currentNzbFile->at(j);
+
+                    if (file->state() == Qt::Checked)
+                    {
+                        nzbFile->append(new File(*file));
+                        nzbFile->last()->setParent(nzbFile);
                     }
                 }
 
-                m_files.append( nzbFile );
+                m_files.append(nzbFile);
+
                 break;
             default:
                 break;
@@ -189,30 +210,34 @@ void NzbModel::trimNzbFiles()
 
 void NzbModel::checkAll()
 {
-    for( int file = 0, size = rowCount(); file < size; file++ ){
-        QModelIndex fileIndex = index( file, 0 );
-        NzbFile *nzbFile = static_cast< NzbFile* >( fileIndex.internalPointer() );
-        nzbFile->setState( Qt::Checked );
-        view->update( fileIndex );
+    for (int file = 0, size = rowCount(); file < size; file++)
+    {
+        QModelIndex fileIndex = index(file, 0);
+        NzbFile *nzbFile = static_cast< NzbFile* >(fileIndex.internalPointer());
+        nzbFile->setState(Qt::Checked);
+        view->update(fileIndex);
 
-        for( int part = 0, size = rowCount( fileIndex ); part < size; part++ ){
-            nzbFile->at( part )->setState( Qt::Checked );
-            view->update( index( part, 0, fileIndex ) );
+        for (int part = 0, size = rowCount(fileIndex); part < size; part++)
+        {
+            nzbFile->at(part)->setState(Qt::Checked);
+            view->update(index(part, 0, fileIndex));
         }
     }
 }
 
 void NzbModel::checkNone()
 {
-    for( int file = 0, size = rowCount(); file < size; file++ ){
-        QModelIndex fileIndex = index( file, 0 );
-        NzbFile *nzbFile = static_cast< NzbFile* >( fileIndex.internalPointer() );
-        nzbFile->setState( Qt::Unchecked );
-        view->update( fileIndex );
+    for (int file = 0, size = rowCount(); file < size; file++)
+    {
+        QModelIndex fileIndex = index(file, 0);
+        NzbFile *nzbFile = static_cast< NzbFile* >(fileIndex.internalPointer());
+        nzbFile->setState(Qt::Unchecked);
+        view->update(fileIndex);
 
-        for( int part = 0, size = rowCount( fileIndex ); part < size; part++ ){
-            nzbFile->at( part )->setState( Qt::Unchecked );
-            view->update( index( part, 0, fileIndex ) );
+        for (int part = 0, size = rowCount(fileIndex); part < size; part++)
+        {
+            nzbFile->at(part)->setState(Qt::Unchecked);
+            view->update(index(part, 0, fileIndex));
         }
     }
 }
@@ -220,39 +245,47 @@ void NzbModel::checkNone()
 void NzbModel::checkSelected()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
-    cleanSelection( list );
+    cleanSelection(list);
 
-    foreach( QModelIndex idx, list ){
-        changeCheckState( idx, Qt::Checked );
+    foreach(QModelIndex idx, list)
+    {
+        changeCheckState(idx, Qt::Checked);
     }
 }
 
 void NzbModel::uncheckSelected()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
-    cleanSelection( list );
+    cleanSelection(list);
 
-    foreach( QModelIndex idx, list ){
-        changeCheckState( idx, Qt::Unchecked );
+    foreach(QModelIndex idx, list)
+    {
+        changeCheckState(idx, Qt::Unchecked);
     }
 }
 
 void NzbModel::invertSelection()
 {
-    for( int i = 0, size = rowCount(); i < size; i++ ){
+    for (int i = 0, size = rowCount(); i < size; i++)
+    {
 
-        switch( m_nzbFiles.at( i )->state() ){
+        switch (m_nzbFiles.at(i)->state())
+        {
             case Qt::Unchecked:
-                    changeCheckState( index( i, 0 ), Qt::Checked );
+                changeCheckState(index(i, 0), Qt::Checked);
                 break;
             case Qt::Checked:
-                changeCheckState( index( i, 0 ), Qt::Unchecked );
+                changeCheckState(index(i, 0), Qt::Unchecked);
                 break;
             case Qt::PartiallyChecked:
-                for( int j = 0, sizej = m_nzbFiles.at( i )->size(); j < sizej; j++ ){
-                    changeCheckState( index( j, 0, index( i, 0 ) ), m_nzbFiles.at( i )->at( j )->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+
+                for (int j = 0, sizej = m_nzbFiles.at(i)->size(); j < sizej; j++)
+                {
+                    changeCheckState(index(j, 0, index(i, 0)), m_nzbFiles.at(i)->at(j)->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
                 }
+
                 break;
+
             default:
                 break;
         }
@@ -262,23 +295,30 @@ void NzbModel::invertSelection()
 void NzbModel::invertSelectedRows()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
-    cleanSelection( list );
+    cleanSelection(list);
 
-    foreach( QModelIndex idx, list ){
-        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+    foreach(QModelIndex idx, list)
+    {
+        BaseType *base = static_cast< BaseType* >(idx.internalPointer());
 
         /* We know the children are all filtered out, so we traverse them all now and flip their checkstates */
-        if( base->type() == BaseType::nzbfile ){
-            NzbFile *nzbFile = dynamic_cast< NzbFile* >( base );
 
-            if( nzbFile ){
-                for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-                    changeCheckState( index( i, 0, idx ), nzbFile->at( i )->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+        if (base->type() == BaseType::nzbfile)
+        {
+            NzbFile *nzbFile = dynamic_cast< NzbFile* >(base);
+
+            if (nzbFile)
+            {
+                for (int i = 0, size = nzbFile->size(); i < size; i++)
+                {
+                    changeCheckState(index(i, 0, idx), nzbFile->at(i)->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
                 }
             }
-        }else{
+        }
+        else
+        {
             /* Dealing with selected files now */
-            changeCheckState( idx, base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
+            changeCheckState(idx, base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked);
         }
     }
 }

@@ -26,12 +26,13 @@
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class DockButtonWidget : public QWidget, public Ui::DockButtonWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        DockButtonWidget( QWidget *parent = 0 );
+        DockButtonWidget(QWidget *parent = 0);
         ~DockButtonWidget();
 
     Q_SIGNALS:

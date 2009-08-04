@@ -23,11 +23,13 @@
 
 #include <QtCore>
 
-class ConstructionException : public QtConcurrent::Exception{
+class ConstructionException : public QtConcurrent::Exception
+{
 
     public:
-        void raise() const{ throw *this; }
-        ConstructionException* clone() const{ return new ConstructionException( *this ); }
+        void raise() const { throw *this; }
+
+        ConstructionException* clone() const { return new ConstructionException(*this); }
 };
 
 #endif

@@ -21,12 +21,14 @@
 #include "knewzsettings.h"
 #include "socket.h"
 
-Socket::Socket( QObject *parent )
- : QSslSocket( parent )
+Socket::Socket(QObject *parent)
+        : QSslSocket(parent)
 {
     m_server = KNewzSettings::server();
     m_port = KNewzSettings::port();
     m_timeout = KNewzSettings::timeout() * 1000;
+    m_retry_attempts = KNewzSettings::retryAttempts();
+    m_retry_delay = KNewzSettings::retryDelay();
     m_ssl = KNewzSettings::ssl();
 }
 
@@ -36,11 +38,11 @@ Socket::~Socket()
 
 void Socket::connectToHost()
 {
-    m_ssl ? QSslSocket::connectToHostEncrypted( m_server, m_port ) :
-            QSslSocket::connectToHost( m_server, m_port );
+    m_ssl ? QSslSocket::connectToHostEncrypted(m_server, m_port) :
+            QSslSocket::connectToHost(m_server, m_port);
 }
 
-void Socket::parseReply( const QString &reply )
+void Socket::parseReply(const QString &reply)
 {
 }
 

@@ -27,9 +27,13 @@
 #include <KDE/KConfigDialog>
 
 class QShowEvent;
+
 class DisplayWidget;
+
 class KNewzWallet;
+
 class SearchWidget;
+
 class ServerWidget;
 
 /**
@@ -40,16 +44,17 @@ class ServerWidget;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class KNewzConfigDialog : public KConfigDialog
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config );
+        KNewzConfigDialog(QWidget *parent, const QString &name, KConfigSkeleton *config);
         ~KNewzConfigDialog();
 
     protected:
-        void showEvent( QShowEvent *event );
+        void showEvent(QShowEvent *event);
 
     private:
         DisplayWidget *displayWidget;

@@ -34,32 +34,37 @@ DownloadQueue::DownloadQueue() : QObject(), QList<NzbFile*>()
 
 DownloadQueue* DownloadQueue::Instance()
 {
-    if( !m_instance ){
-        QMutexLocker lock( &m_mutex );
+    if (!m_instance)
+    {
+        QMutexLocker lock(&m_mutex);
         /* Make sure that the instance wasn't created while we were
         waiting for the lock */
-        if( !m_instance ){
+
+        if (!m_instance)
+        {
             m_instance = new DownloadQueue();
         }
     }
 
     m_count++;
+
     return m_instance;
 }
 
 DownloadQueue::~DownloadQueue()
 {
-    QMutexLocker lock( &m_mutex );
-    qDeleteAll( *this );
+    QMutexLocker lock(&m_mutex);
+    qDeleteAll(*this);
     clear();
 }
 
 void DownloadQueue::detach()
 {
-    QMutexLocker lock( &m_mutex );
+    QMutexLocker lock(&m_mutex);
     m_count--;
 
-    if( m_count < 1 ){
+    if (m_count < 1)
+    {
         delete m_instance;
         m_instance = 0;
     }
@@ -67,14 +72,16 @@ void DownloadQueue::detach()
 
 void DownloadQueue::dumpQueue()
 {
-    for( int i = 0, count = m_instance->size(); i < count; i++ ){
-        m_instance->at( i )->dumpQueue();
+    for (int i = 0, count = m_instance->size(); i < count; i++)
+    {
+        m_instance->at(i)->dumpQueue();
     }
 }
 
 void DownloadQueue::dumpQueueTopLevel()
 {
-    for( int i = 0, count = m_instance->size(); i < count; i++ ){
-        m_instance->at( i )->print();
+    for (int i = 0, count = m_instance->size(); i < count; i++)
+    {
+        m_instance->at(i)->print();
     }
 }

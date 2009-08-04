@@ -55,27 +55,29 @@
 #include "nzbdialog.h"
 #include "nzbfile.h"
 #include "nzbreader.h"
+#include "connection.h"
 
 // KNewz* KNewz::m_instance = 0;
 // QMutex KNewz::m_mutex;
 
 using namespace KWallet;
 
-KNewz::KNewz( QWidget *parent )
-    : KXmlGuiWindow( parent ),
-      mainWidget( new KTabWidget( this ) ),
-      browserWidget( new BrowserWidget( this, mainWidget ) ),
-      m_view( new KNewzView( mainWidget ) ),
-      m_model( new KNewzModel( m_view ) ),
-      downloadqueue( DownloadQueue::Instance() ),
-      knewzwallet( NULL ),
-      ok_to_close( false )
+KNewz::KNewz(QWidget *parent)
+        : KXmlGuiWindow(parent),
+        connection(NULL),
+        mainWidget(new KTabWidget(this)),
+        browserWidget(new BrowserWidget(this, mainWidget)),
+        m_view(new KNewzView(mainWidget)),
+        m_model(new KNewzModel(m_view)),
+        downloadqueue(DownloadQueue::Instance()),
+        knewzwallet(NULL),
+        ok_to_close(false)
 {
-    m_view->setModel( m_model );
-    m_view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
-    mainWidget->addTab( m_view, KIcon( "view-list-text" ), "View" );
-    mainWidget->addTab( browserWidget, KIcon( "internet-web-browser" ), "Browser" );
-    setCentralWidget( mainWidget );
+    m_view->setModel(m_model);
+    m_view->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+    mainWidget->addTab(m_view, KIcon("view-list-text"), i18n("View"));
+    mainWidget->addTab(browserWidget, KIcon("internet-web-browser"), i18n("Browser"));
+    setCentralWidget(mainWidget);
     createDockWidget();
     setupActions();
     setupToolbars();
@@ -83,31 +85,41 @@ KNewz::KNewz( QWidget *parent )
     setAutoSaveSettings();
     checkDirectories();
     config = KGlobal::config();
-    trayIcon = new KSystemTrayIcon( "knewz", this );
-    trayIcon->contextMenu()->addAction( openFilesAction );
-    trayIcon->contextMenu()->addAction( recentFiles );
-    trayIcon->contextMenu()->addAction( preferences );
-    connect( trayIcon, SIGNAL( quitSelected() ), SLOT( exit() ) );
+    trayIcon = new KSystemTrayIcon("knewz", this);
+    trayIcon->contextMenu()->addAction(openFilesAction);
+    trayIcon->contextMenu()->addAction(recentFiles);
+    trayIcon->contextMenu()->addAction(preferences);
+    connect(trayIcon, SIGNAL(quitSelected()), SLOT(exit()));
     trayIcon->show();
     //Parse command line arguments
     parseCommandLineArgs();
     //Give the main window time to show before popping up the KWallet password dialog
-    QTimer::singleShot( 1000, this, SLOT( loadSettings() ) );
+    QTimer::singleShot(1000, this, SLOT(loadSettings()));
 }
 
 KNewz::~KNewz()
 {
     //Save the recent files entries
-    configGroup->changeGroup( "RecentFiles" );
-    recentFiles->saveEntries( *configGroup );
-    configGroup->changeGroup( "SearchSettings" );
-    configGroup->writeEntry( "SearchHistory", searchLine->historyItems() );
-    configGroup->writeEntry( "CompletionHistory", searchLine->completionObject()->items() );
+    configGroup->changeGroup("RecentFiles");
+    recentFiles->saveEntries(*configGroup);
+    configGroup->changeGroup("SearchSettings");
+    configGroup->writeEntry("SearchHistory", searchLine->historyItems());
+    configGroup->writeEntry("CompletionHistory", searchLine->completionObject()->items());
 
-    if( knewzwallet )
+    if(connection)
+    {
+        connection->close();
+        connection->wait();
+        delete connection;
+    }
+
+    if (knewzwallet)
+    {
         knewzwallet->close();
+    }
 
     downloadqueue->detach();
+
     delete configGroup;
     delete dock;
     delete m_model;
@@ -119,30 +131,36 @@ KNewz::~KNewz()
 // {
 //     if( !m_instance ){
 //         QMutexLocker lock( &m_mutex );
-// 
+//
 //         if( !m_instance )
 //             m_instance = new KNewz();
 //     }
-// 
+//
 //     return m_instance;
 // }
 
 void KNewz::checkDirectories()
 {
-    QDir tempDir( KNewzSettings::tempDirectory().path() );
-    if( !tempDir.exists() ){
+    QDir tempDir(KNewzSettings::tempDirectory().path());
 
-        if( !tempDir.mkpath( tempDir.path() ) ){
-            KMessageBox::error( this, "Error creating temp directory" );
+    if (!tempDir.exists())
+    {
+
+        if (!tempDir.mkpath(tempDir.path()))
+        {
+            KMessageBox::error(this, i18n("Error creating temp directory"));
         }
 
     }
 
-    QDir downloadDir( KNewzSettings::tempDirectory().path() );
-    if( !downloadDir.exists() ){
+    QDir downloadDir(KNewzSettings::tempDirectory().path());
 
-        if( !downloadDir.mkpath( downloadDir.path() ) ){
-            KMessageBox::error( this, "Error creating download directory" );
+    if (!downloadDir.exists())
+    {
+
+        if (!downloadDir.mkpath(downloadDir.path()))
+        {
+            KMessageBox::error(this, i18n("Error creating download directory"));
         }
 
     }
@@ -150,85 +168,96 @@ void KNewz::checkDirectories()
 
 void KNewz::createDockWidget()
 {
-    dock = new QDockWidget( QString(), this );
-    dock->setObjectName( "DockWidget" );
-    dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    dock = new QDockWidget(QString(), this);
+    dock->setObjectName("DockWidget");
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 //     titleWidget = new KNewzTitleWidget( dock );
 //     dock->setTitleBarWidget( titleWidget );
-    dockButtonWidget = new DockButtonWidget( dock );
-    dock->setWidget( dockButtonWidget );
-    addDockWidget( Qt::LeftDockWidgetArea, dock );
-    connect( dockButtonWidget, SIGNAL( moveToTop() ), m_model, SLOT( moveToTop() ) );
-    connect( dockButtonWidget, SIGNAL( moveUp() ), m_model, SLOT( moveUp() ) );
-    connect( dockButtonWidget, SIGNAL( moveDown() ), m_model, SLOT( moveDown() ) );
-    connect( dockButtonWidget, SIGNAL( moveToBottom() ), m_model, SLOT( moveToBottom() ) );
+    dockButtonWidget = new DockButtonWidget(dock);
+    dock->setWidget(dockButtonWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
+    connect(dockButtonWidget, SIGNAL(moveToTop()), m_model, SLOT(moveToTop()));
+    connect(dockButtonWidget, SIGNAL(moveUp()), m_model, SLOT(moveUp()));
+    connect(dockButtonWidget, SIGNAL(moveDown()), m_model, SLOT(moveDown()));
+    connect(dockButtonWidget, SIGNAL(moveToBottom()), m_model, SLOT(moveToBottom()));
 }
 
 void KNewz::loadSettings()
 {
-    configGroup = new KConfigGroup( config, "RecentFiles" );
-    recentFiles->loadEntries( *configGroup );
-    configGroup->changeGroup( "SearchSettings" );
-    searchLine->setHistoryItems( configGroup->readEntry( "SearchHistory", QStringList() ) );
-    searchLine->completionObject()->setItems( configGroup->readEntry( "CompletionHistory", QStringList() ) );
+    configGroup = new KConfigGroup(config, "RecentFiles");
+    recentFiles->loadEntries(*configGroup);
+    configGroup->changeGroup("SearchSettings");
+    searchLine->setHistoryItems(configGroup->readEntry("SearchHistory", QStringList()));
+    searchLine->completionObject()->setItems(configGroup->readEntry("CompletionHistory", QStringList()));
 
-    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
+    if (KNewzSettings::saveEncrypted() && KNewzSettings::authentication())
+    {
 
-        if( !knewzwallet ){
+        if (!knewzwallet)
+        {
             setupWallet();
         }
 
     }
 
     KNewzSettings::headerOrientationHorizontal() ?
-            dock->setFeatures( QDockWidget::DockWidgetClosable |
-                               QDockWidget::DockWidgetMovable |
-                               QDockWidget::DockWidgetFloatable ) :
-            dock->setFeatures( QDockWidget::DockWidgetClosable |
-                               QDockWidget::DockWidgetMovable |
-                               QDockWidget::DockWidgetFloatable |
-                               QDockWidget::DockWidgetVerticalTitleBar );
-    m_view->setAnimated( KNewzSettings::animatedExpantion() );
-    m_view->setExpandsOnDoubleClick( KNewzSettings::expandOnDoubleClick() );
+
+    dock->setFeatures(QDockWidget::DockWidgetClosable |
+                      QDockWidget::DockWidgetMovable |
+                      QDockWidget::DockWidgetFloatable) :
+    dock->setFeatures(QDockWidget::DockWidgetClosable |
+                      QDockWidget::DockWidgetMovable |
+                      QDockWidget::DockWidgetFloatable |
+                      QDockWidget::DockWidgetVerticalTitleBar);
+    m_view->setAnimated(KNewzSettings::animatedExpantion());
+    m_view->setExpandsOnDoubleClick(KNewzSettings::expandOnDoubleClick());
     int columnCount = m_view->model()->columnCount();
 
-    if( KNewzSettings::automaticallyResizeHeaders() ){
+    if (KNewzSettings::automaticallyResizeHeaders())
+    {
 
-        for( int i = 1; i < columnCount; i++){
-            m_view->header()->setResizeMode( i, QHeaderView::ResizeToContents );
+        for (int i = 1; i < columnCount; i++)
+        {
+            m_view->header()->setResizeMode(i, QHeaderView::ResizeToContents);
         }
 
-    }else{
-        for( int i = 1; i < columnCount; i++){
-            m_view->header()->setResizeMode( i, QHeaderView::Interactive );
+    }
+    else
+    {
+        for (int i = 1; i < columnCount; i++)
+        {
+            m_view->header()->setResizeMode(i, QHeaderView::Interactive);
         }
     }
 }
 
-void KNewz::openRecentFile( const KUrl &url )
+void KNewz::openRecentFile(const KUrl &url)
 {
     NzbReader reader;
     QList<NzbFile*> nzbFiles;
-    NzbFile *nzbFile = reader.parseLocalData( url.path() );
+    NzbFile *nzbFile = reader.parseLocalData(url.path());
 
-    if( nzbFile->size() > 0 ){
-        nzbFiles.append( nzbFile );
-        NzbDialog nzbDialog( this, nzbFiles );
+    if (nzbFile->size() > 0)
+    {
+        nzbFiles.append(nzbFile);
+        NzbDialog nzbDialog(this, nzbFiles);
         nzbDialog.exec();
 
-        if( nzbDialog.result() == QDialog::Accepted ){
+        if (nzbDialog.result() == QDialog::Accepted)
+        {
             downloadqueue->mutex().lock();
             int row = m_model->rowCount();
             int count = nzbDialog.files().size();
 
-            if( count < 1 )
+            if (count < 1)
                 return;
 
-            m_model->insertRows( row, count );
+            m_model->insertRows(row, count);
 
-            foreach( NzbFile *nzbFile, nzbDialog.files() ){
-                QModelIndex idx = m_model->index( row, 0 );
-                m_model->setData( idx, QVariant::fromValue( *nzbFile ) );
+            foreach(NzbFile *nzbFile, nzbDialog.files())
+            {
+                QModelIndex idx = m_model->index(row, 0);
+                m_model->setData(idx, QVariant::fromValue(*nzbFile));
                 row++;
             }
 
@@ -240,13 +269,15 @@ void KNewz::openRecentFile( const KUrl &url )
 
 void KNewz::optionsConfigure()
 {
-    if ( KNewzConfigDialog::showDialog( "settings" ) )  {
+    if (KNewzConfigDialog::showDialog("settings"))
+    {
         return;
     }
 
-    KNewzConfigDialog *dialog = new KNewzConfigDialog( this, "settings", KNewzSettings::self() );
-    connect( dialog, SIGNAL( clearSearchHistory() ), searchLine, SLOT( clearHistory() ) );
-    connect( dialog, SIGNAL( settingsChanged( QString ) ), this, SLOT( loadSettings() ) );
+    KNewzConfigDialog *dialog = new KNewzConfigDialog(this, "settings", KNewzSettings::self());
+
+    connect(dialog, SIGNAL(clearSearchHistory()), searchLine, SLOT(clearHistory()));
+    connect(dialog, SIGNAL(settingsChanged(QString)), this, SLOT(loadSettings()));
     dialog->show();
 }
 
@@ -256,53 +287,66 @@ void KNewz::parseCommandLineArgs()
     NzbReader reader;
     QList<NzbFile*> nzbFiles;
 
-    for( int i = 0, size = args->count(); i < size; i++ ){
+    for (int i = 0, size = args->count(); i < size; i++)
+    {
 
-        if( !args->arg( i ).isEmpty() ){
+        if (!args->arg(i).isEmpty())
+        {
 
-            NzbFile *nzbFile = reader.parseLocalData( args->arg( i ) );
+            NzbFile *nzbFile = reader.parseLocalData(args->arg(i));
 
-            if( nzbFile->size() > 0 ){
-                nzbFiles.append( nzbFile );
+            if (nzbFile->size() > 0)
+            {
+                nzbFiles.append(nzbFile);
             }
         }
     }
 
-    if( nzbFiles.size() > 0 ){
+    if (nzbFiles.size() > 0)
+    {
 
-        if( !KNewzSettings::openFilesSilently() ){
+        if (!KNewzSettings::openFilesSilently())
+        {
 
-            NzbDialog nzbDialog( this, nzbFiles );
+            NzbDialog nzbDialog(this, nzbFiles);
             nzbDialog.exec();
 
-            if( nzbDialog.result() == QDialog::Accepted ){
+            if (nzbDialog.result() == QDialog::Accepted)
+            {
                 int count = nzbDialog.files().size();
 
-                if( count < 1 )
+                if (count < 1)
+                {
                     return;
+                }
 
                 downloadqueue->mutex().lock();
-                int row = m_model->rowCount();
-                m_model->insertRows( row, count );
 
-                foreach( NzbFile *nzbFile, nzbDialog.files() ){
-                    QModelIndex idx = m_model->index( row, 0 );
-                    m_model->setData( idx, QVariant::fromValue( *nzbFile ) );
+                int row = m_model->rowCount();
+                m_model->insertRows(row, count);
+
+                foreach(NzbFile *nzbFile, nzbDialog.files())
+                {
+                    QModelIndex idx = m_model->index(row, 0);
+                    m_model->setData(idx, QVariant::fromValue(*nzbFile));
                     row++;
                 }
 
                 downloadqueue->mutex().unlock();
             }
 
-        }else{
+        }
+        else
+        {
             int count = nzbFiles.size();
             downloadqueue->mutex().lock();
             int row = m_model->rowCount();
-            m_model->insertRows( row, count );
+            m_model->insertRows(row, count);
 
-            foreach( NzbFile *nzbFile, nzbFiles ){
-                QModelIndex idx = m_model->index( row, 0 );
-                m_model->setData( idx, QVariant::fromValue( *nzbFile ) );
+            foreach(NzbFile *nzbFile, nzbFiles)
+            {
+                QModelIndex idx = m_model->index(row, 0);
+                m_model->setData(idx, QVariant::fromValue(*nzbFile));
                 row++;
             }
 
@@ -316,132 +360,153 @@ void KNewz::parseCommandLineArgs()
 void KNewz::search()
 {
     QString searchTerm = searchLine->currentText();
-    searchLine->addToHistory( searchTerm );
+    searchLine->addToHistory(searchTerm);
     searchTerm = searchTerm.trimmed();
-    searchTerm.replace( " ", "+" );
-    QStandardItem *item = KNewzSearchModel::self()->item( searchBox->currentIndex(), 1 );
-    Q_ASSERT( item );
+    searchTerm.replace(" ", "+");
+    QStandardItem *item = KNewzSearchModel::self()->item(searchBox->currentIndex(), 1);
+    Q_ASSERT(item);
     QString url = item->text();
-    url.replace( "FOOBAR", searchTerm );
+    url.replace("FOOBAR", searchTerm);
     url = url.trimmed();
-    browserWidget->load( url );
+    browserWidget->load(url);
 }
 
-void KNewz::searchTextChanged( const QString &text )
+void KNewz::searchTextChanged(const QString &text)
 {
-    if( !text.isEmpty() )
-        searchAction->setEnabled( true );
+    if (!text.isEmpty())
+        searchAction->setEnabled(true);
     else
-        searchAction->setEnabled( false );
+        searchAction->setEnabled(false);
 }
 
 void KNewz::setupActions()
 {
     createStandardStatusBarAction();
     toggleDock = dock->toggleViewAction();
-    toggleDock->setObjectName( "toggle_dock" );
-    toggleDock->setText( "Show &Dock" );
-    actionCollection()->addAction( "toggle_dock", toggleDock );
-    openFilesAction = KStandardAction::open( this, SLOT( urlOpen() ), actionCollection() );
-    recentFiles = KStandardAction::openRecent( this, SLOT( openRecentFile( KUrl ) ), actionCollection() );
-    KStandardAction::quit( this, SLOT( exit() ), actionCollection() );
-    preferences = KStandardAction::preferences( this, SLOT( optionsConfigure() ), actionCollection() );
+    toggleDock->setObjectName("toggle_dock");
+    toggleDock->setText(i18n("Show &Dock"));
+    actionCollection()->addAction("toggle_dock", toggleDock);
+    openFilesAction = KStandardAction::open(this, SLOT(urlOpen()), actionCollection());
+    recentFiles = KStandardAction::openRecent(this, SLOT(openRecentFile(KUrl)), actionCollection());
+    KStandardAction::quit(this, SLOT(exit()), actionCollection());
+    preferences = KStandardAction::preferences(this, SLOT(optionsConfigure()), actionCollection());
 }
 
 void KNewz::setupWallet()
 {
-    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
-        knewzwallet = KNewzWallet::Instance( this );
-        connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
+    if (KNewzSettings::saveEncrypted() && KNewzSettings::authentication())
+    {
+        knewzwallet = KNewzWallet::Instance(this);
+        connect(knewzwallet, SIGNAL(walletClosed()), SLOT(walletClosed()));
     }
 }
 
 void KNewz::setupToolbars()
 {
-    setStandardToolBarMenuEnabled( true );
+    setStandardToolBarMenuEnabled(true);
+    //Set up the queue actions
+    resumeQueueAction = new KAction(KIcon("media-playback-start"), i18n("Start queue"), this);
+    connect(resumeQueueAction, SIGNAL(triggered()), this, SLOT(resumeQueue()));
+    actionCollection()->addAction("resume_queue_action", resumeQueueAction);
+    stopQueueAction = new KAction(KIcon("media-playback-stop"), i18n("Stop queue"), this);
+    actionCollection()->addAction("stop_queue_action", stopQueueAction);
+    clearQueueAction = new KAction(KIcon("edit-clear-list"), i18n("Clear queue"), this);
+    actionCollection()->addAction("clear_queue_action", clearQueueAction);
     //Set up the search line
-    searchLine = new KHistoryComboBox( true, this );
-    searchLine->setDuplicatesEnabled( false );
-    searchLine->setMinimumSize( 200, 30 );
-    searchLine->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-    searchLine->setCompletionMode( KGlobalSettings::CompletionPopupAuto );
-    connect( searchLine, SIGNAL( returnPressed() ), this, SLOT( search() ) );
-    connect( searchLine, SIGNAL( activated( const QString& ) ), searchLine, SLOT( addToHistory( const QString& ) ) );
-    connect( searchLine, SIGNAL( editTextChanged( const QString& ) ), this, SLOT( searchTextChanged( const QString& ) ) );
-    searchLineAction = new KAction( i18n( "Search Text" ), this );
-    searchLineAction->setDefaultWidget( searchLine );
-    actionCollection()->addAction( "search_line_action", searchLineAction );
+    searchLine = new KHistoryComboBox(true, this);
+    searchLine->setDuplicatesEnabled(false);
+    searchLine->setMinimumSize(200, 30);
+    searchLine->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    searchLine->setCompletionMode(KGlobalSettings::CompletionPopupAuto);
+    connect(searchLine, SIGNAL(returnPressed()), this, SLOT(search()));
+    connect(searchLine, SIGNAL(activated(const QString&)), searchLine, SLOT(addToHistory(const QString&)));
+    connect(searchLine, SIGNAL(editTextChanged(const QString&)), this, SLOT(searchTextChanged(const QString&)));
+    searchLineAction = new KAction(i18n("Search Text"), this);
+    searchLineAction->setDefaultWidget(searchLine);
+    actionCollection()->addAction("search_line_action", searchLineAction);
     //Set up the search action button
-    searchAction = new KAction( KIcon( "edit-find" ), i18n( "Search" ), this );
-    connect( searchAction, SIGNAL( triggered() ), this, SLOT( search() ) );
-    actionCollection()->addAction( "search_action", searchAction );
-    searchAction->setEnabled( false );
+    searchAction = new KAction(KIcon("edit-find"), i18n("Search"), this);
+    connect(searchAction, SIGNAL(triggered()), this, SLOT(search()));
+    actionCollection()->addAction("search_action", searchAction);
+    searchAction->setEnabled(false);
     //Set up the label
-    QLabel *searchLabel = new QLabel( "Search Engine:", this );
-    KAction *searchLabelAction = new KAction( i18n( "Search Label" ), this );
-    searchLabelAction->setDefaultWidget( searchLabel );
-    actionCollection()->addAction( "search_label", searchLabelAction );
+    QLabel *searchLabel = new QLabel(i18n("Search Engine:"), this);
+    KAction *searchLabelAction = new KAction(i18n("Search Label"), this);
+    searchLabelAction->setDefaultWidget(searchLabel);
+    actionCollection()->addAction("search_label", searchLabelAction);
     //Set up the search box
-    searchBox = new KComboBox( this );
-    searchBox->setMinimumSize( 200, 30 );
-    searchBox->setModel( KNewzSearchModel::self() );
-    searchBoxAction = new KAction( i18n( "Search Engine" ), this );
-    searchBoxAction->setDefaultWidget( searchBox );
-    actionCollection()->addAction( "search_box_action", searchBoxAction );
+    searchBox = new KComboBox(this);
+    searchBox->setMinimumSize(200, 30);
+    searchBox->setModel(KNewzSearchModel::self());
+    searchBoxAction = new KAction(i18n("Search Engine"), this);
+    searchBoxAction->setDefaultWidget(searchBox);
+    actionCollection()->addAction("search_box_action", searchBoxAction);
 }
 
-void KNewz::openFiles( const QStringList &files, bool silently )
+void KNewz::openFiles(const QStringList &files, bool silently)
 {
     NzbReader reader;
     QList<NzbFile*> nzbFiles;
 
-    for( int i = 0, size = files.size(); i < size; i++ ){
+    for (int i = 0, size = files.size(); i < size; i++)
+    {
 
-        if( !files.at( i ).isEmpty() ){
-            QString file( files.at( i ) );
+        if (!files.at(i).isEmpty())
+        {
+            QString file(files.at(i));
 
-            NzbFile *nzbFile = reader.parseLocalData( file );
+            NzbFile *nzbFile = reader.parseLocalData(file);
 
-            if( nzbFile->size() > 0 ){
-                recentFiles->addUrl( KUrl( file ) );
-                nzbFiles.append( nzbFile );
+            if (nzbFile->size() > 0)
+            {
+                recentFiles->addUrl(KUrl(file));
+                nzbFiles.append(nzbFile);
             }
         }
 
     }
 
-    if( nzbFiles.size() > 0 ){
+    if (nzbFiles.size() > 0)
+    {
 
-        if( !silently ){
-            NzbDialog nzbDialog( this, nzbFiles );
+        if (!silently)
+        {
+            NzbDialog nzbDialog(this, nzbFiles);
             nzbDialog.exec();
 
-            if( nzbDialog.result() == QDialog::Accepted ){
+            if (nzbDialog.result() == QDialog::Accepted)
+            {
                 int count = nzbDialog.files().size();
 
-                if( count < 1 )
+                if (count < 1)
                     return;
 
                 downloadqueue->mutex().lock();
-                int row = m_model->rowCount();
-                m_model->insertRows( row, count );
 
-                foreach( NzbFile *nzbFile, nzbDialog.files() ){
-                    QModelIndex idx = m_model->index( row, 0 );
-                    m_model->setData( idx, QVariant::fromValue( *nzbFile ) );
+                int row = m_model->rowCount();
+
+                m_model->insertRows(row, count);
+
+                foreach(NzbFile *nzbFile, nzbDialog.files())
+                {
+                    QModelIndex idx = m_model->index(row, 0);
+                    m_model->setData(idx, QVariant::fromValue(*nzbFile));
                     row++;
                 }
 
                 downloadqueue->mutex().unlock();
             }
-        }else{
+        }
+        else
+        {
             downloadqueue->mutex().lock();
             int row = m_model->rowCount();
-            m_model->insertRows( row, nzbFiles.size() );
+            m_model->insertRows(row, nzbFiles.size());
 
-            foreach( NzbFile *nzbFile, nzbFiles ){
-                QModelIndex idx = m_model->index( row, 0 );
-                m_model->setData( idx, QVariant::fromValue( *nzbFile ) );
+            foreach(NzbFile *nzbFile, nzbFiles)
+            {
+                QModelIndex idx = m_model->index(row, 0);
+                m_model->setData(idx, QVariant::fromValue(*nzbFile));
                 row++;
             }
 
@@ -452,16 +517,18 @@ void KNewz::openFiles( const QStringList &files, bool silently )
 
 void KNewz::urlOpen()
 {
-    QStringList files =  KFileDialog::getOpenFileNames( KUrl(), "*.nzb *.NZB |NZB Files", this, i18n( "Open NZB File" ) );
+    QStringList files =  KFileDialog::getOpenFileNames(KUrl(), "*.nzb *.NZB |NZB Files", this, i18n("Open NZB File"));
 
-    if( files.size() > 0 ){
-        openFiles( files );
+    if (files.size() > 0)
+    {
+        openFiles(files);
     }
 }
 
 bool KNewz::queryClose()
 {
-    if( !ok_to_close ){
+    if (!ok_to_close)
+    {
         hide();
     }
 
@@ -476,12 +543,29 @@ bool KNewz::queryExit()
 void KNewz::exit()
 {
     ok_to_close = true;
-    kapp->setQuitOnLastWindowClosed( true );
+    kapp->setQuitOnLastWindowClosed(true);
     close();
 }
 
 void KNewz::walletClosed()
 {
+}
+
+void KNewz::resumeQueue()
+{
+    connection = new Connection();
+    connection->start();
+}
+
+void KNewz::stopQueue()
+{
+    if(connection)
+    {
+        connection->close();
+        connection->wait();
+        delete connection;
+        connection = NULL;
+    }
 }
 
 #include "knewz.moc"

@@ -21,9 +21,9 @@
 #include "displaywidget.h"
 
 DisplayWidget::DisplayWidget(QWidget *parent)
- : QWidget(parent)
+        : QWidget(parent)
 {
-    setupUi( parent );
+    setupUi(parent);
 }
 
 DisplayWidget::~DisplayWidget()

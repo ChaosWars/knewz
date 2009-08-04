@@ -1,12 +1,23 @@
-<!DOCTYPE kpartgui SYSTEM "kpartgui.dtd">
-<gui name="knewz" version="1">
+<?xml version="1.0" encoding="UTF-8" ?>
+<gui name="knewz" version="1"
+     xmlns="http://www.kde.org/standards/kxmlgui/1.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.kde.org/standards/kxmlgui/1.0
+                         http://www.kde.org/standards/kxmlgui/1.0/kxmlgui.xsd">
     <MenuBar>
         <Menu name="settings">
             <Merge/>
             <Action name="toggle_dock" append="save_merge"/>
         </Menu>
     </MenuBar>
-    <ToolBar name="SearchBar" noMerge="1"><text>Search Toolbar</text>
+    <ToolBar name="ActionsBar" iconText="icononly" index="1">
+        <text>Actions Toolbar</text>
+        <Action name="resume_queue_action" />
+        <Action name="stop_queue_action" />
+        <Action name="clear_queue_action" />
+    </ToolBar>
+    <ToolBar name="SearchBar" iconText="icontextright" index="2">
+        <text>Search Toolbar</text>
         <Action name="search_line_action"/>
         <Action name="search_action"/>
         <Action name="search_label" />

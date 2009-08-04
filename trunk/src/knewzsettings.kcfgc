@@ -2,5 +2,5 @@
 File=knewzsettings.kcfg
 ClassName=KNewzSettings
 Singleton=true
-Mutators=saveEncrypted,saveUnencrypted,server,port,connections,timeout,ssl,authentication,username,password,tempDirectory,downloadDirectory,expandOnDoubleClick,animatedExpantion,automaticallyResizeHeaders,startMinimized,openFilesSilently,headerOrientationHorizontal,headerOrientationVertical
+Mutators=saveEncrypted,saveUnencrypted,server,port,connections,timeout,retryAttempts,retryDelay,ssl,authentication,username,password,tempDirectory,downloadDirectory,expandOnDoubleClick,animatedExpantion,automaticallyResizeHeaders,startMinimized,openFilesSilently,headerOrientationHorizontal,headerOrientationVertical
 # will create the necessary code for setting those variables

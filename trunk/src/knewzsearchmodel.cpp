@@ -31,8 +31,8 @@
 KNewzSearchModel* KNewzSearchModel::m_instance = 0;
 QMutex KNewzSearchModel::m_mutex;
 
-KNewzSearchModel::KNewzSearchModel( QObject *parent )
-    : QStandardItemModel( 0, 2, parent )
+KNewzSearchModel::KNewzSearchModel(QObject *parent)
+        : QStandardItemModel(0, 2, parent)
 {
 }
 
@@ -43,54 +43,63 @@ KNewzSearchModel::~KNewzSearchModel()
 void KNewzSearchModel::loadEngines()
 {
     QMap<QString, QString> searchEngines;
-    QFile file( KStandardDirs::locate( "appdata", "search/" ) + "searchengines.txt" );
+    QFile file(KStandardDirs::locate("appdata", "search/") + "searchengines.txt");
 
-    if( file.exists() ){
-        if( file.open( QIODevice::ReadOnly ) ){
-            QTextStream stream( &file );
+    if (file.exists())
+    {
+        if (file.open(QIODevice::ReadOnly))
+        {
+            QTextStream stream(&file);
 
-            while( !stream.atEnd() ){
-                QString entry( stream.readLine() );
-                QStringList engine( entry.split( "," ) );
-                searchEngines.insert( engine.value( 0 ), engine.value( 1 ) );
+            while (!stream.atEnd())
+            {
+                QString entry(stream.readLine());
+                QStringList engine(entry.split(","));
+                searchEngines.insert(engine.value(0), engine.value(1));
             }
         }
     }
 
     file.close();
-    KConfigGroup configGroup( KGlobal::config(), "SearchEngines" );
 
-    if( configGroup.exists() ){
-        QMapIterator<QString, QString> it( configGroup.entryMap() );
+    KConfigGroup configGroup(KGlobal::config(), "SearchEngines");
 
-        while( it.hasNext() ){
+    if (configGroup.exists())
+    {
+        QMapIterator<QString, QString> it(configGroup.entryMap());
+
+        while (it.hasNext())
+        {
             it.next();
-            searchEngines.insert( it.key(), it.value() );
+            searchEngines.insert(it.key(), it.value());
         }
     }
 
     m_instance->clear();
-    m_instance->setHorizontalHeaderLabels( QStringList() << "Site" << "URL" );
-    QMapIterator<QString, QString> it( searchEngines );
+
+    m_instance->setHorizontalHeaderLabels(QStringList() << "Site" << "URL");
+    QMapIterator<QString, QString> it(searchEngines);
     QStandardItem *rootItem = m_instance->invisibleRootItem();
 
-    while( it.hasNext() ){
+    while (it.hasNext())
+    {
         it.next();
         QList< QStandardItem* > row;
-        QStandardItem *site = new QStandardItem( it.key() );
-        row.append( site );
-        QStandardItem *url = new QStandardItem( it.value() );
-        row.append( url );
-        rootItem->appendRow( row );
+        QStandardItem *site = new QStandardItem(it.key());
+        row.append(site);
+        QStandardItem *url = new QStandardItem(it.value());
+        row.append(url);
+        rootItem->appendRow(row);
     }
 }
 
 KNewzSearchModel* KNewzSearchModel::self()
 {
-    if( !m_instance ){
-        QMutexLocker lock( &m_mutex );
+    if (!m_instance)
+    {
+        QMutexLocker lock(&m_mutex);
 
-        if( !m_instance )
+        if (!m_instance)
             m_instance = new KNewzSearchModel();
 
     }
@@ -100,14 +109,15 @@ KNewzSearchModel* KNewzSearchModel::self()
 
 void KNewzSearchModel::saveEngines()
 {
-    KConfigGroup configGroup( KGlobal::config(), "SearchEngines" );
+    KConfigGroup configGroup(KGlobal::config(), "SearchEngines");
 
-    for( int i = 0, size = m_instance->rowCount(); i < size; i++ ){
-        QStandardItem *item = m_instance->item( i, 0 );
+    for (int i = 0, size = m_instance->rowCount(); i < size; i++)
+    {
+        QStandardItem *item = m_instance->item(i, 0);
         QString engine = item ? item->text() : "";
-        item = m_instance->item( i, 1 );
+        item = m_instance->item(i, 1);
         QString path = item ? item->text() : "";
-        configGroup.writeEntry( engine, path );
+        configGroup.writeEntry(engine, path);
     }
 }
 

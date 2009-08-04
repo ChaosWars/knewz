@@ -28,51 +28,66 @@
 #include "nzbdialog.h"
 #include "nzbfile.h"
 
-NzbDialog::NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbFiles )
-    : QDialog( parent )
+NzbDialog::NzbDialog(QWidget *parent, const QList<NzbFile*> &nzbFiles)
+        : QDialog(parent)
 {
-    setupUi( this );
-    ok->setIcon( KIcon( "dialog-ok" ) );
-    cancel->setIcon( KIcon( "dialog-cancel" ) ); 
-    model = new NzbModel( view, nzbFiles );
-    view->setModel( model );
-    view->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
-    view->setAnimated( KNewzSettings::animatedExpantion() );
-    view->setExpandsOnDoubleClick( KNewzSettings::expandOnDoubleClick() );
+    setupUi(this);
+    ok->setIcon(KIcon("dialog-ok"));
+    cancel->setIcon(KIcon("dialog-cancel"));
+    model = new NzbModel(view, nzbFiles);
+    view->setModel(model);
+    view->header()->setResizeMode(0, QHeaderView::ResizeToContents);
+    view->setAnimated(KNewzSettings::animatedExpantion());
+    view->setExpandsOnDoubleClick(KNewzSettings::expandOnDoubleClick());
 
     int columnCount = view->model()->columnCount();
 
-    if( KNewzSettings::automaticallyResizeHeaders() ){
+    if (KNewzSettings::automaticallyResizeHeaders())
+    {
 
-        for( int i = 1; i < columnCount; i++){
-            view->header()->setResizeMode( i, QHeaderView::ResizeToContents );
+        for (int i = 1; i < columnCount; i++)
+        {
+            view->header()->setResizeMode(i, QHeaderView::ResizeToContents);
         }
 
-    }else{
-        for( int i = 1; i < columnCount; i++){
-            view->header()->setResizeMode( i, QHeaderView::Interactive );
+    }
+    else
+    {
+        for (int i = 1; i < columnCount; i++)
+        {
+            view->header()->setResizeMode(i, QHeaderView::Interactive);
         }
     }
 
     //Set up the signals
-    connect( ok, SIGNAL( clicked() ), SLOT( okSlot() ) );
-    connect( checkAll, SIGNAL( clicked() ), model, SLOT( checkAll() ) );
-    connect( checkNone, SIGNAL( clicked() ), model, SLOT( checkNone() ) );
-    connect( checkSelected, SIGNAL( clicked() ), model, SLOT( checkSelected() ) );
-    connect( uncheckSelected, SIGNAL( clicked() ), model, SLOT( uncheckSelected() ) );
-    connect( invertSelection, SIGNAL( clicked() ), model, SLOT( invertSelection() ) );
+    connect(ok, SIGNAL(clicked()), SLOT(okSlot()));
+
+    connect(checkAll, SIGNAL(clicked()), model, SLOT(checkAll()));
+
+    connect(checkNone, SIGNAL(clicked()), model, SLOT(checkNone()));
+
+    connect(checkSelected, SIGNAL(clicked()), model, SLOT(checkSelected()));
+
+    connect(uncheckSelected, SIGNAL(clicked()), model, SLOT(uncheckSelected()));
+
+    connect(invertSelection, SIGNAL(clicked()), model, SLOT(invertSelection()));
+
     //Read the saved configuration
     config = KGlobal::config();
-    configGroup = new KConfigGroup( config, "NzbFileDialog" );
-    QVariant size( configGroup->readEntry( "size", QSize( 750, 500 ) ) );
-    resize( size.toSize() );
-    view->resizeColumnToContents( 1 );
+
+    configGroup = new KConfigGroup(config, "NzbFileDialog");
+
+    QVariant size(configGroup->readEntry("size", QSize(750, 500)));
+
+    resize(size.toSize());
+
+    view->resizeColumnToContents(1);
 }
 
 
 NzbDialog::~NzbDialog()
 {
-    configGroup->writeEntry( "size", size() );
+    configGroup->writeEntry("size", size());
     delete configGroup;
     delete model;
 }
@@ -80,7 +95,7 @@ NzbDialog::~NzbDialog()
 void NzbDialog::okSlot()
 {
     model->trimNzbFiles();
-    configGroup->writeEntry( "size", size() );
+    configGroup->writeEntry("size", size());
     emit accept();
 }
 

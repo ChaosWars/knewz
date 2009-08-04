@@ -23,38 +23,44 @@
 
 NzbReader::NzbReader()
 {
-    reader.setContentHandler( &handler );
-    reader.setErrorHandler( &handler );
+    reader.setContentHandler(&handler);
+    reader.setErrorHandler(&handler);
 }
 
 NzbReader::~NzbReader()
 {
 }
 
-NzbFile* NzbReader::parseNetworkData( QByteArray &data, const QString &filename  )
+NzbFile* NzbReader::parseNetworkData(QByteArray &data, const QString &filename)
 {
     QXmlInputSource source;
-    source.setData( data );
-    handler.setFilename( filename );
+    source.setData(data);
+    handler.setFilename(filename);
 
-    if( reader.parse( &source ) ){
+    if (reader.parse(&source))
+    {
         return handler.nzbFile();
-    }else{
+    }
+    else
+    {
         return new NzbFile();
     }
 }
 
-NzbFile* NzbReader::parseLocalData( const QString &path )
+NzbFile* NzbReader::parseLocalData(const QString &path)
 {
-    QString p( path.split( "/" ).last() );
-    p.chop( 4 );
-    handler.setFilename( p );
-    QFile file( path );
-    QXmlInputSource source( &file );
+    QString p(path.split("/").last());
+    p.chop(4);
+    handler.setFilename(p);
+    QFile file(path);
+    QXmlInputSource source(&file);
 
-    if( reader.parse( &source ) ){
+    if (reader.parse(&source))
+    {
         return handler.nzbFile();
-    }else{
+    }
+    else
+    {
         return new NzbFile();
     }
 }

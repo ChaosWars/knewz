@@ -26,9 +26,10 @@
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class DisplayWidget : public QWidget, public Ui::DisplaySettings
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         DisplayWidget(QWidget *parent = 0);

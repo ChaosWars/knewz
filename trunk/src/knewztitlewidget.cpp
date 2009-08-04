@@ -32,13 +32,13 @@
 #include "knewztitlewidget.h"
 #include "knewzsettings.h"
 
-TitleWidgetLabel::TitleWidgetLabel( KNewzTitleWidget *parent, Qt::WindowFlags f )
-    : QLabel( parent, f ), m_parent( parent )
+TitleWidgetLabel::TitleWidgetLabel(KNewzTitleWidget *parent, Qt::WindowFlags f)
+        : QLabel(parent, f), m_parent(parent)
 {
 }
 
-TitleWidgetLabel::TitleWidgetLabel( const QString &text, KNewzTitleWidget *parent, Qt::WindowFlags f )
-    : QLabel( text, parent, f ), m_parent( parent )
+TitleWidgetLabel::TitleWidgetLabel(const QString &text, KNewzTitleWidget *parent, Qt::WindowFlags f)
+        : QLabel(text, parent, f), m_parent(parent)
 {
 }
 
@@ -59,34 +59,36 @@ TitleWidgetLabel::TitleWidgetLabel( const QString &text, KNewzTitleWidget *paren
 
 QSize TitleWidgetLabel::minimumSizeHint() const
 {
-    QSize size = pixmap() ? QSize( 32, 32 ) : QSize( 120, 20 );
+    QSize size = pixmap() ? QSize(32, 32) : QSize(120, 20);
 
-    if( m_parent->m_orientation & Qt::Vertical )
+    if (m_parent->m_orientation & Qt::Vertical)
         size.transpose();
 
     return size;
 }
 
-void TitleWidgetLabel::paintEvent( QPaintEvent *event )
+void TitleWidgetLabel::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QStylePainter p(this);
 
-    switch( m_parent->m_orientation ){
+    switch (m_parent->m_orientation)
+    {
         case Qt::Vertical:
-            p.rotate( -90 );
-            p.translate( 0, -width() );
+            p.rotate(-90);
+            p.translate(0, -width());
             break;
         case Qt::Horizontal:
         default:
             break;
     }
 
-    pixmap() ? p.drawItemPixmap( QRect( QPoint( 0, 0 ), size() ), Qt::AlignCenter, *pixmap() ) :
-            p.drawItemText( QRect( QPoint( 0, 10 ), size() ), Qt::AlignCenter, palette(), true, text() );
+    pixmap() ? p.drawItemPixmap(QRect(QPoint(0, 0), size()), Qt::AlignCenter, *pixmap()) :
+
+    p.drawItemText(QRect(QPoint(0, 10), size()), Qt::AlignCenter, palette(), true, text());
 }
 
-void TitleWidgetLabel::resizeEvent( QResizeEvent *event )
+void TitleWidgetLabel::resizeEvent(QResizeEvent *event)
 {
     event->accept();
     ensurePolished();
@@ -95,9 +97,9 @@ void TitleWidgetLabel::resizeEvent( QResizeEvent *event )
 
 QSize TitleWidgetLabel::sizeHint() const
 {
-    QSize size = pixmap() ? QSize( 32, 32 ) : QSize( 120, 20 );
+    QSize size = pixmap() ? QSize(32, 32) : QSize(120, 20);
 
-    if( m_parent->m_orientation & Qt::Vertical )
+    if (m_parent->m_orientation & Qt::Vertical)
         size.transpose();
 
     return size;
@@ -106,10 +108,11 @@ QSize TitleWidgetLabel::sizeHint() const
 QSizePolicy TitleWidgetLabel::sizePolicy() const
 {
     QSizePolicy policy;
-    policy.setHorizontalPolicy( QSizePolicy::Minimum );
-    policy.setVerticalPolicy( QSizePolicy::Fixed );
+    policy.setHorizontalPolicy(QSizePolicy::Minimum);
+    policy.setVerticalPolicy(QSizePolicy::Fixed);
 
-    switch( m_parent->m_orientation ){
+    switch (m_parent->m_orientation)
+    {
         case Qt::Vertical:
             policy.transpose();
         case Qt::Horizontal:
@@ -121,44 +124,45 @@ QSizePolicy TitleWidgetLabel::sizePolicy() const
 }
 
 KNewzTitleWidget::KNewzTitleWidget(QWidget *parent)
-    : QFrame(parent)
+        : QFrame(parent)
 {
-    setAutoFillBackground( true );
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Plain );
-    setBackgroundRole( QPalette::Base );
-    text = new TitleWidgetLabel( i18n( "Queue Manager" ), this );
-    text->setBackgroundRole( QPalette::Base );
-    text->setFont( QFont( "Sans", 10, QFont::Bold ) );
-    icon = new TitleWidgetLabel( this );
-    icon->setPixmap( KIcon( "view-choose" ).pixmap( 32, 32 ) );
+    setAutoFillBackground(true);
+    setFrameShape(QFrame::StyledPanel);
+    setFrameShadow(QFrame::Plain);
+    setBackgroundRole(QPalette::Base);
+    text = new TitleWidgetLabel(i18n("Queue Manager"), this);
+    text->setBackgroundRole(QPalette::Base);
+    text->setFont(QFont("Sans", 10, QFont::Bold));
+    icon = new TitleWidgetLabel(this);
+    icon->setPixmap(KIcon("view-choose").pixmap(32, 32));
     m_orientation = KNewzSettings::headerOrientationHorizontal() ? Qt::Horizontal : Qt::Vertical;
 
-    QSize size( 170, 50 );
-    QSizePolicy policy( QSizePolicy::Preferred, QSizePolicy::Minimum );
+    QSize size(170, 50);
+    QSizePolicy policy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
-    switch( m_orientation ){
+    switch (m_orientation)
+    {
         case Qt::Horizontal:
             vlayout = 0;
-            setMinimumSize( size );
-            setSizePolicy( policy );
-            hlayout = new QHBoxLayout( this );
-            hlayout->addWidget( text );
+            setMinimumSize(size);
+            setSizePolicy(policy);
+            hlayout = new QHBoxLayout(this);
+            hlayout->addWidget(text);
             hlayout->addStretch();
-            hlayout->addWidget( icon );
-            setLayout( hlayout );
+            hlayout->addWidget(icon);
+            setLayout(hlayout);
             break;
         case Qt::Vertical:
             hlayout = 0;
             size.transpose();
-            setMinimumSize( size );
+            setMinimumSize(size);
             policy.transpose();
-            setSizePolicy( policy );
-            vlayout = new QVBoxLayout( this );
-            vlayout->addWidget( icon );
+            setSizePolicy(policy);
+            vlayout = new QVBoxLayout(this);
+            vlayout->addWidget(icon);
             vlayout->addStretch();
-            vlayout->addWidget( text );
-            setLayout( vlayout );
+            vlayout->addWidget(text);
+            setLayout(vlayout);
             break;
         default:
             break;
@@ -173,12 +177,13 @@ KNewzTitleWidget::~KNewzTitleWidget()
 QStyleOptionFrameV2 KNewzTitleWidget::getStyleOption() const
 {
     QStyleOptionFrameV2 opt;
-    opt.initFrom( this );
+    opt.initFrom(this);
 
-    if( m_orientation == Qt::Vertical ){
+    if (m_orientation == Qt::Vertical)
+    {
         QSize size = opt.rect.size();
         size.transpose();
-        opt.rect.setSize( size );
+        opt.rect.setSize(size);
     }
 
     return opt;
@@ -187,74 +192,81 @@ QStyleOptionFrameV2 KNewzTitleWidget::getStyleOption() const
 
 QSize KNewzTitleWidget::minimumSizeHint() const
 {
-    QSize size( 170, 50 );
+    QSize size(170, 50);
 
-    if( m_orientation == Qt::Vertical )
+    if (m_orientation == Qt::Vertical)
         size.transpose();
 
     return size;
 }
 
-void KNewzTitleWidget::paintEvent( QPaintEvent *event )
+void KNewzTitleWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
     QStylePainter p(this);
 
-    switch( m_orientation ){
+    switch (m_orientation)
+    {
         case Qt::Vertical:
-            p.rotate( -90 );
-            p.translate( 0, -width() );
+            p.rotate(-90);
+            p.translate(0, -width());
             break;
         case Qt::Horizontal:
         default:
             break;
     }
 
-    p.drawControl( QStyle::CE_FocusFrame, getStyleOption() );
+    p.drawControl(QStyle::CE_FocusFrame, getStyleOption());
 }
 
-void KNewzTitleWidget::resizeEvent( QResizeEvent *event )
+void KNewzTitleWidget::resizeEvent(QResizeEvent *event)
 {
     event->accept();
-    QDockWidget *dockWidget = qobject_cast< QDockWidget* >( parentWidget() );
-    if ( dockWidget->features() & QDockWidget::DockWidgetVerticalTitleBar ) {
+    QDockWidget *dockWidget = qobject_cast< QDockWidget* >(parentWidget());
+
+    if (dockWidget->features() & QDockWidget::DockWidgetVerticalTitleBar)
+    {
         m_orientation = Qt::Vertical;
 
-        if( !vlayout ){
-            setUpdatesEnabled( false );
-            hlayout->removeWidget( text );
-            hlayout->removeWidget( icon );
+        if (!vlayout)
+        {
+            setUpdatesEnabled(false);
+            hlayout->removeWidget(text);
+            hlayout->removeWidget(icon);
             delete hlayout;
             hlayout = 0;
-            vlayout = new QVBoxLayout( this );
-            vlayout->addWidget( icon );
+            vlayout = new QVBoxLayout(this);
+            vlayout->addWidget(icon);
             vlayout->addStretch();
-            vlayout->addWidget( text );
-            setMinimumSize( minimumSizeHint() );
-            setSizePolicy( sizePolicy() );
-            setLayout( vlayout );
-            setUpdatesEnabled( true );
+            vlayout->addWidget(text);
+            setMinimumSize(minimumSizeHint());
+            setSizePolicy(sizePolicy());
+            setLayout(vlayout);
+            setUpdatesEnabled(true);
             ensurePolished();
             update();
         }
 
-    }else{
+    }
+    else
+    {
         m_orientation = Qt::Horizontal;
 
-        if( !hlayout ){
-            setUpdatesEnabled( false );
-            vlayout->removeWidget( text );
-            vlayout->removeWidget( icon );
+        if (!hlayout)
+        {
+            setUpdatesEnabled(false);
+            vlayout->removeWidget(text);
+            vlayout->removeWidget(icon);
             delete vlayout;
             vlayout = 0;
-            hlayout = new QHBoxLayout( this );
-            hlayout->addWidget( text );
+            hlayout = new QHBoxLayout(this);
+            hlayout->addWidget(text);
             hlayout->addStretch();
-            hlayout->addWidget( icon );
-            setMinimumSize( minimumSizeHint() );
-            setSizePolicy( sizePolicy() );
-            setLayout( hlayout );
-            setUpdatesEnabled( true );
+            hlayout->addWidget(icon);
+            setMinimumSize(minimumSizeHint());
+            setSizePolicy(sizePolicy());
+            setLayout(hlayout);
+            setUpdatesEnabled(true);
             ensurePolished();
             update();
         }
@@ -264,9 +276,9 @@ void KNewzTitleWidget::resizeEvent( QResizeEvent *event )
 
 QSize KNewzTitleWidget::sizeHint() const
 {
-    QSize size( 170, 50 );
+    QSize size(170, 50);
 
-    if( m_orientation == Qt::Vertical )
+    if (m_orientation == Qt::Vertical)
         size.transpose();
 
     return size;
@@ -275,10 +287,11 @@ QSize KNewzTitleWidget::sizeHint() const
 QSizePolicy KNewzTitleWidget::sizePolicy() const
 {
     QSizePolicy policy;
-    policy.setHorizontalPolicy( QSizePolicy::Preferred );
-    policy.setVerticalPolicy( QSizePolicy::Fixed );
+    policy.setHorizontalPolicy(QSizePolicy::Preferred);
+    policy.setVerticalPolicy(QSizePolicy::Fixed);
 
-    switch( m_orientation ){
+    switch (m_orientation)
+    {
         case Qt::Vertical:
             policy.transpose();
         case Qt::Horizontal:

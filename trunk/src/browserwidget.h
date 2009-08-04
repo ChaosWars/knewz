@@ -26,16 +26,19 @@
 #include "ui_browserwidget.h"
 
 class QMovie;
+
 class QNetworkReply;
+
 class DownloadQueue;
+
 class KNewz;
 
 class KNewzCookieJar : public QNetworkCookieJar
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        KNewzCookieJar( QObject *parent = 0 );
+        KNewzCookieJar(QObject *parent = 0);
         ~KNewzCookieJar();
 };
 
@@ -43,16 +46,17 @@ class KNewzCookieJar : public QNetworkCookieJar
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class BrowserWidget : public QWidget, Ui::BrowserWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        explicit BrowserWidget( KNewz *mainWindow, QWidget *parent = 0 );
+        explicit BrowserWidget(KNewz *mainWindow, QWidget *parent = 0);
         ~BrowserWidget();
 
     public Q_SLOTS:
-        void load( const QString &string );
+        void load(const QString &string);
 
     private:
         KNewz *m_main;
@@ -62,10 +66,10 @@ class BrowserWidget : public QWidget, Ui::BrowserWidget
 //         QMovie *idleMovie, *loadingMovie;
 
     private Q_SLOTS:
-            void loadStarted();
-            void loadFinished( bool ok );
-            void unsupportedContent( QNetworkReply *reply );
-            void finishedDownload();
+        void loadStarted();
+        void loadFinished(bool ok);
+        void unsupportedContent(QNetworkReply *reply);
+        void finishedDownload();
 };
 
 #endif

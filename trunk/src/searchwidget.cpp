@@ -25,26 +25,26 @@
 #include "knewzsearchmodel.h"
 #include "searchwidget.h"
 
-SearchWidget::SearchWidget( QWidget *parent )
- : QWidget( parent )
+SearchWidget::SearchWidget(QWidget *parent)
+        : QWidget(parent)
 {
-    setupUi( parent );
+    setupUi(parent);
     QAbstractItemModel *oldModel = engines->model();
-    engines->setModel( KNewzSearchModel::self() );
+    engines->setModel(KNewzSearchModel::self());
     delete oldModel;
-    clearSearchHistoryButton->setIcon( KIcon( "edit-clear-list" ) );
-    add->setIcon( KIcon( "list-add" ) );
-    remove->setIcon( KIcon( "list-remove" ) );
-    moveToTop->setIcon( KIcon( "go-top" ) );
-    moveUp->setIcon( KIcon( "go-up" ) );
-    moveDown->setIcon( KIcon( "go-down" ) );
-    moveToBottom->setIcon( KIcon( "go-bottom" ) );
-    connect( clearSearchHistoryButton, SIGNAL( clicked() ), this, SLOT( clearHistory() ) );
+    clearSearchHistoryButton->setIcon(KIcon("edit-clear-list"));
+    add->setIcon(KIcon("list-add"));
+    remove->setIcon(KIcon("list-remove"));
+    moveToTop->setIcon(KIcon("go-top"));
+    moveUp->setIcon(KIcon("go-up"));
+    moveDown->setIcon(KIcon("go-down"));
+    moveToBottom->setIcon(KIcon("go-bottom"));
+    connect(clearSearchHistoryButton, SIGNAL(clicked()), this, SLOT(clearHistory()));
 }
 
 SearchWidget::~SearchWidget()
 {
-    static_cast< KNewzSearchModel* >( engines->model() )->saveEngines();
+    static_cast< KNewzSearchModel* >(engines->model())->saveEngines();
 }
 
 void SearchWidget::addSearchEngine()
@@ -53,7 +53,7 @@ void SearchWidget::addSearchEngine()
 
 void SearchWidget::clearHistory()
 {
-    clearSearchHistoryButton->setEnabled( false );
+    clearSearchHistoryButton->setEnabled(false);
     emit clearSearchHistory();
 }
 

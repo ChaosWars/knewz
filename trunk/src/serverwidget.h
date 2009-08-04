@@ -36,9 +36,10 @@
  *
  * @author Lawrence Lee
  */
+
 class ServerWidget : public QWidget, public Ui::ServerWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
 
@@ -47,7 +48,7 @@ class ServerWidget : public QWidget, public Ui::ServerWidget
          * @param parent
          *      Parent widget.
          */
-        ServerWidget( QWidget *parent = 0 );
+        ServerWidget(QWidget *parent = 0);
         virtual ~ServerWidget();
 };
 
