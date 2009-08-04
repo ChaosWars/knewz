@@ -27,9 +27,13 @@
 #include "basemodel.h"
 
 class DownloadQueue;
+
 class File;
+
 class KNewzView;
+
 class KNewzViewEventFilter;
+
 class NzbFile;
 
 /**
@@ -43,19 +47,21 @@ class NzbFile;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class KNewzModel : public BaseModel
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        KNewzModel( KNewzView *parent );
-        virtual ~KNewzModel(){};
-        virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-        virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
-        virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-        virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-        virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+        KNewzModel(KNewzView *parent);
+        virtual ~KNewzModel() {};
+
+        virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
+        virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+        virtual bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+        virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+        virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
         /**
          * Insert rows into a top level item. This both inserts a number of rows and sets their data.
@@ -73,13 +79,13 @@ class KNewzModel : public BaseModel
          * @return
          *      \c false if \p parent was not valid or if parent.column() was larger than 0.
          */
-        virtual bool insertChildren( const QModelIndex &parent, const NzbFile &nzbFile, int row = 0 );
+        virtual bool insertChildren(const QModelIndex &parent, const NzbFile &nzbFile, int row = 0);
         virtual QMimeData* mimeData(const QModelIndexList &indexes) const;
         virtual QStringList mimeTypes() const;
-        virtual QModelIndex parent( const QModelIndex &index ) const;
-        virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-        virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-        virtual bool setData( const QModelIndex& index, const QVariant& value, int role = Qt::EditRole );
+        virtual QModelIndex parent(const QModelIndex &index) const;
+        virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+        virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
         virtual Qt::DropActions supportedDropActions() const;
 
     public Q_SLOTS:

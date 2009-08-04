@@ -26,12 +26,13 @@
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class SearchWidget : public QWidget, public Ui::SearchWidget
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        SearchWidget( QWidget *parent = 0 );
+        SearchWidget(QWidget *parent = 0);
         ~SearchWidget();
 
     private:

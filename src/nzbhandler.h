@@ -42,6 +42,7 @@ class File;
  *
  * @see NzbReader
  */
+
 class NzbHandler : public QXmlDefaultHandler
 {
     public:
@@ -81,8 +82,8 @@ class NzbHandler : public QXmlDefaultHandler
          *  \return \c true
          *      if the beginning of an element is encountered.
          */
-        bool startElement ( const QString &namespaceURI, const QString &localName,
-                            const QString &qName, const QXmlAttributes &atts );
+        bool startElement(const QString &namespaceURI, const QString &localName,
+                          const QString &qName, const QXmlAttributes &atts);
 
         /**
          *  Reimplemented virtual function from QXmlDefaultHandler.
@@ -97,7 +98,7 @@ class NzbHandler : public QXmlDefaultHandler
          *  \return \c true
          *      if the end of an element is encountered.
          */
-        bool endElement ( const QString &namespaceURI, const QString &localName, const QString &qName );
+        bool endElement(const QString &namespaceURI, const QString &localName, const QString &qName);
 
         /**
          *  Reimplemented virtual function from QXmlDefaultHandler.
@@ -108,7 +109,7 @@ class NzbHandler : public QXmlDefaultHandler
          *  \return
          *      true when finished reading the characters of the current element.
          */
-        bool characters ( const QString &ch );
+        bool characters(const QString &ch);
 
         /**
          *  Reimplemented from QXmlErrorHandler.
@@ -120,7 +121,7 @@ class NzbHandler : public QXmlDefaultHandler
          *      since the errors cause this file to be called are such that the
          *      handler is unable to continue parsing the file.
          */
-        bool fatalError ( const QXmlParseException &exception );
+        bool fatalError(const QXmlParseException &exception);
 
         /**
          *  Function that provides a QList of overloaded QList\< QStringLists\> that
@@ -133,7 +134,7 @@ class NzbHandler : public QXmlDefaultHandler
          *      represents a file that is made up of one or more parts. The whole represents
          *      the total contents of a *.nzb file.
          */
-        NzbFile* nzbFile(){ return m_nzbFile; }
+        NzbFile* nzbFile() { return m_nzbFile; }
 
         /**
          * Set the file to be processed. You must call this function before processing a file.
@@ -141,7 +142,7 @@ class NzbHandler : public QXmlDefaultHandler
          * \param filename
          *      The file that is to be processed.
          */
-        void setFilename( const QString &filename ){ m_filename = filename; }
+        void setFilename(const QString &filename) { m_filename = filename; }
 
     private:
         QString currentNumber, currentText, m_filename;

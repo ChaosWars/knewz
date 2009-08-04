@@ -42,9 +42,11 @@ class NzbFile;
  *
  *  @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class DownloadQueue : public QObject, public QList< NzbFile* >{
 
-    Q_OBJECT
+class DownloadQueue : public QObject, public QList< NzbFile* >
+{
+
+        Q_OBJECT
 
     public:
 
@@ -64,7 +66,7 @@ class DownloadQueue : public QObject, public QList< NzbFile* >{
          * @return
          *      The internal for locking the download queue mutex.
          */
-        static QMutex& mutex(){ return m_mutex; }
+        static QMutex& mutex() { return m_mutex; }
 
         /**
          * Debug function. Prints the content of the queue via kDebug();

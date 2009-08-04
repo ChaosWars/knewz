@@ -34,23 +34,24 @@
 
 using namespace KWallet;
 
-KNewzConfigDialog::KNewzConfigDialog( QWidget *parent, const QString &name, KConfigSkeleton *config )
-    : KConfigDialog( parent, name, config ), knewzwallet( NULL )
+KNewzConfigDialog::KNewzConfigDialog(QWidget *parent, const QString &name, KConfigSkeleton *config)
+        : KConfigDialog(parent, name, config), knewzwallet(NULL)
 {
-    setAttribute( Qt::WA_DeleteOnClose );
+    setAttribute(Qt::WA_DeleteOnClose);
     QWidget *displaySettings = new QWidget();
-    displayWidget = new DisplayWidget( displaySettings );
-    addPage( displaySettings, i18n( "Application" ), "preferences-desktop" );
+    displayWidget = new DisplayWidget(displaySettings);
+    addPage(displaySettings, i18n("Application"), "preferences-desktop");
     QWidget *serverSettings = new QWidget();
-    serverWidget = new ServerWidget( serverSettings );
-    addPage( serverSettings, i18n( "Server" ), "preferences-system-network" );
+    serverWidget = new ServerWidget(serverSettings);
+    addPage(serverSettings, i18n("Server"), "preferences-system-network");
     QWidget *searchSettings = new QWidget();
-    searchWidget = new SearchWidget( searchSettings );
-    addPage( searchSettings, i18n( "Search" ), "edit-find" );
-    connect( this, SIGNAL( applyClicked() ), SLOT( saveWalletSettings() ) );
-    connect( searchWidget, SIGNAL( clearSearchHistory() ), this, SIGNAL( clearSearchHistory() ) );
+    searchWidget = new SearchWidget(searchSettings);
+    addPage(searchSettings, i18n("Search"), "edit-find");
+    connect(this, SIGNAL(applyClicked()), SLOT(saveWalletSettings()));
+    connect(searchWidget, SIGNAL(clearSearchHistory()), this, SIGNAL(clearSearchHistory()));
 
-    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication()){
+    if (KNewzSettings::saveEncrypted() && KNewzSettings::authentication())
+    {
         setupWallet();
     }
 
@@ -64,62 +65,78 @@ KNewzConfigDialog::~KNewzConfigDialog()
 
 void KNewzConfigDialog::saveWalletSettings()
 {
-    if( KNewzSettings::saveEncrypted() && KNewzSettings::authentication() ){
+    if (KNewzSettings::saveEncrypted() && KNewzSettings::authentication())
+    {
 
-        if( !knewzwallet )
+        if (!knewzwallet)
             setupWallet();
 
-        if( knewzwallet->isOpen() ){
-            knewzwallet->writeEntry( "username", QByteArray( KNewzSettings::username().toUtf8() ) );
-            knewzwallet->writePassword( "password", KNewzSettings::password() );
-            KConfigGroup configGroup( KGlobal::config(), "ServerSettings" );
-            configGroup.deleteEntry( "username" );
-            configGroup.deleteEntry( "password" );
-        }else{
-            int result = KMessageBox::messageBox( this, KMessageBox::WarningYesNoCancel,
-                                                  i18n( "The application was unable to open KWallet.\nThis was probably because you canceled the transaction with the wallet.\n\nThe application can save the login information in it's configuration file, but this is inadviseable from a security standpoint since the information will be saved as plain text, and anyone with access to your home directory can access this information.\n\nClick Yes to save the information, No to reenter the KWallet password or Cancel to return to the settings dialog." ) );
+        if (knewzwallet->isOpen())
+        {
+            knewzwallet->writeEntry("username", QByteArray(KNewzSettings::username().toUtf8()));
+            knewzwallet->writePassword("password", KNewzSettings::password());
+            KConfigGroup configGroup(KGlobal::config(), "ServerSettings");
+            configGroup.deleteEntry("username");
+            configGroup.deleteEntry("password");
+        }
+        else
+        {
+            int result = KMessageBox::messageBox(this, KMessageBox::WarningYesNoCancel,
+                                                 i18n("The application was unable to open KWallet.\n\
+						       This was probably because you canceled the transaction with the wallet.\n\n\
+						       The application can save the login information in it's configuration file,\
+						       but this is inadviseable from a security standpoint since the information\
+						       will be saved as plain text, and anyone with access to your home directory\
+						       can access this information.\n\n\
+						       Click Yes to save the information, No to reenter the KWallet password or Cancel\
+						       to return to the settings dialog."));
 
-                                         switch( result ){
-                                             case KMessageBox::Yes:
-                                                 break;
-                                             case KMessageBox::No:
-                                                 setupWallet();
-                                                 saveWalletSettings();
-                                                 break;
-                                             case KMessageBox::Cancel:
-                                                 enableButtonApply( true );
-                                                 show();
-                                                 break;
-                                             default:
-                                                 break;
-                                         }
+            switch (result)
+            {
+                case KMessageBox::Yes:
+                    break;
+                case KMessageBox::No:
+                    setupWallet();
+                    saveWalletSettings();
+                    break;
+                case KMessageBox::Cancel:
+                    enableButtonApply(true);
+                    show();
+                    break;
+                default:
+                    break;
+            }
         }
 
-    }else{
+    }
+    else
+    {
     }
 }
 
 void KNewzConfigDialog::setupWallet()
 {
-    knewzwallet = KNewzWallet::Instance( this );
-    connect( knewzwallet, SIGNAL( walletClosed() ), SLOT( walletClosed() ) );
+    knewzwallet = KNewzWallet::Instance(this);
+    connect(knewzwallet, SIGNAL(walletClosed()), SLOT(walletClosed()));
 
-    if( !knewzwallet->isOpen() ){
+    if (!knewzwallet->isOpen())
+    {
         knewzwallet->open();
     }
 
     QByteArray username;
-    knewzwallet->readEntry( "username", username );
-    serverWidget->kcfg_username->setText( username );
+
+    knewzwallet->readEntry("username", username);
+    serverWidget->kcfg_username->setText(username);
     QString password;
-    knewzwallet->readPassword( "password", password );
-    serverWidget->kcfg_password->setText( password );
-    enableButtonApply( false );
+    knewzwallet->readPassword("password", password);
+    serverWidget->kcfg_password->setText(password);
+    enableButtonApply(false);
 }
 
-void KNewzConfigDialog::showEvent( QShowEvent *event )
+void KNewzConfigDialog::showEvent(QShowEvent *event)
 {
-	Q_UNUSED( event )
+    Q_UNUSED(event)
 }
 
 void KNewzConfigDialog::walletClosed()

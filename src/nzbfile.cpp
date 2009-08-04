@@ -22,12 +22,12 @@
 #include "file.h"
 #include "nzbfile.h"
 
-NzbFile::NzbFile( const QString &filename, quint64 bytes )
-    : QList<File*>(),
-      BaseType( BaseType::nzbfile ),
-      m_filename( filename ),
-      m_bytes( bytes ),
-      m_status( 0 )
+NzbFile::NzbFile(const QString &filename, quint64 bytes)
+        : QList<File*>(),
+        BaseType(BaseType::nzbfile),
+        m_filename(filename),
+        m_bytes(bytes),
+        m_status(0)
 {
 }
 
@@ -47,26 +47,29 @@ void NzbFile::dumpQueue()
 {
     print();
 
-    for( int i = 0, size = this->size(); i < size; i++ ){
-        at( i )->dumpQueue();
+    for (int i = 0, size = this->size(); i < size; i++)
+    {
+        at(i)->dumpQueue();
     }
 }
 
 void NzbFile::print()
 {
-    printf( "filename: %s\n", m_filename.toStdString().c_str() );
-    printf( "bytes: %llu\n", m_bytes );
+    printf("filename: %s\n", m_filename.toStdString().c_str());
+    printf("bytes: %llu\n", m_bytes);
 }
 
-NzbFile& NzbFile::operator=( const NzbFile &other )
+NzbFile& NzbFile::operator=(const NzbFile & other)
 {
-    if( this != &other ){
+    if (this != &other)
+    {
         m_filename = other.m_filename;
         m_bytes = other.m_bytes;
-        BaseType::operator=( other );
-        QList<File*>::operator=( other );
+        BaseType::operator=(other);
+        QList<File*>::operator=(other);
 
-        foreach( File *file, *this ){
+        foreach(File *file, *this)
+        {
             file->m_parent = this;
         }
 
@@ -82,7 +85,7 @@ NzbFile& NzbFile::operator=( const NzbFile &other )
 //     in >> data;
 //     return in;
 // }
-// 
+//
 // QDataStream& operator<<( QDataStream &out, const NzbFile &data )
 // {
 //     out << data.m_filename;

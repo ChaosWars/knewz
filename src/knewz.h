@@ -33,23 +33,40 @@
 #include <QMutex>
 
 class KAction;
+
 class KComboBox;
+
 class KConfigGroup;
+
 class KHistoryComboBox;
+
 class KRecentFilesAction;
+
 class KSystemTrayIcon;
+
 class KTabWidget;
+
 class QAction;
+
 class QDockWidget;
+
 class QNetworkReply;
+
 class QNetworkRequest;
+
 class BrowserWidget;
+
 class DockButtonWidget;
+
 class DownloadQueue;
+
 class KNewzModel;
 // class KNewzTitleWidget;
+
 class KNewzView;
+
 class KNewzWallet;
+class Connection;
 
 /**
  * @brief The main window of the program.
@@ -59,9 +76,10 @@ class KNewzWallet;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com
  */
+
 class KNewz : public KXmlGuiWindow
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         /**
@@ -69,12 +87,13 @@ class KNewz : public KXmlGuiWindow
          * @param parent
          *      Parent widget. Since this is the main window, this should always be 0.
          */
-        KNewz( QWidget *parent = 0 );
+        KNewz(QWidget *parent = 0);
         virtual ~KNewz();
 //         static KNewz* self();
         void parseCommandLineArgs();
-        KNewzView* view(){ return m_view; }
-        KNewzModel* model(){ return m_model; }
+        KNewzView* view() { return m_view; }
+
+        KNewzModel* model() { return m_model; }
 
     public Q_SLOTS:
 
@@ -88,7 +107,7 @@ class KNewz : public KXmlGuiWindow
          * @param files
          *      The list of files to open.
          */
-        void openFiles( const QStringList &files, bool silently = false );
+        void openFiles(const QStringList &files, bool silently = false);
 
     protected:
         virtual bool queryClose();
@@ -96,6 +115,7 @@ class KNewz : public KXmlGuiWindow
 
     private:
         //Variables
+        Connection *connection;
         //Widgets
         KTabWidget *mainWidget;
         BrowserWidget *browserWidget;
@@ -119,6 +139,8 @@ class KNewz : public KXmlGuiWindow
         KComboBox *searchBox;
         KHistoryComboBox *searchLine;
         KAction *searchAction, *searchLineAction, *searchBoxAction;
+        //Queue Actions
+        KAction *resumeQueueAction, *stopQueueAction, *clearQueueAction;
         static KNewz *m_instance;
         static QMutex m_mutex;
         //Functions
@@ -131,10 +153,12 @@ class KNewz : public KXmlGuiWindow
 
     private Q_SLOTS:
         void exit();
-        void openRecentFile( const KUrl &url );
+        void openRecentFile(const KUrl &url);
         void optionsConfigure();
+        void resumeQueue();
+        void stopQueue();
         void search();
-        void searchTextChanged( const QString &text );
+        void searchTextChanged(const QString &text);
         void urlOpen();
         void walletClosed();
 };

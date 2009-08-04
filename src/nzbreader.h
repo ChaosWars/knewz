@@ -28,6 +28,7 @@
 #include "nzbhandler.h"
 
 class NzbFile;
+
 class QNetworkReply;
 
 /**
@@ -40,6 +41,7 @@ class QNetworkReply;
  *
  * @see NzbHandler
  */
+
 class NzbReader
 {
     public:
@@ -60,7 +62,7 @@ class NzbReader
          *      If the parsing fails, the returned list will be empty. The size of the returned list should
          *      therefore always be checked and acted upon accordingly.
          */
-        NzbFile* parseLocalData( const QString &path );
+        NzbFile* parseLocalData(const QString &path);
 
         /**
          * Overloaded function for reading nzb files downloaded from the built in web browser.
@@ -69,7 +71,7 @@ class NzbReader
          * @return
          *      The parsed data.
          */
-        NzbFile* parseNetworkData( QByteArray &data, const QString &filename );
+        NzbFile* parseNetworkData(QByteArray &data, const QString &filename);
 
     private:
         QXmlSimpleReader reader;

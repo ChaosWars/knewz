@@ -25,11 +25,11 @@
 #include "file.h"
 #include "nzbfile.h"
 
-BaseModel::BaseModel( QTreeView *parent )
-    : QAbstractItemModel( parent )
+BaseModel::BaseModel(QTreeView *parent)
+        : QAbstractItemModel(parent)
 {
     view = parent;
-    connect( view, SIGNAL( clicked( const QModelIndex& ) ), SLOT( clicked( const QModelIndex& ) ) );
+    connect(view, SIGNAL(clicked(const QModelIndex&)), SLOT(clicked(const QModelIndex&)));
     downloadqueue = DownloadQueue::Instance();
 }
 
@@ -38,88 +38,103 @@ BaseModel::~BaseModel()
     downloadqueue->detach();
 }
 
-QVariant BaseModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant BaseModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
-        return rootItem.at( section );
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+        return rootItem.at(section);
 
     return QVariant();
 }
 
-void BaseModel::clicked( const QModelIndex& index )
+void BaseModel::clicked(const QModelIndex& index)
 {
-    if( !( index.column() == 0 ) )
+    if (!(index.column() == 0))
         return;
 
-    BaseType *base = static_cast< BaseType* >( index.internalPointer() );
+    BaseType *base = static_cast< BaseType* >(index.internalPointer());
+
     Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
-    changeCheckState( index, checkstate, base );
+
+    changeCheckState(index, checkstate, base);
 }
 
-void BaseModel::changeCheckState( const QModelIndex &idx, Qt::CheckState state, BaseType *base )
+void BaseModel::changeCheckState(const QModelIndex &idx, Qt::CheckState state, BaseType *base)
 {
-    if( !base )
-        base = static_cast< BaseType* >( idx.internalPointer() );
+    if (!base)
+        base = static_cast< BaseType* >(idx.internalPointer());
 
-    base->setState( state );
-    view->update( idx );
+    base->setState(state);
 
-    if( base->type() == BaseType::nzbfile ){
-        NzbFile *nzbFile = static_cast< NzbFile* >( idx.internalPointer() );
+    view->update(idx);
 
-        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
-            nzbFile->at( i )->setState( state );
-            view->update( index( i, 0, idx ) );
+    if (base->type() == BaseType::nzbfile)
+    {
+        NzbFile *nzbFile = static_cast< NzbFile* >(idx.internalPointer());
+
+        for (int i = 0, size = nzbFile->size(); i < size; i++)
+        {
+            nzbFile->at(i)->setState(state);
+            view->update(index(i, 0, idx));
         }
-    }else{
-        NzbFile *nzbFile = static_cast< NzbFile* >( idx.parent().internalPointer() );
+    }
+    else
+    {
+        NzbFile *nzbFile = static_cast< NzbFile* >(idx.parent().internalPointer());
         Qt::CheckState m_state = nzbFile->first()->state();
         int counter = 0;
 
-        for( int i = 0, size = nzbFile->size(); i < size; i++ ){
+        for (int i = 0, size = nzbFile->size(); i < size; i++)
+        {
 
-            if( nzbFile->at( i )->state() == m_state  ){
+            if (nzbFile->at(i)->state() == m_state)
+            {
                 counter++;
             }
         }
 
-        counter == nzbFile->size() ? nzbFile->setState( m_state ) : nzbFile->setState( Qt::PartiallyChecked );
-        view->update( idx.parent() );
+        counter == nzbFile->size() ? nzbFile->setState(m_state) : nzbFile->setState(Qt::PartiallyChecked);
+
+        view->update(idx.parent());
     }
 }
 
-QList< File* > BaseModel::cleanSelection( QModelIndexList &selection ) const
+QList< File* > BaseModel::cleanSelection(QModelIndexList &selection) const
 {
     /* We want to filter the index list here, since we cannot allow a selection to contain both
     root items and children of those root items. Here we traverse the list, filtering out any
     children who's parents are also in the list */
 
-    QMutableListIterator< QModelIndex > it( selection );
+    QMutableListIterator< QModelIndex > it(selection);
 
-    while( it.hasNext() ){
+    while (it.hasNext())
+    {
         QModelIndex idx = it.next();
 
-        if( idx.column() > 0 )
+        if (idx.column() > 0)
             it.remove();
     }
 
-    qSort( selection.begin(), selection.end() );
+    qSort(selection.begin(), selection.end());
 
     //List is now 4x shorter, so N^2 pays off
     it.toFront();
     QList< File* > files;
 
-    while( it.hasNext() ){
+    while (it.hasNext())
+    {
         QModelIndex idx = it.next();
-        BaseType *base = static_cast< BaseType* >( idx.internalPointer() );
+        BaseType *base = static_cast< BaseType* >(idx.internalPointer());
 
-        if( base->type() == BaseType::file ){
-            File *file = dynamic_cast< File* >( base );
+        if (base->type() == BaseType::file)
+        {
+            File *file = dynamic_cast< File* >(base);
 
-            if( file ){
+            if (file)
+            {
                 //If the current files parent is also in the list, then we don't want to process it
-                if( selection.indexOf( index( downloadqueue->indexOf( file->parent() ), 0 ) ) != -1 ){
-                    files.append( file );
+                if (selection.indexOf(index(downloadqueue->indexOf(file->parent()), 0)) != -1)
+                {
+                    files.append(file);
                     it.remove();
                 }
             }

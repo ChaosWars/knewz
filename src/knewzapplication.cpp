@@ -34,15 +34,17 @@ DownloadQueue* KNewzApplication::downloadqueue = 0;
 KNewzSearchModel* KNewzApplication::searchModel = 0;
 
 KNewzApplication::KNewzApplication()
- : KUniqueApplication()
+        : KUniqueApplication()
 {
-    setQuitOnLastWindowClosed( false );
+    setQuitOnLastWindowClosed(false);
 
     //Initialize the static classes
-    if( !downloadqueue )
+
+    if (!downloadqueue)
         downloadqueue = DownloadQueue::Instance();
 
-    if( !searchModel ){
+    if (!searchModel)
+    {
         searchModel = KNewzSearchModel::self();
         searchModel->loadEngines();
     }
@@ -56,23 +58,30 @@ KNewzApplication::~KNewzApplication()
 
 int KNewzApplication::newInstance()
 {
-    if( !mainWindow ){
+    if (!mainWindow)
+    {
         QList<KMainWindow*> allWindows = KMainWindow::memberList();
 
-        if (!allWindows.isEmpty()) {
-            mainWindow = dynamic_cast< KNewz* >( allWindows.first() );
+        if (!allWindows.isEmpty())
+        {
+            mainWindow = dynamic_cast< KNewz* >(allWindows.first());
             KUniqueApplication::newInstance();
         }
 
-    }else{
-        KCmdLineArgs::setCwd( QDir::currentPath().toUtf8() );
+    }
+    else
+    {
+        KCmdLineArgs::setCwd(QDir::currentPath().toUtf8());
         KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-        if( args->count() > 0 ){
+        if (args->count() > 0)
+        {
             //Parse the command line options
             mainWindow->parseCommandLineArgs();
 
-        }else{
+        }
+        else
+        {
             //Let KUniqueApplication show the window
             KUniqueApplication::newInstance();
         }

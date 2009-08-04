@@ -46,9 +46,9 @@ ModelTest::ModelTest(QAbstractItemModel *_model, QObject *parent) : QObject(pare
             this, SLOT(runAllTests()));
     connect(model, SIGNAL(headerDataChanged(Qt::Orientation, int, int)),
             this, SLOT(runAllTests()));
-    connect(model, SIGNAL(layoutAboutToBeChanged ()), this, SLOT(runAllTests()));
-    connect(model, SIGNAL(layoutChanged ()), this, SLOT(runAllTests()));
-    connect(model, SIGNAL(modelReset ()), this, SLOT(runAllTests()));
+    connect(model, SIGNAL(layoutAboutToBeChanged()), this, SLOT(runAllTests()));
+    connect(model, SIGNAL(layoutChanged()), this, SLOT(runAllTests()));
+    connect(model, SIGNAL(modelReset()), this, SLOT(runAllTests()));
     connect(model, SIGNAL(rowsAboutToBeInserted(const QModelIndex &, int, int)),
             this, SLOT(runAllTests()));
     connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex &, int, int)),
@@ -80,12 +80,19 @@ void ModelTest::runAllTests()
 {
     if (fetchingMore)
         return;
+
     nonDestructiveBasicTest();
+
     rowCount();
+
     columnCount();
+
     hasIndex();
+
     index();
+
     parent();
+
     data();
 }
 
@@ -136,14 +143,18 @@ void ModelTest::rowCount()
     QModelIndex topIndex = model->index(0, 0, QModelIndex());
     int rows = model->rowCount(topIndex);
     Q_ASSERT(rows >= 0);
+
     if (rows > 0)
         Q_ASSERT(model->hasChildren(topIndex) == true);
 
     QModelIndex secondLevelIndex = model->index(0, 0, topIndex);
-    if (secondLevelIndex.isValid()) { // not the top level
+
+    if (secondLevelIndex.isValid())   // not the top level
+    {
         // check a row count where parent is valid
         rows = model->rowCount(secondLevelIndex);
         Q_ASSERT(rows >= 0);
+
         if (rows > 0)
             Q_ASSERT(model->hasChildren(secondLevelIndex) == true);
     }
@@ -163,6 +174,7 @@ void ModelTest::columnCount()
 
     // check a column count where parent is valid
     QModelIndex childIndex = model->index(0, 0, topIndex);
+
     if (childIndex.isValid())
         Q_ASSERT(model->columnCount(childIndex) >= 0);
 
@@ -212,11 +224,14 @@ void ModelTest::index()
 
     // Catch off by one errors
     Q_ASSERT(model->index(rows, columns) == QModelIndex());
+
     Q_ASSERT(model->index(0, 0).isValid() == true);
 
     // Make sure that the same index is *always* returned
     QModelIndex a = model->index(0, 0);
+
     QModelIndex b = model->index(0, 0);
+
     Q_ASSERT(a == b);
 
     // index() is tested more extensively in checkChildren(),
@@ -243,11 +258,13 @@ void ModelTest::parent()
     // Common error test #1, make sure that a top level index has a parent
     // that is a invalid QModelIndex.
     QModelIndex topIndex = model->index(0, 0, QModelIndex());
+
     Q_ASSERT(model->parent(topIndex) == QModelIndex());
 
     // Common error test #2, make sure that a second level index has a parent
     // that is the first level index.
-    if (model->rowCount(topIndex) > 0) {
+    if (model->rowCount(topIndex) > 0)
+    {
         QModelIndex childIndex = model->index(0, 0, topIndex);
         Q_ASSERT(model->parent(childIndex) == topIndex);
     }
@@ -256,7 +273,9 @@ void ModelTest::parent()
     // as the first column in a row.
     // Usually the second column shouldn't have children.
     QModelIndex topIndex1 = model->index(0, 1, QModelIndex());
-    if (model->rowCount(topIndex1) > 0) {
+
+    if (model->rowCount(topIndex1) > 0)
+    {
         QModelIndex childIndex = model->index(0, 0, topIndex);
         QModelIndex childIndex1 = model->index(0, 0, topIndex1);
         Q_ASSERT(childIndex != childIndex1);
@@ -285,17 +304,20 @@ void ModelTest::checkChildren(const QModelIndex &parent, int currentDepth)
 {
     // First just try walking back up the tree.
     QModelIndex p = parent;
+
     while (p.isValid())
         p = p.parent();
 
     // For models that are dynamically populated
-    if (model->canFetchMore(parent)) {
+    if (model->canFetchMore(parent))
+    {
         fetchingMore = true;
         model->fetchMore(parent);
         fetchingMore = false;
     }
 
     int rows = model->rowCount(parent);
+
     int columns = model->columnCount(parent);
 
     if (rows > 0)
@@ -303,7 +325,9 @@ void ModelTest::checkChildren(const QModelIndex &parent, int currentDepth)
 
     // Some further testing against rows(), columns(), and hasChildren()
     Q_ASSERT(rows >= 0);
+
     Q_ASSERT(columns >= 0);
+
     if (rows > 0)
         Q_ASSERT(model->hasChildren(parent) == true);
 
@@ -311,14 +335,20 @@ void ModelTest::checkChildren(const QModelIndex &parent, int currentDepth)
     //         << "columns:" << columns << "parent column:" << parent.column();
 
     Q_ASSERT(model->hasIndex(rows + 1, 0, parent) == false);
-    for (int r = 0; r < rows; ++r) {
-        if (model->canFetchMore(parent)) {
+
+    for (int r = 0; r < rows; ++r)
+    {
+        if (model->canFetchMore(parent))
+        {
             fetchingMore = true;
             model->fetchMore(parent);
             fetchingMore = false;
         }
+
         Q_ASSERT(model->hasIndex(r, columns + 1, parent) == false);
-        for (int c = 0; c < columns; ++c) {
+
+        for (int c = 0; c < columns; ++c)
+        {
             Q_ASSERT(model->hasIndex(r, c, parent) == true);
             QModelIndex index = model->index(r, c, parent);
             // rowCount() and columnCount() said that it existed...
@@ -357,13 +387,16 @@ void ModelTest::checkChildren(const QModelIndex &parent, int currentDepth)
             Q_ASSERT(model->parent(index) == parent);
 
             // recursively go down the children
-            if (model->hasChildren(index) && currentDepth < 10 ) {
+
+            if (model->hasChildren(index) && currentDepth < 10)
+            {
                 //qDebug() << r << c << "has children" << model->rowCount(index);
                 checkChildren(index, ++currentDepth);
             }/* else { if (currentDepth >= 10) qDebug() << "checked 10 deep"; };*/
 
             // make sure that after testing the children that the index doesn't change.
             QModelIndex newerIndex = model->index(r, c, parent);
+
             Q_ASSERT(index == newerIndex);
         }
     }
@@ -388,51 +421,71 @@ void ModelTest::data()
 
     // General Purpose roles that should return a QString
     QVariant variant = model->data(model->index(0, 0), Qt::ToolTipRole);
-    if (variant.isValid()) {
+
+    if (variant.isValid())
+    {
         Q_ASSERT(qVariantCanConvert<QString>(variant));
     }
+
     variant = model->data(model->index(0, 0), Qt::StatusTipRole);
-    if (variant.isValid()) {
+
+    if (variant.isValid())
+    {
         Q_ASSERT(qVariantCanConvert<QString>(variant));
     }
+
     variant = model->data(model->index(0, 0), Qt::WhatsThisRole);
-    if (variant.isValid()) {
+
+    if (variant.isValid())
+    {
         Q_ASSERT(qVariantCanConvert<QString>(variant));
     }
 
     // General Purpose roles that should return a QSize
     variant = model->data(model->index(0, 0), Qt::SizeHintRole);
-    if (variant.isValid()) {
+
+    if (variant.isValid())
+    {
         Q_ASSERT(qVariantCanConvert<QSize>(variant));
     }
 
     // General Purpose roles that should return a QFont
     QVariant fontVariant = model->data(model->index(0, 0), Qt::FontRole);
-    if (fontVariant.isValid()) {
+
+    if (fontVariant.isValid())
+    {
         Q_ASSERT(qVariantCanConvert<QFont>(fontVariant));
     }
 
     // Check that the alignment is one we know about
     QVariant textAlignmentVariant = model->data(model->index(0, 0), Qt::TextAlignmentRole);
-    if (textAlignmentVariant.isValid()) {
+
+    if (textAlignmentVariant.isValid())
+    {
         int alignment = textAlignmentVariant.toInt();
-       Q_ASSERT(alignment == (alignment & (Qt::AlignHorizontal_Mask | Qt::AlignVertical_Mask)));
+        Q_ASSERT(alignment == (alignment & (Qt::AlignHorizontal_Mask | Qt::AlignVertical_Mask)));
     }
 
     // General Purpose roles that should return a QColor
     QVariant colorVariant = model->data(model->index(0, 0), Qt::BackgroundColorRole);
-    if (colorVariant.isValid()) {
+
+    if (colorVariant.isValid())
+    {
         Q_ASSERT(qVariantCanConvert<QColor>(colorVariant));
     }
 
     colorVariant = model->data(model->index(0, 0), Qt::TextColorRole);
-    if (colorVariant.isValid()) {
+
+    if (colorVariant.isValid())
+    {
         Q_ASSERT(qVariantCanConvert<QColor>(colorVariant));
     }
 
     // Check that the "check state" is one we know about.
     QVariant checkStateVariant = model->data(model->index(0, 0), Qt::CheckStateRole);
-    if (checkStateVariant.isValid()) {
+
+    if (checkStateVariant.isValid())
+    {
         int state = checkStateVariant.toInt();
         Q_ASSERT(state == Qt::Unchecked ||
                  state == Qt::PartiallyChecked ||
@@ -486,10 +539,12 @@ void ModelTest::layoutAboutToBeChanged()
 
 void ModelTest::layoutChanged()
 {
-    for (int i = 0; i < changing.count(); ++i) {
+    for (int i = 0; i < changing.count(); ++i)
+    {
         QPersistentModelIndex p = changing[i];
         Q_ASSERT(p == model->index(p.row(), p.column(), p.parent()));
     }
+
     changing.clear();
 }
 

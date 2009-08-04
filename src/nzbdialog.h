@@ -38,9 +38,10 @@
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class NzbDialog : public QDialog, public Ui::NzbDialog
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
 
@@ -52,7 +53,7 @@ class NzbDialog : public QDialog, public Ui::NzbDialog
          * @param nzbfiles
          *      List of nzb files that the user wants to open.
          */
-        NzbDialog( QWidget *parent, const QList<NzbFile*> &nzbfiles );
+        NzbDialog(QWidget *parent, const QList<NzbFile*> &nzbfiles);
         ~NzbDialog();
 
         /**
@@ -60,7 +61,7 @@ class NzbDialog : public QDialog, public Ui::NzbDialog
          * @return
          *      The currently selected files in the model.
          */
-        const QList< NzbFile* >& files(){ return model->files(); }
+        const QList< NzbFile* >& files() { return model->files(); }
 
     private:
         KSharedConfigPtr config;

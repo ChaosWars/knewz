@@ -28,13 +28,15 @@ class Socket;
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class Connection : public QThread
 {
     Q_OBJECT
 
     public:
-        Connection( QObject *parent = 0 );
+        Connection(QObject *parent = 0);
         ~Connection();
+        void close(){ quit = true; }
 
     protected:
         void run();

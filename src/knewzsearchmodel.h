@@ -26,9 +26,10 @@
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class KNewzSearchModel : public QStandardItemModel
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
         static KNewzSearchModel* self();
@@ -36,14 +37,14 @@ class KNewzSearchModel : public QStandardItemModel
         static void saveEngines();
 
     protected:
-        KNewzSearchModel( QObject *parent = 0 );
+        KNewzSearchModel(QObject *parent = 0);
         ~KNewzSearchModel();
 
     private:
         static KNewzSearchModel *m_instance;
         static QMutex m_mutex;
 
-    friend class KNewzApplication;
+        friend class KNewzApplication;
 };
 
 #endif

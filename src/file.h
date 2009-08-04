@@ -28,6 +28,7 @@
 #include "basetype.h"
 
 class NzbFile;
+
 class Segment;
 
 /**
@@ -37,9 +38,10 @@ class Segment;
  * entry in a NZB file.
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
- * 
+ *
  * @see NzbFile, Segment
  */
+
 class File : public QList<Segment*>, public BaseType
 {
     public:
@@ -61,7 +63,7 @@ class File : public QList<Segment*>, public BaseType
          * @param subject
          *      The subject of the file.
          */
-        explicit File( NzbFile *parent = 0, const QString &subject = QString(), quint32 bytes = 0, const QStringList &groups = QStringList() );
+        explicit File(NzbFile *parent = 0, const QString &subject = QString(), quint32 bytes = 0, const QStringList &groups = QStringList());
 
         /**
          * Constructs a copy of \c other with a new parent \c parent
@@ -85,7 +87,7 @@ class File : public QList<Segment*>, public BaseType
          *  @return
          *      The size of the file in bytes.
          */
-        quint32 bytes() const{ return m_bytes; }
+        quint32 bytes() const { return m_bytes; }
 
         /**
          *  The groups of the file.
@@ -93,14 +95,14 @@ class File : public QList<Segment*>, public BaseType
          *  @return
          *      The groups where the file can be downloaded.
          */
-        const QStringList groups() const{ return m_groups; }
+        const QStringList groups() const { return m_groups; }
 
         /**
          * The NZB file the file belongs to.
          * @return
          *      The parent of the file.
          */
-        NzbFile* parent() const{ return m_parent; }
+        NzbFile* parent() const { return m_parent; }
 
         /**
          *  The subject of the file.
@@ -108,7 +110,7 @@ class File : public QList<Segment*>, public BaseType
          *  @return
          *      The subject of the file.
          */
-        const QString subject() const{ return m_subject; }
+        const QString subject() const { return m_subject; }
 
         /**
          * Set the file size.
@@ -116,7 +118,7 @@ class File : public QList<Segment*>, public BaseType
          * @param bytes
          *      The file size in bytes.
          */
-        void setBytes( quint32 bytes ){ m_bytes = bytes; }
+        void setBytes(quint32 bytes) { m_bytes = bytes; }
 
         /**
          * Set the groups that the file can be downloaded from.
@@ -124,7 +126,7 @@ class File : public QList<Segment*>, public BaseType
          * @param groups
          *      The list of groups.
          */
-        void setGroups( const QStringList &groups ){ m_groups = groups; }
+        void setGroups(const QStringList &groups) { m_groups = groups; }
 
         /**
          * The NZB file that the file belongs to.
@@ -134,7 +136,7 @@ class File : public QList<Segment*>, public BaseType
          *
          * \see NzbFile
          */
-        void setParent( NzbFile *parent );
+        void setParent(NzbFile *parent);
 
         /**
          * The subject of the file found in the NZB file.
@@ -142,11 +144,11 @@ class File : public QList<Segment*>, public BaseType
          * @param subject
          *      The subject of the file.
          */
-        void setSubject( const QString &subject ){ m_subject = subject; }
+        void setSubject(const QString &subject) { m_subject = subject; }
 
-        void setStatus( quint32 status ){ m_status = status; }
+        void setStatus(quint32 status) { m_status = status; }
 
-        quint32 status() const{ return m_status; }
+        quint32 status() const { return m_status; }
 
         /**
          * Returns the type of the File.
@@ -159,7 +161,8 @@ class File : public QList<Segment*>, public BaseType
 //         const QString type() const{ return QString( "File" ); }
 
 //         File& operator=( const File &other );
-// 
+//
+
         friend class NzbFile;
 
         /* QVariant stream operators */

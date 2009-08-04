@@ -28,8 +28,11 @@
 #include <QStringList>
 
 class QTreeView;
+
 class BaseType;
+
 class DownloadQueue;
+
 class File;
 
 /**
@@ -40,21 +43,22 @@ class File;
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class BaseModel : public QAbstractItemModel
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
 
-        BaseModel( QTreeView *parent );
+        BaseModel(QTreeView *parent);
         virtual ~BaseModel() = 0;
-        virtual QList< File* > cleanSelection( QModelIndexList &selection ) const;
-        virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+        virtual QList< File* > cleanSelection(QModelIndexList &selection) const;
+        virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     protected:
         QStringList rootItem;
         QTreeView *view;
-        virtual void changeCheckState( const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL );
+        virtual void changeCheckState(const QModelIndex &index, Qt::CheckState state, BaseType *base = NULL);
 
     protected Q_SLOTS:
 
@@ -64,7 +68,7 @@ class BaseModel : public QAbstractItemModel
          * @param index
          *      The item that was clicked.
          */
-        virtual void clicked( const QModelIndex &index );
+        virtual void clicked(const QModelIndex &index);
 
     private:
         DownloadQueue *downloadqueue;

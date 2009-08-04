@@ -22,8 +22,8 @@
 #include "file.h"
 #include "segment.h"
 
-Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
-    : m_parent( parent ), m_id( id ), m_nr( nr ), m_bytes( bytes )
+Segment::Segment(File *parent, const QString &id, int nr, quint32 bytes)
+        : m_parent(parent), m_id(id), m_nr(nr), m_bytes(bytes)
 {
 }
 
@@ -37,15 +37,15 @@ Segment::Segment( File *parent, const QString &id, int nr, quint32 bytes )
 
 Segment::~Segment()
 {
-    m_parent->setBytes( m_parent->bytes() - m_bytes );
+    m_parent->setBytes(m_parent->bytes() - m_bytes);
 }
 
 void Segment::print()
 {
-    printf( "id: %s\n", m_id.toStdString().c_str() );
-    printf( "nr: %d\n", m_nr );
-    printf( "parent: %p\n", m_parent );
-    printf( "bytes: %d\n", m_bytes );
+    printf("id: %s\n", m_id.toStdString().c_str());
+    printf("nr: %d\n", m_nr);
+    printf("parent: %p\n", m_parent);
+    printf("bytes: %d\n", m_bytes);
 }
 
 // Segment& Segment::operator=( const Segment &other )
@@ -56,7 +56,7 @@ void Segment::print()
 //         m_nr = other.m_nr;
 //         m_bytes = other.m_bytes;
 //     }
-// 
+//
 //     return *this;
 // }
 
@@ -67,7 +67,7 @@ void Segment::print()
 //     in >> data.m_bytes;
 //     return in;
 // }
-// 
+//
 // QDataStream& operator<<( QDataStream &out, const Segment &data )
 // {
 //     out << data.m_id;

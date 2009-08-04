@@ -30,18 +30,20 @@ class KNewzView;
 
 class KNewzViewEventFilter : public QObject
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
-        KNewzViewEventFilter( KNewzView *parent );
-        ~KNewzViewEventFilter(){}
+        KNewzViewEventFilter(KNewzView *parent);
+        ~KNewzViewEventFilter() {}
 
     protected:
-        bool eventFilter( QObject *obj, QEvent *event );
+        bool eventFilter(QObject *obj, QEvent *event);
 
     private:
         KNewzView *m_parent;
 };
+
+class KNewzModel;
 
 /**
  * @brief A subclassed QTreeView providing drag and drop support.
@@ -51,9 +53,10 @@ class KNewzViewEventFilter : public QObject
  *
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+
 class KNewzView : public QTreeView
 {
-    Q_OBJECT
+        Q_OBJECT
 
     public:
 
@@ -62,14 +65,14 @@ class KNewzView : public QTreeView
          * @param parent
          *      Parent widget.
          */
-        KNewzView( QWidget *parent );
+        KNewzView(QWidget *parent);
         ~KNewzView();
-        virtual KNewzModel* model(){ return dynamic_cast< KNewzModel* >( QTreeView::model() );}
+        virtual KNewzModel* model() { return dynamic_cast< KNewzModel* >(QTreeView::model());}
 
     protected:
-        virtual void dragEnterEvent ( QDragEnterEvent * event );
-        virtual void dragMoveEvent ( QDragMoveEvent * event );
-        virtual void dropEvent ( QDropEvent * event );
+        virtual void dragEnterEvent(QDragEnterEvent * event);
+        virtual void dragMoveEvent(QDragMoveEvent * event);
+        virtual void dropEvent(QDropEvent * event);
 //         virtual void mousePressEvent( QMouseEvent *event );
 
     private:

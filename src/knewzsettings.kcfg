@@ -2,7 +2,7 @@
 <kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
-      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
     <kcfgfile name="knewzrc"/>
     <include>KDE/KStandardDirs</include>
     <include>QDir</include>
@@ -50,6 +50,14 @@
         </entry>
         <entry name="timeout" type="Int">
             <label>Server timeout</label>
+            <default>30</default>
+        </entry>
+        <entry name="retryAttempts" type="Int">
+            <label>Retry attempts</label>
+            <default>3</default>
+        </entry>
+        <entry name="retryDelay" type="Int">
+            <label>Retry delay</label>
             <default>30</default>
         </entry>
         <entry name="ssl" type="Bool">

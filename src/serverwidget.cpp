@@ -19,9 +19,9 @@
  ***************************************************************************/
 
 #include "serverwidget.h"
-ServerWidget::ServerWidget( QWidget *parent )
+ServerWidget::ServerWidget(QWidget *parent)
 {
-    setupUi( parent );
+    setupUi(parent);
 }
 
 

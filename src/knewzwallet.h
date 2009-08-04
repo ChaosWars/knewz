@@ -58,7 +58,7 @@ class QWidget;
  *     knewzwallet->close();
  * }
  * @endcode
- * 
+ *
  * After using close() you should reobtain a reference to KNewzWallet using Instance().
  * Failure to do so will fuck up the reference counter.
  *
@@ -72,51 +72,54 @@ class QWidget;
  * This class is thread safe.
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
-class KNewzWallet : public QObject{
 
-    Q_OBJECT
+class KNewzWallet : public QObject
+{
+
+        Q_OBJECT
 
     public:
-        static KNewzWallet* Instance( QWidget *parent );
+        static KNewzWallet* Instance(QWidget *parent);
         void close();
         void open();
-        virtual int sync(){ if( m_wallet ) return m_wallet->sync(); else return -1; }
-        virtual int lockWallet(){ if( m_wallet ) return m_wallet->lockWallet(); else return -1; }
-        virtual const QString& walletName() const{ if( m_wallet ) return m_wallet->walletName(); else{ QString *s = new QString(); return *s; } }
-        virtual bool isOpen() const{ if( m_wallet ) return m_wallet->isOpen(); else return false; }
-        virtual void requestChangePassword( WId w ){ if( m_wallet ) m_wallet->requestChangePassword( w ); }
-        virtual QStringList folderList(){ if( m_wallet ) return m_wallet->folderList(); else return QStringList(); }
-        virtual bool hasFolder( const QString &f ){ if( m_wallet ) return m_wallet->hasFolder( f ); else return false; }
-        virtual bool setFolder( const QString &f ){  if( m_wallet ) return m_wallet->setFolder( f ); else return false; }
-        virtual bool removeFolder( const QString &f ){ if( m_wallet ) return m_wallet->removeFolder( f ); else return false; }
-        virtual bool createFolder( const QString &f ){ if( m_wallet ) return m_wallet->createFolder( f ); else return false; }
-        virtual const QString& currentFolder() const{  if( m_wallet ) return m_wallet->currentFolder(); else return *( new QString() ); }
-        virtual QStringList entryList(){ if( m_wallet ) return m_wallet->entryList(); else return QStringList(); }
-        virtual int renameEntry( const QString &oldName, const QString &newName ){ if( m_wallet ) return m_wallet->renameEntry( oldName, newName ); else return -1; }
-        virtual int readEntry( const QString &key, QByteArray &value ){ if( m_wallet ) return m_wallet->readEntry( key, value ); else return -1; }
-        virtual int readMap( const QString &key, QMap< QString, QString > &value ){ if( m_wallet ) return m_wallet->readMap( key, value ); else return -1; }
-        virtual int readPassword( const QString &key, QString &value ){ if( m_wallet ) return m_wallet->readPassword( key, value ); else return -1; }
-        int readEntryList( const QString &key, QMap< QString, QByteArray > &value ){ if( m_wallet ) return m_wallet->readEntryList( key, value ); else return -1; }
-        int readMapList( const QString &key, QMap< QString, QMap< QString, QString > > &value ){ if( m_wallet ) return m_wallet->readMapList( key, value ); else return -1; }
-        int readPasswordList( const QString &key, QMap< QString, QString > &value ){ if( m_wallet ) return m_wallet->readPasswordList( key, value ); else return -1; }
-        virtual int writeEntry( const QString &key, const QByteArray &value, KWallet::Wallet::EntryType entryType ){ if( m_wallet ) return m_wallet->writeEntry( key, value, entryType ); else return -1; }
-        virtual int writeEntry( const QString &key, const QByteArray &value ){ if( m_wallet ) return m_wallet->writeEntry( key, value ); else return -1; }
-        virtual int writeMap( const QString &key, const QMap< QString, QString > &value ){ if( m_wallet ) return m_wallet->writeMap( key, value ); else return -1; }
-        virtual int writePassword( const QString &key, const QString &value ){ if( m_wallet ) return m_wallet->writePassword( key, value ); else return -1; }
-        virtual bool hasEntry( const QString &key ){ if( m_wallet ) return m_wallet->hasEntry( key ); else return false; }
-        virtual int removeEntry( const QString &key ){ if( m_wallet ) return m_wallet->removeEntry( key ); else return -1; }
-        virtual KWallet::Wallet::EntryType entryType( const QString &key ){ if( m_wallet ) return m_wallet->entryType( key ); else return KWallet::Wallet::Unknown; }
+        virtual int sync() { if (m_wallet) return m_wallet->sync(); else return -1; }
+        virtual int lockWallet() { if (m_wallet) return m_wallet->lockWallet(); else return -1; }
+        virtual const QString& walletName() const { if (m_wallet) return m_wallet->walletName(); else { QString *s = new QString(); return *s; } }
+        virtual bool isOpen() const { if (m_wallet) return m_wallet->isOpen(); else return false; }
+
+        virtual void requestChangePassword(WId w) { if (m_wallet) m_wallet->requestChangePassword(w); }
+        virtual QStringList folderList() { if (m_wallet) return m_wallet->folderList(); else return QStringList(); }
+        virtual bool hasFolder(const QString &f) { if (m_wallet) return m_wallet->hasFolder(f); else return false; }
+        virtual bool setFolder(const QString &f) {  if (m_wallet) return m_wallet->setFolder(f); else return false; }
+        virtual bool removeFolder(const QString &f) { if (m_wallet) return m_wallet->removeFolder(f); else return false; }
+        virtual bool createFolder(const QString &f) { if (m_wallet) return m_wallet->createFolder(f); else return false; }
+        virtual const QString& currentFolder() const {  if (m_wallet) return m_wallet->currentFolder(); else return *(new QString()); }
+        virtual QStringList entryList() { if (m_wallet) return m_wallet->entryList(); else return QStringList(); }
+        virtual int renameEntry(const QString &oldName, const QString &newName) { if (m_wallet) return m_wallet->renameEntry(oldName, newName); else return -1; }
+        virtual int readEntry(const QString &key, QByteArray &value) { if (m_wallet) return m_wallet->readEntry(key, value); else return -1; }
+        virtual int readMap(const QString &key, QMap< QString, QString > &value) { if (m_wallet) return m_wallet->readMap(key, value); else return -1; }
+        virtual int readPassword(const QString &key, QString &value) { if (m_wallet) return m_wallet->readPassword(key, value); else return -1; }
+        int readEntryList(const QString &key, QMap< QString, QByteArray > &value) { if (m_wallet) return m_wallet->readEntryList(key, value); else return -1; }
+        int readMapList(const QString &key, QMap< QString, QMap< QString, QString > > &value) { if (m_wallet) return m_wallet->readMapList(key, value); else return -1; }
+        int readPasswordList(const QString &key, QMap< QString, QString > &value) { if (m_wallet) return m_wallet->readPasswordList(key, value); else return -1; }
+        virtual int writeEntry(const QString &key, const QByteArray &value, KWallet::Wallet::EntryType entryType) { if (m_wallet) return m_wallet->writeEntry(key, value, entryType); else return -1; }
+        virtual int writeEntry(const QString &key, const QByteArray &value) { if (m_wallet) return m_wallet->writeEntry(key, value); else return -1; }
+        virtual int writeMap(const QString &key, const QMap< QString, QString > &value) { if (m_wallet) return m_wallet->writeMap(key, value); else return -1; }
+        virtual int writePassword(const QString &key, const QString &value) { if (m_wallet) return m_wallet->writePassword(key, value); else return -1; }
+        virtual bool hasEntry(const QString &key) { if (m_wallet) return m_wallet->hasEntry(key); else return false; }
+        virtual int removeEntry(const QString &key) { if (m_wallet) return m_wallet->removeEntry(key); else return -1; }
+        virtual KWallet::Wallet::EntryType entryType(const QString &key) { if (m_wallet) return m_wallet->entryType(key); else return KWallet::Wallet::Unknown; }
 
     Q_SIGNALS:
         void walletClosed();
-        void folderUpdated( const QString &folder );
+        void folderUpdated(const QString &folder);
         void folderListUpdated();
-        void folderRemoved( const QString &folder );
-        void walletOpened( bool success );
+        void folderRemoved(const QString &folder);
+        void walletOpened(bool success);
 
     protected:
-        KNewzWallet( QWidget *parent );
-        ~KNewzWallet(){ delete m_wallet; };
+        KNewzWallet(QWidget *parent);
+        ~KNewzWallet() { delete m_wallet; };
 
     private:
         static QMutex m_mutex;
