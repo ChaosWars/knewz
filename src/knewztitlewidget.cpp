@@ -84,8 +84,7 @@ void TitleWidgetLabel::paintEvent(QPaintEvent *event)
     }
 
     pixmap() ? p.drawItemPixmap(QRect(QPoint(0, 0), size()), Qt::AlignCenter, *pixmap()) :
-
-    p.drawItemText(QRect(QPoint(0, 10), size()), Qt::AlignCenter, palette(), true, text());
+		p.drawItemText(QRect(QPoint(0, 10), size()), Qt::AlignCenter, palette(), true, text());
 }
 
 void TitleWidgetLabel::resizeEvent(QResizeEvent *event)
@@ -205,15 +204,10 @@ void KNewzTitleWidget::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QStylePainter p(this);
 
-    switch (m_orientation)
+	if(m_orientation == Qt::Vertical)
     {
-        case Qt::Vertical:
-            p.rotate(-90);
-            p.translate(0, -width());
-            break;
-        case Qt::Horizontal:
-        default:
-            break;
+		p.rotate(-90);
+		p.translate(0, -width());
     }
 
     p.drawControl(QStyle::CE_FocusFrame, getStyleOption());
@@ -279,7 +273,9 @@ QSize KNewzTitleWidget::sizeHint() const
     QSize size(170, 50);
 
     if (m_orientation == Qt::Vertical)
+	{
         size.transpose();
+	}
 
     return size;
 }
@@ -290,13 +286,9 @@ QSizePolicy KNewzTitleWidget::sizePolicy() const
     policy.setHorizontalPolicy(QSizePolicy::Preferred);
     policy.setVerticalPolicy(QSizePolicy::Fixed);
 
-    switch (m_orientation)
+	if(m_orientation == Qt::Vertical)
     {
-        case Qt::Vertical:
-            policy.transpose();
-        case Qt::Horizontal:
-        default:
-            break;
+		policy.transpose();
     }
 
     return policy;

@@ -15,7 +15,7 @@ SET( SRC basemodel.cpp
          knewzapplication.cpp
          knewzconfigdialog.cpp
          knewzmodel.cpp
-#          knewztitlewidget.cpp
+         #knewztitlewidget.cpp
          knewzsearchmodel.cpp
          knewzview.cpp
          knewzwallet.cpp

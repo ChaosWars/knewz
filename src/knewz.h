@@ -33,38 +33,22 @@
 #include <QMutex>
 
 class KAction;
-
 class KComboBox;
-
 class KConfigGroup;
-
 class KHistoryComboBox;
-
 class KRecentFilesAction;
-
 class KSystemTrayIcon;
-
 class KTabWidget;
-
 class QAction;
-
 class QDockWidget;
-
 class QNetworkReply;
-
 class QNetworkRequest;
-
 class BrowserWidget;
-
 class DockButtonWidget;
-
 class DownloadQueue;
-
 class KNewzModel;
-// class KNewzTitleWidget;
-
+//class KNewzTitleWidget;
 class KNewzView;
-
 class KNewzWallet;
 class Connection;
 
@@ -92,7 +76,6 @@ class KNewz : public KXmlGuiWindow
 //         static KNewz* self();
         void parseCommandLineArgs();
         KNewzView* view() { return m_view; }
-
         KNewzModel* model() { return m_model; }
 
     public Q_SLOTS:
@@ -134,7 +117,7 @@ class KNewz : public KXmlGuiWindow
         QAction *toggleDock;
         QDockWidget *dock;
         DockButtonWidget *dockButtonWidget;
-//         KNewzTitleWidget *titleWidget;
+        //KNewzTitleWidget *titleWidget;
         //Search toolbar
         KComboBox *searchBox;
         KHistoryComboBox *searchLine;
@@ -161,6 +144,7 @@ class KNewz : public KXmlGuiWindow
         void searchTextChanged(const QString &text);
         void urlOpen();
         void walletClosed();
+		void connectionClosed();
 };
 
 #endif

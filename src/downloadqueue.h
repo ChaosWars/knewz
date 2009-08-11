@@ -46,7 +46,7 @@ class NzbFile;
 class DownloadQueue : public QObject, public QList< NzbFile* >
 {
 
-        Q_OBJECT
+	Q_OBJECT
 
     public:
 

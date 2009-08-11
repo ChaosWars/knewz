@@ -85,3 +85,5 @@ void DownloadQueue::dumpQueueTopLevel()
         m_instance->at(i)->print();
     }
 }
+
+#include "downloadqueue.moc"

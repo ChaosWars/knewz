@@ -24,79 +24,106 @@
 #include "socket.h"
 
 Connection::Connection(QObject *parent)
-        : QThread(parent), quit(false)
+        : QThread(parent), quit(false), socket(NULL)
 {
 }
 
 
 Connection::~Connection()
 {
+	if(socket)
+	{
+		delete socket;
+	}
 }
 
 void Connection::run()
 {
     socket = new Socket();
-    socket->connectToHost();
     int retry_attempts = socket->retryAttempts();
-    int retry = 0;
     int retry_delay = socket->retryDelay();
+	int timeout = socket->timeout();
+	int retry = 0;
+	socket->connectToHost();
 
-    while(!socket->waitForConnected(socket->timeout()))
+    while(!socket->waitForConnected(timeout))
     {
-        kDebug() << socket->errorString();
+        qDebug() << socket->errorString();
 
         if(retry < retry_attempts)
         {
-            kDebug() << "Sleeping on connection for " << retry_delay << " seconds";
+			qDebug() << "Sleeping on connection for " << retry_delay << " seconds";
             sleep(retry_delay);
             retry++;
         }
         else
         {
-            kDebug() << "Finished retrying connection";
+			qDebug() << "Finished retrying connection";
             break;
         }
 
-        kDebug() << "Retrying connect: attempt #" << retry;
+		qDebug() << "Retrying connect: attempt #" << retry;
     }
 
-    kDebug() << "Socket state: " << socket->state();
+	qDebug() << "Socket state: " << socket->state();
 
     if(socket->useSsl())
     {
-        kDebug() << "Trying to secure SSL connection";
-        int retry_attempts = socket->retryAttempts();
-        int retry = 0;
-        int retry_delay = socket->retryDelay();
+        qDebug() << "Trying to secure SSL connection";
+        retry = 0;
 
-        while(!socket->waitForEncrypted(socket->timeout()))
+		while(!socket->waitForEncrypted(timeout))
         {
-            kDebug() << "SSL errors: " << socket->sslErrors();
+			qDebug() << "SSL errors: " << socket->sslErrors();
 
             if(retry < retry_attempts)
             {
-                kDebug() << "Sleeping on ssl connection for " << retry_delay << " seconds";
+				qDebug() << "Sleeping on ssl connection for " << retry_delay << " seconds";
                 sleep(retry_delay);
                 retry++;
             }
             else
             {
-                kDebug() << "Finished retrying ssl connection";
+				qDebug() << "Finished retrying ssl connection";
                 break;
             }
 
             kDebug() << "Retrying ssl connection: attempt #" << retry;
         }
 
-        kDebug() << "Socket mode: " << socket->mode();
-        kDebug() << "Socket state: " << socket->state();
+		qDebug() << "Socket mode: " << socket->mode();
+		qDebug() << "Socket state: " << socket->state();
     }
 
-    while (!quit)
+    if(socket->state() == QSslSocket::ConnectedState)
     {
-    }
+		qDebug() << "Connected";
+
+		while (!quit)
+        {
+			
+			while(socket->waitForReadyRead(timeout) && !quit)
+			{
+				socket->parseReply(socket->readAll());
+				qDebug() << "wait for ready read";
+			}
+
+			qDebug() << "Not quitting";
+        }
+
+		qDebug() << "Quitting";
+	}
+	else
+	{
+		qDebug() << "Not connected";
+	}
 
     socket->close();
+}
+
+void Connection::close()
+{
+	quit = true;
 }
 
 #include "connection.moc"

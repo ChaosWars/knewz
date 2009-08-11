@@ -18,6 +18,8 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <KDE/KDebug>
+#include <QThread>
 #include "knewzsettings.h"
 #include "socket.h"
 
@@ -44,6 +46,7 @@ void Socket::connectToHost()
 
 void Socket::parseReply(const QString &reply)
 {
+	qDebug() << reply;
 }
 
 #include "socket.moc"

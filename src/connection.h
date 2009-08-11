@@ -36,7 +36,7 @@ class Connection : public QThread
     public:
         Connection(QObject *parent = 0);
         ~Connection();
-        void close(){ quit = true; }
+        void close();
 
     protected:
         void run();
