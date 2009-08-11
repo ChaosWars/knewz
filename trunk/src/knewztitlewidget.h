@@ -24,14 +24,12 @@
 #include <QLabel>
 #include <QSizePolicy>
 
+class QHBoxLayout;
 class QMouseEvent;
-
 class QPaintEvent;
-
 class QResizeEvent;
-
 class QStyleOptionFrameV2;
-
+class QVBoxLayout;
 class TitleWidgetLabel;
 
 /**
@@ -40,16 +38,14 @@ class TitleWidgetLabel;
 
 class KNewzTitleWidget : public QFrame
 {
-        Q_OBJECT
+	Q_OBJECT
 
     public:
         KNewzTitleWidget(QWidget *parent = 0);
         ~KNewzTitleWidget();
         QSize minimumSizeHint() const;
         Qt::Orientation orientation() { return m_orientation; }
-
         void setOrientation(Qt::Orientation orientation) { m_orientation = orientation; }
-
         QSize sizeHint() const;
         QSizePolicy sizePolicy() const;
 
@@ -70,8 +66,7 @@ class KNewzTitleWidget : public QFrame
 
 class TitleWidgetLabel : public QLabel
 {
-
-        Q_OBJECT
+	Q_OBJECT
 
     public:
         TitleWidgetLabel(KNewzTitleWidget *parent = 0, Qt::WindowFlags f = 0);

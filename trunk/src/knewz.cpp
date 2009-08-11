@@ -49,7 +49,7 @@
 #include "knewzmodel.h"
 #include "knewzsearchmodel.h"
 #include "knewzsettings.h"
-// #include "knewztitlewidget.h"
+//#include "knewztitlewidget.h"
 #include "knewzview.h"
 #include "knewzwallet.h"
 #include "nzbdialog.h"
@@ -171,8 +171,8 @@ void KNewz::createDockWidget()
     dock = new QDockWidget(QString(), this);
     dock->setObjectName("DockWidget");
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-//     titleWidget = new KNewzTitleWidget( dock );
-//     dock->setTitleBarWidget( titleWidget );
+    //titleWidget = new KNewzTitleWidget( dock );
+    //dock->setTitleBarWidget( titleWidget );
     dockButtonWidget = new DockButtonWidget(dock);
     dock->setWidget(dockButtonWidget);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
@@ -409,6 +409,7 @@ void KNewz::setupToolbars()
     connect(resumeQueueAction, SIGNAL(triggered()), this, SLOT(resumeQueue()));
     actionCollection()->addAction("resume_queue_action", resumeQueueAction);
     stopQueueAction = new KAction(KIcon("media-playback-stop"), i18n("Stop queue"), this);
+	connect(stopQueueAction, SIGNAL(triggered()), this, SLOT(stopQueue()));
     actionCollection()->addAction("stop_queue_action", stopQueueAction);
     clearQueueAction = new KAction(KIcon("edit-clear-list"), i18n("Clear queue"), this);
     actionCollection()->addAction("clear_queue_action", clearQueueAction);
@@ -553,8 +554,16 @@ void KNewz::walletClosed()
 
 void KNewz::resumeQueue()
 {
-    connection = new Connection();
-    connection->start();
+	if(!connection)
+	{
+		connection = new Connection();
+		connect(connection, SIGNAL(finished()), this, SLOT(connectionClosed()));
+		connection->start();
+	}
+	else
+	{
+		kDebug() << "Connection already running";
+	}
 }
 
 void KNewz::stopQueue()
@@ -562,10 +571,17 @@ void KNewz::stopQueue()
     if(connection)
     {
         connection->close();
-        connection->wait();
-        delete connection;
-        connection = NULL;
     }
+}
+
+void KNewz::connectionClosed()
+{
+	if(connection)
+	{
+		qDebug() << "Connection closed";
+		delete connection;
+		connection = NULL;
+	}
 }
 
 #include "knewz.moc"
