@@ -25,6 +25,14 @@
 /**
  * @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
+namespace ConnectionStatus
+{
+	enum Status
+	{
+		IDLE = 0,
+		DOWNLOADING = 1
+	};
+}
 
 class Socket : public QSslSocket
 {

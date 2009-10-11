@@ -21,7 +21,6 @@
 #include <QTreeView>
 #include "basemodel.h"
 #include "basetype.h"
-#include "downloadqueue.h"
 #include "file.h"
 #include "nzbfile.h"
 
@@ -30,12 +29,10 @@ BaseModel::BaseModel(QTreeView *parent)
 {
     view = parent;
     connect(view, SIGNAL(clicked(const QModelIndex&)), SLOT(clicked(const QModelIndex&)));
-    downloadqueue = DownloadQueue::Instance();
 }
 
 BaseModel::~BaseModel()
 {
-    downloadqueue->detach();
 }
 
 QVariant BaseModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -98,7 +95,7 @@ void BaseModel::changeCheckState(const QModelIndex &idx, Qt::CheckState state, B
     }
 }
 
-QList< File* > BaseModel::cleanSelection(QModelIndexList &selection) const
+QList<File*> BaseModel::sanitizeSelection(QModelIndexList &selection) const
 {
     /* We want to filter the index list here, since we cannot allow a selection to contain both
     root items and children of those root items. Here we traverse the list, filtering out any
@@ -114,11 +111,11 @@ QList< File* > BaseModel::cleanSelection(QModelIndexList &selection) const
             it.remove();
     }
 
-    qSort(selection.begin(), selection.end());
+    //qSort(selection.begin(), selection.end());
 
-    //List is now 4x shorter, so N^2 pays off
+    //List is now 4x shorter
     it.toFront();
-    QList< File* > files;
+    QList<File*> files;
 
     while (it.hasNext())
     {
@@ -132,7 +129,7 @@ QList< File* > BaseModel::cleanSelection(QModelIndexList &selection) const
             if (file)
             {
                 //If the current files parent is also in the list, then we don't want to process it
-                if (selection.indexOf(index(downloadqueue->indexOf(file->parent()), 0)) != -1)
+                if(selection.indexOf(idx.parent(), 0) != -1)
                 {
                     files.append(file);
                     it.remove();

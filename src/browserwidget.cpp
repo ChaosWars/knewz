@@ -29,7 +29,6 @@
 #include <QNetworkReply>
 #include <QUrl>
 #include "browserwidget.h"
-#include "downloadqueue.h"
 #include "nzbdialog.h"
 #include "nzbreader.h"
 #include "knewz.h"
@@ -55,7 +54,6 @@ KNewzCookieJar::KNewzCookieJar(QObject *parent)
     }
 
     file.close();
-
     QList< QNetworkCookie > cookieList;
 
     foreach(const QByteArray &cookie, cookies)
@@ -90,10 +88,16 @@ BrowserWidget::BrowserWidget(KNewz *mainWindow, QWidget *parent)
 {
     setupUi(this);
     progressBar->setVisible(false);
-//     KIconLoader *iconLoader = KIconLoader::global();
-//     idleMovie = iconLoader->loadMovie( "process-idle-kde", KIconLoader::Small );
-//     loadingMovie = iconLoader->loadMovie( "process-working-kde", KIconLoader::Toolbar );
-//     progressIcon->setMovie( idleMovie );
+	qDebug() << QMovie::supportedFormats();
+    KIconLoader *iconLoader = KIconLoader::global();
+	qDebug() << iconLoader->iconPath("process-idle", KIconLoader::Toolbar);
+	idleMovie = new QMovie(iconLoader->iconPath("process-idle", KIconLoader::Toolbar));
+	qDebug() << idleMovie->format();
+	qDebug() << iconLoader->iconPath("process-working", KIconLoader::Toolbar);
+	loadingMovie = new QMovie(iconLoader->iconPath("process-working", KIconLoader::Toolbar));
+	qDebug() << loadingMovie->format();
+    progressIcon->setMovie(idleMovie);
+	progressIcon->movie()->start();
     QNetworkAccessManager *nam = webView->page()->networkAccessManager();
     nam->setCookieJar(new KNewzCookieJar(nam));
     webView->page()->setForwardUnsupportedContent(true);
@@ -117,6 +121,9 @@ BrowserWidget::BrowserWidget(KNewz *mainWindow, QWidget *parent)
 
 BrowserWidget::~BrowserWidget()
 {
+	progressIcon->movie()->stop();
+	delete idleMovie;
+	delete loadingMovie;
 }
 
 void BrowserWidget::finishedDownload()
@@ -132,7 +139,9 @@ void BrowserWidget::finishedDownload()
     nzbFiles.append(reader.parseNetworkData(data, filename));
 
     if (nzbFiles.size() < 1)
+	{
         return;
+	}
 
     KNewzModel *model = m_main->model();
 
@@ -143,41 +152,12 @@ void BrowserWidget::finishedDownload()
 
         if (nzbDialog.result() == QDialog::Accepted)
         {
-            int count = nzbDialog.files().size();
-
-            if (count < 1)
-                return;
-
-            downloadqueue->mutex().lock();
-
-            int row = m_main->model()->rowCount();
-
-            model->insertRows(row, count);
-
-            foreach(NzbFile *nzbFile, nzbDialog.files())
-            {
-                QModelIndex idx = m_main->model()->index(row, 0);
-                model->setData(idx, QVariant::fromValue(*nzbFile));
-                row++;
-            }
-
-            downloadqueue->mutex().unlock();
+			model->appendNzbFiles(nzbDialog.files());
         }
     }
     else
     {
-        downloadqueue->mutex().lock();
-        int row = model->rowCount();
-        model->insertRows(row, nzbFiles.size());
-
-        foreach(NzbFile *nzbFile, nzbFiles)
-        {
-            QModelIndex idx = model->index(row, 0);
-            model->setData(idx, QVariant::fromValue(*nzbFile));
-            row++;
-        }
-
-        downloadqueue->mutex().unlock();
+		model->appendNzbFiles(nzbFiles);
     }
 
 }
@@ -196,14 +176,18 @@ void BrowserWidget::loadStarted()
 {
     progressBar->setVisible(true);
     stop->setEnabled(true);
-//     progressIcon->setMovie( loadingMovie );
+	progressIcon->movie()->stop();
+    progressIcon->setMovie(loadingMovie);
+	progressIcon->movie()->start();
 }
 
 void BrowserWidget::loadFinished(bool /*ok*/)
 {
     progressBar->setVisible(false);
     stop->setEnabled(false);
-//     progressIcon->setMovie( idleMovie );
+	progressIcon->movie()->stop();
+    progressIcon->setMovie(idleMovie);
+	progressIcon->movie()->start();
 }
 
 void BrowserWidget::unsupportedContent(QNetworkReply *reply)

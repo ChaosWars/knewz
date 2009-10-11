@@ -48,56 +48,56 @@ void Connection::run()
 
     while(!socket->waitForConnected(timeout))
     {
-        qDebug() << socket->errorString();
+        kdDebug() << socket->errorString();
 
         if(retry < retry_attempts)
         {
-			qDebug() << "Sleeping on connection for " << retry_delay << " seconds";
+			kdDebug() << "Sleeping on connection for " << retry_delay << " seconds";
             sleep(retry_delay);
             retry++;
         }
         else
         {
-			qDebug() << "Finished retrying connection";
+			kdDebug() << "Finished retrying connection";
             break;
         }
 
-		qDebug() << "Retrying connect: attempt #" << retry;
+		kdDebug() << "Retrying connect: attempt #" << retry;
     }
 
-	qDebug() << "Socket state: " << socket->state();
+	kdDebug() << "Socket state: " << socket->state();
 
     if(socket->useSsl())
     {
-        qDebug() << "Trying to secure SSL connection";
+        kdDebug() << "Trying to secure SSL connection";
         retry = 0;
 
 		while(!socket->waitForEncrypted(timeout))
         {
-			qDebug() << "SSL errors: " << socket->sslErrors();
+			kdDebug() << "SSL errors: " << socket->sslErrors();
 
             if(retry < retry_attempts)
             {
-				qDebug() << "Sleeping on ssl connection for " << retry_delay << " seconds";
+				kdDebug() << "Sleeping on ssl connection for " << retry_delay << " seconds";
                 sleep(retry_delay);
                 retry++;
             }
             else
             {
-				qDebug() << "Finished retrying ssl connection";
+				kdDebug() << "Finished retrying ssl connection";
                 break;
             }
 
-            kDebug() << "Retrying ssl connection: attempt #" << retry;
+            kdDebug() << "Retrying ssl connection: attempt #" << retry;
         }
 
-		qDebug() << "Socket mode: " << socket->mode();
-		qDebug() << "Socket state: " << socket->state();
+		kdDebug() << "Socket mode: " << socket->mode();
+		kdDebug() << "Socket state: " << socket->state();
     }
 
     if(socket->state() == QSslSocket::ConnectedState)
     {
-		qDebug() << "Connected";
+		kdDebug() << "Connected";
 
 		while (!quit)
         {
@@ -105,17 +105,17 @@ void Connection::run()
 			while(socket->waitForReadyRead(timeout) && !quit)
 			{
 				socket->parseReply(socket->readAll());
-				qDebug() << "wait for ready read";
+				kdDebug() << "wait for ready read";
 			}
 
-			qDebug() << "Not quitting";
+			kdDebug() << "Not quitting";
         }
 
-		qDebug() << "Quitting";
+		kdDebug() << "Quitting";
 	}
 	else
 	{
-		qDebug() << "Not connected";
+		kdDebug() << "Not connected";
 	}
 
     socket->close();

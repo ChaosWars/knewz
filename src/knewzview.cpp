@@ -28,7 +28,7 @@
 #include <QModelIndexList>
 #include <QMutexLocker>
 #include "basetype.h"
-#include "downloadqueue.h"
+//#include "downloadqueue.h"
 #include "file.h"
 #include "knewzmodel.h"
 #include "knewzview.h"
@@ -47,10 +47,10 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_Delete)
         {
-            DownloadQueue *downloadqueue = m_parent->model()->downloadqueue;
-            QMutexLocker lock(&downloadqueue->mutex());
+            //DownloadQueue *downloadqueue = m_parent->model()->downloadqueue;
+            //QMutexLocker lock(&downloadqueue->mutex());
             QModelIndexList list = m_parent->selectionModel()->selectedRows();
-            m_parent->model()->cleanSelection(list);
+            m_parent->model()->sanitizeSelection(list);
 
             foreach(const QModelIndex &index, list)
             {
@@ -62,7 +62,7 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
                     if (nzbFile)
                     {
-                        m_parent->model()->removeRows(downloadqueue->indexOf(nzbFile), 1);
+                        m_parent->model()->removeRow(nzbFile);
                     }
 
                 }
@@ -72,19 +72,16 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
                     NzbFile *parent = file->parent();
 
                     if (file)
+					{
                         m_parent->model()->removeRows(parent->indexOf(file), 1, index.parent());
-
-                    if (parent->size() == 0)
-                        m_parent->model()->removeRows(downloadqueue->indexOf(parent), 1);
-
+					}
                 }
-
             }
         }
         else if (keyEvent->key() == Qt::Key_Space)
         {
             QModelIndexList list = m_parent->selectionModel()->selectedRows();
-            m_parent->model()->cleanSelection(list);
+            m_parent->model()->sanitizeSelection(list);
 
             foreach(const QModelIndex &index, list)
             {

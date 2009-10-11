@@ -26,16 +26,12 @@
 #include "ui_browserwidget.h"
 
 class QMovie;
-
 class QNetworkReply;
-
-class DownloadQueue;
-
 class KNewz;
 
 class KNewzCookieJar : public QNetworkCookieJar
 {
-        Q_OBJECT
+	Q_OBJECT
 
     public:
         KNewzCookieJar(QObject *parent = 0);
@@ -49,7 +45,7 @@ class KNewzCookieJar : public QNetworkCookieJar
 
 class BrowserWidget : public QWidget, Ui::BrowserWidget
 {
-        Q_OBJECT
+	Q_OBJECT
 
     public:
         explicit BrowserWidget(KNewz *mainWindow, QWidget *parent = 0);
@@ -60,10 +56,9 @@ class BrowserWidget : public QWidget, Ui::BrowserWidget
 
     private:
         KNewz *m_main;
-        DownloadQueue *downloadqueue;
         QAction *backAction, *forwardAction, *reloadAction, *stopAction;
         QNetworkReply *reply;
-//         QMovie *idleMovie, *loadingMovie;
+        QMovie *idleMovie, *loadingMovie;
 
     private Q_SLOTS:
         void loadStarted();

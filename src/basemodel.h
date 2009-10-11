@@ -28,11 +28,7 @@
 #include <QStringList>
 
 class QTreeView;
-
 class BaseType;
-
-class DownloadQueue;
-
 class File;
 
 /**
@@ -52,7 +48,7 @@ class BaseModel : public QAbstractItemModel
 
         BaseModel(QTreeView *parent);
         virtual ~BaseModel() = 0;
-        virtual QList< File* > cleanSelection(QModelIndexList &selection) const;
+        virtual QList< File* > sanitizeSelection(QModelIndexList &selection) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     protected:
@@ -69,10 +65,6 @@ class BaseModel : public QAbstractItemModel
          *      The item that was clicked.
          */
         virtual void clicked(const QModelIndex &index);
-
-    private:
-        DownloadQueue *downloadqueue;
-
 };
 
 #endif

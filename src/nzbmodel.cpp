@@ -245,7 +245,7 @@ void NzbModel::checkNone()
 void NzbModel::checkSelected()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
-    cleanSelection(list);
+    sanitizeSelection(list);
 
     foreach(QModelIndex idx, list)
     {
@@ -256,7 +256,7 @@ void NzbModel::checkSelected()
 void NzbModel::uncheckSelected()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
-    cleanSelection(list);
+    sanitizeSelection(list);
 
     foreach(QModelIndex idx, list)
     {
@@ -295,7 +295,7 @@ void NzbModel::invertSelection()
 void NzbModel::invertSelectedRows()
 {
     QModelIndexList list = view->selectionModel()->selectedRows();
-    cleanSelection(list);
+    sanitizeSelection(list);
 
     foreach(QModelIndex idx, list)
     {
