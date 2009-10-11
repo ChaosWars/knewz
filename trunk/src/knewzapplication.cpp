@@ -30,7 +30,7 @@
 #endif
 
 KNewz* KNewzApplication::mainWindow = 0;
-DownloadQueue* KNewzApplication::downloadqueue = 0;
+//DownloadQueue* KNewzApplication::downloadqueue = 0;
 KNewzSearchModel* KNewzApplication::searchModel = 0;
 
 KNewzApplication::KNewzApplication()
@@ -40,8 +40,8 @@ KNewzApplication::KNewzApplication()
 
     //Initialize the static classes
 
-    if (!downloadqueue)
-        downloadqueue = DownloadQueue::Instance();
+    /*if (!downloadqueue)
+        downloadqueue = DownloadQueue::Instance();*/
 
     if (!searchModel)
     {
@@ -52,7 +52,7 @@ KNewzApplication::KNewzApplication()
 
 KNewzApplication::~KNewzApplication()
 {
-    downloadqueue->detach();
+    //downloadqueue->detach();
     delete searchModel;
 }
 

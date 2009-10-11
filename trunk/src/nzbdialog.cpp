@@ -44,12 +44,10 @@ NzbDialog::NzbDialog(QWidget *parent, const QList<NzbFile*> &nzbFiles)
 
     if (KNewzSettings::automaticallyResizeHeaders())
     {
-
         for (int i = 1; i < columnCount; i++)
         {
             view->header()->setResizeMode(i, QHeaderView::ResizeToContents);
         }
-
     }
     else
     {
@@ -61,26 +59,17 @@ NzbDialog::NzbDialog(QWidget *parent, const QList<NzbFile*> &nzbFiles)
 
     //Set up the signals
     connect(ok, SIGNAL(clicked()), SLOT(okSlot()));
-
     connect(checkAll, SIGNAL(clicked()), model, SLOT(checkAll()));
-
     connect(checkNone, SIGNAL(clicked()), model, SLOT(checkNone()));
-
     connect(checkSelected, SIGNAL(clicked()), model, SLOT(checkSelected()));
-
     connect(uncheckSelected, SIGNAL(clicked()), model, SLOT(uncheckSelected()));
-
     connect(invertSelection, SIGNAL(clicked()), model, SLOT(invertSelection()));
 
     //Read the saved configuration
     config = KGlobal::config();
-
     configGroup = new KConfigGroup(config, "NzbFileDialog");
-
     QVariant size(configGroup->readEntry("size", QSize(750, 500)));
-
     resize(size.toSize());
-
     view->resizeColumnToContents(1);
 }
 

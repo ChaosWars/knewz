@@ -45,7 +45,7 @@ class QNetworkReply;
 class QNetworkRequest;
 class BrowserWidget;
 class DockButtonWidget;
-class DownloadQueue;
+//class DownloadQueue;
 class KNewzModel;
 //class KNewzTitleWidget;
 class KNewzView;
@@ -105,7 +105,7 @@ class KNewz : public KXmlGuiWindow
         KNewzView *m_view;
         KNewzModel *m_model;
         //Download queue instance
-        DownloadQueue *downloadqueue;
+        //DownloadQueue *downloadqueue;
         //Actions
         KAction *openFilesAction, *preferences;
         KConfigGroup *configGroup;

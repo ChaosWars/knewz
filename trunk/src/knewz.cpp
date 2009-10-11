@@ -43,7 +43,7 @@
 #include <QSizePolicy>
 #include "browserwidget.h"
 #include "dockbuttonwidget.h"
-#include "downloadqueue.h"
+//#include "downloadqueue.h"
 #include "knewz.h"
 #include "knewzconfigdialog.h"
 #include "knewzmodel.h"
@@ -69,7 +69,7 @@ KNewz::KNewz(QWidget *parent)
         browserWidget(new BrowserWidget(this, mainWidget)),
         m_view(new KNewzView(mainWidget)),
         m_model(new KNewzModel(m_view)),
-        downloadqueue(DownloadQueue::Instance()),
+        //downloadqueue(DownloadQueue::Instance()),
         knewzwallet(NULL),
         ok_to_close(false)
 {
@@ -118,7 +118,7 @@ KNewz::~KNewz()
         knewzwallet->close();
     }
 
-    downloadqueue->detach();
+    //downloadqueue->detach();
 
     delete configGroup;
     delete dock;
@@ -145,7 +145,6 @@ void KNewz::checkDirectories()
 
     if (!tempDir.exists())
     {
-
         if (!tempDir.mkpath(tempDir.path()))
         {
             KMessageBox::error(this, i18n("Error creating temp directory"));
@@ -157,7 +156,6 @@ void KNewz::checkDirectories()
 
     if (!downloadDir.exists())
     {
-
         if (!downloadDir.mkpath(downloadDir.path()))
         {
             KMessageBox::error(this, i18n("Error creating download directory"));
@@ -192,35 +190,31 @@ void KNewz::loadSettings()
 
     if (KNewzSettings::saveEncrypted() && KNewzSettings::authentication())
     {
-
         if (!knewzwallet)
         {
             setupWallet();
         }
-
     }
 
     KNewzSettings::headerOrientationHorizontal() ?
-
-    dock->setFeatures(QDockWidget::DockWidgetClosable |
-                      QDockWidget::DockWidgetMovable |
-                      QDockWidget::DockWidgetFloatable) :
-    dock->setFeatures(QDockWidget::DockWidgetClosable |
-                      QDockWidget::DockWidgetMovable |
-                      QDockWidget::DockWidgetFloatable |
-                      QDockWidget::DockWidgetVerticalTitleBar);
+		dock->setFeatures(QDockWidget::DockWidgetClosable |
+						QDockWidget::DockWidgetMovable |
+						QDockWidget::DockWidgetFloatable)
+						:
+		dock->setFeatures(QDockWidget::DockWidgetClosable |
+						QDockWidget::DockWidgetMovable |
+						QDockWidget::DockWidgetFloatable |
+						QDockWidget::DockWidgetVerticalTitleBar);
     m_view->setAnimated(KNewzSettings::animatedExpantion());
     m_view->setExpandsOnDoubleClick(KNewzSettings::expandOnDoubleClick());
     int columnCount = m_view->model()->columnCount();
 
     if (KNewzSettings::automaticallyResizeHeaders())
     {
-
         for (int i = 1; i < columnCount; i++)
         {
             m_view->header()->setResizeMode(i, QHeaderView::ResizeToContents);
         }
-
     }
     else
     {
@@ -245,7 +239,8 @@ void KNewz::openRecentFile(const KUrl &url)
 
         if (nzbDialog.result() == QDialog::Accepted)
         {
-            downloadqueue->mutex().lock();
+			m_model->appendNzbFiles(nzbDialog.files());
+            /*downloadqueue->mutex().lock();
             int row = m_model->rowCount();
             int count = nzbDialog.files().size();
 
@@ -261,7 +256,7 @@ void KNewz::openRecentFile(const KUrl &url)
                 row++;
             }
 
-            downloadqueue->mutex().unlock();
+            downloadqueue->mutex().unlock();*/
         }
     }
 
@@ -269,13 +264,12 @@ void KNewz::openRecentFile(const KUrl &url)
 
 void KNewz::optionsConfigure()
 {
-    if (KNewzConfigDialog::showDialog("settings"))
+    if(KNewzConfigDialog::showDialog("settings"))
     {
         return;
     }
 
     KNewzConfigDialog *dialog = new KNewzConfigDialog(this, "settings", KNewzSettings::self());
-
     connect(dialog, SIGNAL(clearSearchHistory()), searchLine, SLOT(clearHistory()));
     connect(dialog, SIGNAL(settingsChanged(QString)), this, SLOT(loadSettings()));
     dialog->show();
@@ -287,12 +281,10 @@ void KNewz::parseCommandLineArgs()
     NzbReader reader;
     QList<NzbFile*> nzbFiles;
 
-    for (int i = 0, size = args->count(); i < size; i++)
+    for(int i = 0, size = args->count(); i < size; i++)
     {
-
         if (!args->arg(i).isEmpty())
         {
-
             NzbFile *nzbFile = reader.parseLocalData(args->arg(i));
 
             if (nzbFile->size() > 0)
@@ -304,23 +296,22 @@ void KNewz::parseCommandLineArgs()
 
     if (nzbFiles.size() > 0)
     {
-
         if (!KNewzSettings::openFilesSilently())
         {
-
             NzbDialog nzbDialog(this, nzbFiles);
             nzbDialog.exec();
 
             if (nzbDialog.result() == QDialog::Accepted)
             {
-                int count = nzbDialog.files().size();
+                /*int count = nzbDialog.files().size();
 
                 if (count < 1)
                 {
                     return;
-                }
+                }*/
 
-                downloadqueue->mutex().lock();
+				m_model->appendNzbFiles(nzbDialog.files());
+                /*downloadqueue->mutex().lock();
 
                 int row = m_model->rowCount();
                 m_model->insertRows(row, count);
@@ -332,13 +323,14 @@ void KNewz::parseCommandLineArgs()
                     row++;
                 }
 
-                downloadqueue->mutex().unlock();
+                downloadqueue->mutex().unlock();*/
             }
 
         }
         else
         {
-            int count = nzbFiles.size();
+			m_model->appendNzbFiles(nzbFiles);
+            /*int count = nzbFiles.size();
             downloadqueue->mutex().lock();
             int row = m_model->rowCount();
             m_model->insertRows(row, count);
@@ -350,7 +342,7 @@ void KNewz::parseCommandLineArgs()
                 row++;
             }
 
-            downloadqueue->mutex().unlock();
+            downloadqueue->mutex().unlock();*/
         }
     }
 
@@ -373,10 +365,7 @@ void KNewz::search()
 
 void KNewz::searchTextChanged(const QString &text)
 {
-    if (!text.isEmpty())
-        searchAction->setEnabled(true);
-    else
-        searchAction->setEnabled(false);
+	text.isEmpty() ? searchAction->setEnabled(false) : searchAction->setEnabled(true);
 }
 
 void KNewz::setupActions()
@@ -451,7 +440,6 @@ void KNewz::openFiles(const QStringList &files, bool silently)
 
     for (int i = 0, size = files.size(); i < size; i++)
     {
-
         if (!files.at(i).isEmpty())
         {
             QString file(files.at(i));
@@ -464,12 +452,10 @@ void KNewz::openFiles(const QStringList &files, bool silently)
                 nzbFiles.append(nzbFile);
             }
         }
-
     }
 
     if (nzbFiles.size() > 0)
     {
-
         if (!silently)
         {
             NzbDialog nzbDialog(this, nzbFiles);
@@ -477,7 +463,8 @@ void KNewz::openFiles(const QStringList &files, bool silently)
 
             if (nzbDialog.result() == QDialog::Accepted)
             {
-                int count = nzbDialog.files().size();
+				m_model->appendNzbFiles(nzbDialog.files());
+                /*int count = nzbDialog.files().size();
 
                 if (count < 1)
                     return;
@@ -495,12 +482,13 @@ void KNewz::openFiles(const QStringList &files, bool silently)
                     row++;
                 }
 
-                downloadqueue->mutex().unlock();
+                downloadqueue->mutex().unlock();*/
             }
         }
         else
         {
-            downloadqueue->mutex().lock();
+			m_model->appendNzbFiles(nzbFiles);
+            /*downloadqueue->mutex().lock();
             int row = m_model->rowCount();
             m_model->insertRows(row, nzbFiles.size());
 
@@ -511,7 +499,7 @@ void KNewz::openFiles(const QStringList &files, bool silently)
                 row++;
             }
 
-            downloadqueue->mutex().unlock();
+            downloadqueue->mutex().unlock();*/
         }
     }
 }
@@ -538,6 +526,7 @@ bool KNewz::queryClose()
 
 bool KNewz::queryExit()
 {
+	//Save the download queue here
     return true;
 }
 

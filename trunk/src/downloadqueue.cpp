@@ -24,21 +24,22 @@
 #include "nzbfile.h"
 #include "segment.h"
 
-DownloadQueue* DownloadQueue::m_instance = 0;
-QMutex DownloadQueue::m_mutex;
-int DownloadQueue::m_count = 0;
+//DownloadQueue* DownloadQueue::m_instance = 0;
+//QMutex DownloadQueue::m_mutex;
+//int DownloadQueue::m_count = 0;
 
-DownloadQueue::DownloadQueue() : QObject(), QList<NzbFile*>()
+DownloadQueue::DownloadQueue() : //QObject(),
+QList<NzbFile*>()
 {
 }
 
-DownloadQueue* DownloadQueue::Instance()
+/*DownloadQueue* DownloadQueue::Instance()
 {
     if (!m_instance)
     {
         QMutexLocker lock(&m_mutex);
-        /* Make sure that the instance wasn't created while we were
-        waiting for the lock */
+        //Make sure that the instance wasn't created while we were
+        //waiting for the lock
 
         if (!m_instance)
         {
@@ -47,18 +48,18 @@ DownloadQueue* DownloadQueue::Instance()
     }
 
     m_count++;
-
     return m_instance;
-}
+}*/
 
 DownloadQueue::~DownloadQueue()
 {
-    QMutexLocker lock(&m_mutex);
+    //QMutexLocker lock(&m_mutex);
     qDeleteAll(*this);
     clear();
+	m_mutex.unlock();
 }
 
-void DownloadQueue::detach()
+/*void DownloadQueue::detach()
 {
     QMutexLocker lock(&m_mutex);
     m_count--;
@@ -84,6 +85,6 @@ void DownloadQueue::dumpQueueTopLevel()
     {
         m_instance->at(i)->print();
     }
-}
+}*/
 
-#include "downloadqueue.moc"
+//#include "downloadqueue.moc"

@@ -26,7 +26,7 @@
 
 #include <QList>
 #include <QMutex>
-#include <QObject>
+//#include <QObject>
 
 class NzbFile;
 
@@ -43,49 +43,33 @@ class NzbFile;
  *  @author Lawrence Lee <valheru.ashen.shugar@gmail.com>
  */
 
-class DownloadQueue : public QObject, public QList< NzbFile* >
+class DownloadQueue : public QList<NzbFile*>
 {
-
-	Q_OBJECT
-
     public:
+		DownloadQueue();
+		~DownloadQueue();
 
-        /**
-         * Obtains a pointer the in singleton instance of the download queue.
-         *
-         * @returns The singleton instance of the download queue.
-         */
-        static DownloadQueue* Instance();
-
-        void detach();
-
-        /**
-         * Returns the internal mutex that should be used to obtain a lock on the
-         * download queue.
-         *
-         * @return
-         *      The internal for locking the download queue mutex.
-         */
-        static QMutex& mutex() { return m_mutex; }
+		/**
+		* Returns the internal mutex that should be used to obtain a lock on the
+		* download queue.
+		*
+		* @return
+		*      The internal for locking the download queue mutex.
+		*/
+		QMutex& mutex()
+		{
+			return m_mutex;
+		}
 
         /**
          * Debug function. Prints the content of the queue via kDebug();
          */
-        static void dumpQueue();
-
-        static void dumpQueueTopLevel();
-
-    Q_SIGNALS:
-        void fileAdded();
-
-    protected:
-        DownloadQueue();
-        ~DownloadQueue();
-
+        //static void dumpQueue();
+        //static void dumpQueueTopLevel();
+		void dumpQueue();
+		void dumpQueueTopLevel();
     private:
-        static int m_count;
-        static QMutex m_mutex;
-        static DownloadQueue* m_instance;
+		QMutex m_mutex;
 };
 
 #endif
