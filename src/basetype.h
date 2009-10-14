@@ -105,17 +105,18 @@ class BaseType
          */
         BaseType& operator=(const BaseType &other)
         {
-            if (this != & other)
+            if(this != &other)
             {
+				m_type = other.m_type;
                 m_state = other.m_state;
             }
 
             return *this;
         }
 
-//
-//         friend class NzbFile;
-//         friend class File;
+
+        friend class NzbFile;
+        friend class File;
 
     private:
         BaseType::Type m_type;

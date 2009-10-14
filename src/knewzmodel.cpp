@@ -130,6 +130,7 @@ QVariant KNewzModel::data(const QModelIndex &index, int role) const
 
 bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
+	qDebug() << "Row: " << row;
 	Q_UNUSED(row);
 	Q_UNUSED(column);
 	
@@ -230,6 +231,8 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 		}
 
         QList<BaseType*> nzbData = nzbMimeData->getNzbData();
+		int nzbrow = -1;
+		int filerow = -1;
 
         //Note: The list is garuanteed to contain only parents who's children are not in the list.
 		//See mimeData()
@@ -249,11 +252,9 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
                 //Since a copy operation on a QList of pointers just copies the pointer, the memory
                 //in all lists will point to the same object.
                 int currentrow = downloadqueue->indexOf(nzbFile);
-				Q_ASSERT(currentrow >= 0 && currentrow < downloadqueue->size());
                 //We can't use remove/insertRows() here, and we need to implement the
 				//begin/endRemove/InsertRows to avoid corruption of the model/view
 				QModelIndex idx = index(currentrow, 0);
-                Q_ASSERT(idx.isValid());
 
                 //Naughty user, no dropping items on themselves or their children
                 if (idx == parent || idx == parent.parent())
@@ -269,13 +270,30 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
                 endRemoveRows();
                 //Chaining ternary expressions...besides looking cool, it also deals with wankers who think dropping
                 //top-level items on other peoples children is funny
+				/*if(nzbrow < 0)
+				{
+					if(parent.parent().isValid())
+					{
+						File *child = static_cast<File*>(parent.internalPointer());
+						nzbrow = nzbFile->indexOf(child) + 1;
+					}
+					else
+					{
+						if(parent.isValid())
+						{
+							
+						}
+						else
+						{
+							nzbrow = rowCount();
+						}
+					}
+				}*/
 				currentrow = parent.parent().isValid() ? parent.parent().row() : (parent.isValid() ? parent.row() : rowCount());
-				Q_ASSERT(currentrow >= 0 && currentrow <= downloadqueue->size());
 				beginInsertRows(QModelIndex(), currentrow, currentrow);
 				downloadqueue->insert(currentrow, nzbFile);
                 endInsertRows();
 				QModelIndex newIdx = index(currentrow, 0);
-                Q_ASSERT(newIdx.isValid());
                 emit dataChanged(newIdx, index(rows, columnCount(), newIdx));
 
                 if (expanded)
@@ -285,7 +303,12 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
             }
             else
             {
-                File *file = dynamic_cast< File* >(base);
+                File *file = dynamic_cast<File*>(base);
+
+				if(!file)
+				{
+					continue;
+				}
 
                 //Only process the drop if it is dropped on it's parent or on another sibling
                 if (file->parent() == parent.internalPointer() || file->parent() == parent.parent().internalPointer())
@@ -296,22 +319,32 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 					if (currentrow >= 0 && currentrow < nzbFile->size())
                     {
                         QModelIndex parentIdx = index(downloadqueue->indexOf(nzbFile), 0);
-                        Q_ASSERT(parentIdx.isValid());
 						beginRemoveRows(parentIdx, currentrow, currentrow);
 						file = nzbFile->takeAt(currentrow);
                         endRemoveRows();
-                        //Parents row, otherwise siblings row
-						currentrow = file->parent() == parent.internalPointer() ? 0 : parent.row();
 
-						if ((currentrow < 0) ||  currentrow > nzbFile->size())
+						if(filerow < 0)
 						{
-                            break;
+							if(file->parent() != parent.internalPointer())
+							{
+								File *child = static_cast<File*>(parent.internalPointer());
+								filerow = nzbFile->indexOf(child) + 1;
+							}
+							else
+							{
+								filerow = 0;
+							}
 						}
-
-						beginInsertRows(parentIdx, currentrow, currentrow);
-						nzbFile->insert(currentrow, file);
+						
+						beginInsertRows(parentIdx, filerow, filerow);
+						nzbFile->insert(filerow, file);
                         endInsertRows();
-						emit dataChanged(index(currentrow, 0, parentIdx), index(currentrow, columnCount(), parentIdx));
+						emit dataChanged(index(filerow, 0, parentIdx), index(filerow, columnCount(), parentIdx));
+
+						if(currentrow > filerow)
+						{
+							filerow++;
+						}
                     }
 
                 }
@@ -345,7 +378,6 @@ QModelIndex KNewzModel::index(int row, int column, const QModelIndex &parent) co
 
     if (!parent.isValid())
 	{
-		//FIXME: Shouldn't column be 0 here?
         return createIndex(row, column, downloadqueue->at(row));
 	}
 

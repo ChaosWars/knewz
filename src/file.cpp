@@ -34,9 +34,9 @@ File::File(NzbFile *parent, const QString &subject, quint32 bytes, const QString
 {
 }
 
-// File::File( const File &other )
-//     : QList<Segment*>( other ),
-//       BaseType( other )
+// File::File(const File &other)
+//     : QList<Segment*>(other),
+//       BaseType(other)
 // {
 //     m_parent = other.m_parent;
 //     m_bytes = other.m_bytes;
@@ -82,29 +82,32 @@ void File::setParent(NzbFile *parent)
     }
 }
 
-// File& File::operator=( const File &other )
-// {
-//     if( this != &other ){
-//         m_state = other.m_state;
-//         m_parent = other.m_parent;
-//         m_bytes = other.m_bytes;
-//         m_groups = other.m_groups;
-//         m_subject = other.m_subject;
-//         BaseType::operator=( other );
-//         QList<Segment*>::operator=( other );
-//
-//         foreach( Segment *segment, *this ){
-//             segment->m_parent = this;
+File& File::operator=(const File &other)
+{
+    if( this != &other )
+	{
+		m_state = other.m_state;
+		m_parent = other.m_parent;
+		m_bytes = other.m_bytes;
+		m_groups = other.m_groups;
+		m_subject = other.m_subject;
+		BaseType::operator=(other);
+		QList<Segment*>::operator=(other);
+
+		foreach(Segment *segment, *this)
+		{
+			segment->m_parent = this;
+		}
+
+//         for( int i = 0, size = this->size(); i < size; i++ )
+// 			{
+//             (*this)[i]->m_parent = this;
 //         }
-//
-// //         for( int i = 0, size = this->size(); i < size; i++ ){
-// //             (*this)[i]->m_parent = this;
-// //         }
-//
-//     }
-//
-//    return *this;
-//}
+
+    }
+
+   return *this;
+}
 
 // QDataStream& operator>>( QDataStream &in, File &data )
 // {
