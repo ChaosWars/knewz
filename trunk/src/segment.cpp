@@ -48,7 +48,7 @@ void Segment::print()
     printf("bytes: %d\n", m_bytes);
 }
 
-Segment& Segment::operator=(const Segment &other)
+/*Segment& Segment::operator=(const Segment &other)
 {
     if(this != &other)
 	{
@@ -59,7 +59,7 @@ Segment& Segment::operator=(const Segment &other)
     }
 
     return *this;
-}
+}*/
 
 // QDataStream& operator>>( QDataStream &in, Segment &data )
 // {

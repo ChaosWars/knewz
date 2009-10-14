@@ -150,18 +150,7 @@ class File : public QList<Segment*>, public BaseType
 
         quint32 status() const { return m_status; }
 
-        /**
-         * Returns the type of the File.
-         *
-         * @return
-         *      The string "File".
-         *
-         * \see NzbFile, Segment
-         */
-//         const QString type() const{ return QString( "File" ); }
-
-        File& operator=( const File &other );
-//
+//        File& operator=( const File &other );
 
         friend class NzbFile;
 
