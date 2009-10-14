@@ -106,7 +106,7 @@ class Segment
         const QString type() const { return QString("Segment"); }
 
         /* QVariant stream operators */
-        Segment& operator=(const Segment &other);
+        //Segment& operator=(const Segment &other);
 //         friend QDataStream& operator>>( QDataStream &in, Segment &data );
 //
 //         friend QDataStream& operator<<( QDataStream &out, const Segment &data );

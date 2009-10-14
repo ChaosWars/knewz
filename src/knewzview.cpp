@@ -47,6 +47,7 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_Delete)
         {
+			qDebug() << "Event filter caught delete event";
             //DownloadQueue *downloadqueue = m_parent->model()->downloadqueue;
             //QMutexLocker lock(&downloadqueue->mutex());
             QModelIndexList list = m_parent->selectionModel()->selectedRows();
@@ -56,7 +57,7 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
             {
                 BaseType *base = static_cast< BaseType* >(index.internalPointer());
 
-                if (base->type() == BaseType::nzbfile)
+                if (base->type() == BaseType::NZBFILE)
                 {
                     NzbFile *nzbFile = dynamic_cast< NzbFile* >(base);
 
@@ -115,49 +116,48 @@ KNewzView::~KNewzView()
 
 void KNewzView::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasFormat("text/uri-list") || event->mimeData()->hasFormat("text/x-nzb"))
+	QTreeView::dragEnterEvent(event);
+	
+	if(event->mimeData()->hasFormat("text/uri-list") || event->mimeData()->hasFormat("text/x-nzb"))
     {
-//         QTreeView::dragEnterEvent( event );
         event->acceptProposedAction();
     }
 }
 
 void KNewzView::dragMoveEvent(QDragMoveEvent *event)
 {
-    if (event->mimeData()->hasFormat("text/uri-list") || event->mimeData()->hasFormat("text/x-nzb"))
+	QTreeView::dragMoveEvent(event);
+	
+    if(event->mimeData()->hasFormat("text/uri-list") || event->mimeData()->hasFormat("text/x-nzb"))
     {
-//         QTreeView::dragMoveEvent( event );
         event->acceptProposedAction();
     }
 }
 
 void KNewzView::dropEvent(QDropEvent *event)
 {
-    if (event->mimeData()->hasFormat("text/uri-list"))
+    if(event->mimeData()->hasFormat("text/uri-list"))
     {
-        model()->dropMimeData(event->mimeData(), event->proposedAction(), -1, -1, indexAt(event->pos()));
+		QModelIndex index(indexAt(event->pos()));
+        model()->dropMimeData(event->mimeData(), event->proposedAction(), index.row(), columnAt(event->pos().y()), index);
         event->acceptProposedAction();
     }
-    else if (event->mimeData()->hasFormat("text/x-nzb"))
+    else if(event->mimeData()->hasFormat("text/x-nzb"))
     {
         event->setDropAction(Qt::MoveAction);
-        const NzbMimeData *mimeData = qobject_cast< const NzbMimeData* >(event->mimeData());
+        const NzbMimeData *mimeData = qobject_cast<const NzbMimeData*>(event->mimeData());
 
-        if (mimeData)
+        if(mimeData)
         {
-            model()->dropMimeData(mimeData, event->dropAction(), -1, -1, indexAt(event->pos()));
+			QModelIndex index(indexAt(event->pos()));
+			model()->dropMimeData(mimeData, event->dropAction(), index.row(), columnAt(event->pos().y()), index);
             event->accept();
         }
     }
-
+	else
+	{
+		event->ignore();
+	}
 }
-
-// void KNewzView::mousePressEvent( QMouseEvent *event )
-// {
-//     if (event->button() == Qt::LeftButton)
-//         dragStartPosition = event->pos();
-//
-//     QTreeView::mousePressEvent( event );
-// }
 
 #include "knewzview.moc"

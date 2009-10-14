@@ -24,7 +24,7 @@
 
 NzbFile::NzbFile(const QString &filename, quint64 bytes)
         : QList<File*>(),
-        BaseType(BaseType::nzbfile),
+        BaseType(BaseType::NZBFILE),
         m_filename(filename),
         m_bytes(bytes),
         m_status(0)

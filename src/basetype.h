@@ -47,7 +47,7 @@ class BaseType
 {
     public:
 
-        enum Type { nzbfile, file };
+        enum Type{NZBFILE = 0, FILE};
 
         /**
          * Creates a BaseType object with a default checked state.
@@ -55,7 +55,10 @@ class BaseType
          * @param state
          *      Optional state parameter. The default is checked.
          */
-        BaseType(Type type, Qt::CheckState state = Qt::Checked) : m_type(type), m_state(state) {}
+        BaseType(Type type, Qt::CheckState state = Qt::Checked)
+		: m_type(type), m_state(state)
+		{
+		}
 
         /**
          * Copy constructor.
@@ -63,7 +66,9 @@ class BaseType
          *      The object to copy.
          */
 //         BaseType( const BaseType &other ) : m_state( other.state() ){}
-        virtual ~BaseType() {};
+        virtual ~BaseType()
+		{
+		}
 
         virtual void print() = 0;
         virtual void dumpQueue() = 0;

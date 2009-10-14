@@ -25,7 +25,7 @@
 
 File::File(NzbFile *parent, const QString &subject, quint32 bytes, const QStringList &groups)
         : QList<Segment*>(),
-        BaseType(BaseType::file),
+        BaseType(BaseType::FILE),
         m_parent(parent),
         m_subject(subject),
         m_bytes(bytes),
@@ -82,7 +82,7 @@ void File::setParent(NzbFile *parent)
     }
 }
 
-File& File::operator=(const File &other)
+/*File& File::operator=(const File &other)
 {
     if( this != &other )
 	{
@@ -98,16 +98,10 @@ File& File::operator=(const File &other)
 		{
 			segment->m_parent = this;
 		}
-
-//         for( int i = 0, size = this->size(); i < size; i++ )
-// 			{
-//             (*this)[i]->m_parent = this;
-//         }
-
     }
 
    return *this;
-}
+}*/
 
 // QDataStream& operator>>( QDataStream &in, File &data )
 // {

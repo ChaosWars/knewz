@@ -67,13 +67,18 @@ class KNewzView : public QTreeView
          */
         KNewzView(QWidget *parent);
         ~KNewzView();
-        virtual KNewzModel* model() { return dynamic_cast< KNewzModel* >(QTreeView::model());}
+
+		virtual KNewzModel* model()
+		{
+			return dynamic_cast< KNewzModel* >(QTreeView::model());
+		}
+
+		friend class KNewzModel;
 
     protected:
         virtual void dragEnterEvent(QDragEnterEvent * event);
         virtual void dragMoveEvent(QDragMoveEvent * event);
         virtual void dropEvent(QDropEvent * event);
-//         virtual void mousePressEvent( QMouseEvent *event );
 
     private:
         KNewzViewEventFilter *eventFilterObject;
