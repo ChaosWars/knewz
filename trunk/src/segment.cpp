@@ -27,7 +27,7 @@ Segment::Segment(File *parent, const QString &id, int nr, quint32 bytes)
 {
 }
 
-// Segment::Segment( const Segment &other )
+// Segment::Segment(const Segment &other)
 // {
 //     m_parent = other.m_parent;
 //     m_id = other.m_id;
@@ -48,17 +48,18 @@ void Segment::print()
     printf("bytes: %d\n", m_bytes);
 }
 
-// Segment& Segment::operator=( const Segment &other )
-// {
-//     if( this != &other ){
-//         m_parent = other.m_parent;
-//         m_id = other.m_id;
-//         m_nr = other.m_nr;
-//         m_bytes = other.m_bytes;
-//     }
-//
-//     return *this;
-// }
+Segment& Segment::operator=(const Segment &other)
+{
+    if(this != &other)
+	{
+        m_parent = other.m_parent;
+        m_id = other.m_id;
+        m_nr = other.m_nr;
+        m_bytes = other.m_bytes;
+    }
+
+    return *this;
+}
 
 // QDataStream& operator>>( QDataStream &in, Segment &data )
 // {

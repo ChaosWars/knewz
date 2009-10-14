@@ -88,14 +88,9 @@ BrowserWidget::BrowserWidget(KNewz *mainWindow, QWidget *parent)
 {
     setupUi(this);
     progressBar->setVisible(false);
-	qDebug() << QMovie::supportedFormats();
     KIconLoader *iconLoader = KIconLoader::global();
-	qDebug() << iconLoader->iconPath("process-idle", KIconLoader::Toolbar);
 	idleMovie = new QMovie(iconLoader->iconPath("process-idle", KIconLoader::Toolbar));
-	qDebug() << idleMovie->format();
-	qDebug() << iconLoader->iconPath("process-working", KIconLoader::Toolbar);
 	loadingMovie = new QMovie(iconLoader->iconPath("process-working", KIconLoader::Toolbar));
-	qDebug() << loadingMovie->format();
     progressIcon->setMovie(idleMovie);
 	progressIcon->movie()->start();
     QNetworkAccessManager *nam = webView->page()->networkAccessManager();
