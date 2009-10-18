@@ -243,53 +243,56 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 				return true;
 			}
 
-			QModelIndex nzbParent = parent.parent();
-			QList<File*> files;
-			
-			foreach(BaseType *base, nzbData)
+			if(!nzbData.contains(droptarget))
 			{
-				if(base->type() == BaseType::FILE)
+				QModelIndex nzbParent = parent.parent();
+				QList<File*> files;
+
+				foreach(BaseType *base, nzbData)
 				{
-					File *file = dynamic_cast<File*>(base);
-					
-					if(!file)
+					if(base->type() == BaseType::FILE)
 					{
-						continue;
-					}
-					
-					if(file->parent() == nzbFile)
-					{
-						//We have to do this the slow, safe way since by taking a file we invalidate any known indexes
-						int filerow = nzbFile->indexOf(file);
-						beginRemoveRows(nzbParent, filerow, filerow);
-						files.append(nzbFile->takeAt(filerow));
-						endRemoveRows();
+						File *file = dynamic_cast<File*>(base);
+
+						if(!file)
+						{
+							continue;
+						}
+
+						if(file->parent() == nzbFile)
+						{
+							//We have to do this the slow, safe way since by taking a file we invalidate any known indexes
+							int filerow = nzbFile->indexOf(file);
+							beginRemoveRows(nzbParent, filerow, filerow);
+							files.append(nzbFile->takeAt(filerow));
+							endRemoveRows();
+						}
 					}
 				}
-			}
 
-			int numfiles = files.size();
+				int numfiles = files.size();
 
-			if(numfiles > 0)
-			{
-				int beginrow = nzbFile->indexOf(droptarget);
-
-				if(m_parent->dropIndicatorPosition() == QAbstractItemView::BelowItem)
+				if(numfiles > 0)
 				{
-					beginrow++;
-				}
+					int beginrow = nzbFile->indexOf(droptarget);
 
-				if(insertRows(beginrow, numfiles, nzbParent))
-				{
-					QModelIndex start = index(beginrow, 0, nzbParent);
-					
-					foreach(File *file, files)
+					if(m_parent->dropIndicatorPosition() == QAbstractItemView::BelowItem)
 					{
-						setData(index(beginrow, 0, nzbParent), QVariant::fromValue(*file));
 						beginrow++;
 					}
 
-					emit dataChanged(start, index(beginrow, columnCount(), nzbParent));
+					if(insertRows(beginrow, numfiles, nzbParent))
+					{
+						QModelIndex start = index(beginrow, 0, nzbParent);
+
+						foreach(File *file, files)
+						{
+							setData(index(beginrow, 0, nzbParent), QVariant::fromValue(*file));
+							beginrow++;
+						}
+
+						emit dataChanged(start, index(beginrow, columnCount(), nzbParent));
+					}
 				}
 			}
 		}
@@ -407,11 +410,13 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
                 }
             }
         }*/
-
-        //Unselect rows, otherwise the wrong rows become selected, which is odd and confusing.
-        view->selectionModel()->clearSelection();
     }
 
+	//Unselect rows, otherwise the wrong rows become selected, which is odd and confusing.
+	//NOTE For some reason unkown to mankind, this line is absolutely fucking imperative, otherwise
+	//the selection gets deleted if nothing is done with it.
+	//Go figure.
+	view->selectionModel()->clearSelection();
     return true;
 }
 
