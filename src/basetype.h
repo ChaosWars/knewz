@@ -45,87 +45,79 @@
 
 class BaseType
 {
-    public:
+	public:
+		enum Type{NZBFILE = 0, FILE};
 
-        enum Type{NZBFILE = 0, FILE};
-
-        /**
-         * Creates a BaseType object with a default checked state.
-         *
-         * @param state
-         *      Optional state parameter. The default is checked.
-         */
-        BaseType(Type type, Qt::CheckState state = Qt::Checked)
+		/**
+			* Creates a BaseType object with a default checked state.
+			*
+			* @param state
+			*      Optional state parameter. The default is checked.
+			*/
+		BaseType(Type type, Qt::CheckState state = Qt::Checked)
 		: m_type(type), m_state(state)
 		{
 		}
 
-        /**
-         * Copy constructor.
-         * @param other
-         *      The object to copy.
-         */
-//         BaseType( const BaseType &other ) : m_state( other.state() ){}
-        virtual ~BaseType()
+		virtual ~BaseType()
 		{
 		}
 
-        virtual void print() = 0;
-        virtual void dumpQueue() = 0;
+		virtual void print() = 0;
+		virtual void dumpQueue() = 0;
 
-        /**
-         * Returns the checked state of the object.
-         *
-         * @return
-         *      The checked state of the oject.
-         */
-        Qt::CheckState state() const { return m_state; }
+		/**
+			* Returns the checked state of the object.
+			*
+			* @return
+			*      The checked state of the oject.
+			*/
+		Qt::CheckState state() const { return m_state; }
 
-        /**
-         * Update the checked state of the object.
-         *
-         * @param state
-         *      The new checked state of the object.
-         */
-        void setState(Qt::CheckState state) { m_state = state; }
+		/**
+			* Update the checked state of the object.
+			*
+			* @param state
+			*      The new checked state of the object.
+			*/
+		void setState(Qt::CheckState state) { m_state = state; }
 
-        /**
-         * Returns the type of the object. Classes that inherit from BaseType
-         * must reimplement this. It is customary to return the name of the
-         * class as a string from this method, eg:
-         *
-         * \code
-         * const QString NewClass::type() const{ return QString( "NewClass" ); }
-         * \endcode
-         *
-         * @return
-         *      The object type.
-         *
-         * \see NzbFile, File, Segment
-         */
-        BaseType::Type type() const { return m_type; }
+		/**
+			* Returns the type of the object. Classes that inherit from BaseType
+			* must reimplement this. It is customary to return the name of the
+			* class as a string from this method, eg:
+			*
+			* \code
+			* const QString NewClass::type() const{ return QString( "NewClass" ); }
+			* \endcode
+			*
+			* @return
+			*      The object type.
+			*
+			* \see NzbFile, File, Segment
+			*/
+		BaseType::Type type() const { return m_type; }
 
-        /**
-         * Assigns @p other to this object and returns a reference.
-         */
-        BaseType& operator=(const BaseType &other)
-        {
-            if(this != &other)
-            {
+		/**
+			* Assigns @p other to this object and returns a reference.
+			*/
+		BaseType& operator=(const BaseType &other)
+		{
+			if(this != &other)
+			{
 				m_type = other.m_type;
-                m_state = other.m_state;
-            }
+				m_state = other.m_state;
+			}
 
-            return *this;
-        }
+			return *this;
+		}
 
+		friend class NzbFile;
+		friend class File;
 
-        friend class NzbFile;
-        friend class File;
-
-    private:
-        BaseType::Type m_type;
-        Qt::CheckState m_state;
+	private:
+		BaseType::Type m_type;
+		Qt::CheckState m_state;
 
 };
 

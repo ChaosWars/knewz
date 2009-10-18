@@ -45,9 +45,6 @@ class Segment;
 class File : public QList<Segment*>, public BaseType
 {
     public:
-
-//         enum{ FileRole = Qt::UserRole + 1 };
-
         /**
          * Constructor.
          *
@@ -65,13 +62,6 @@ class File : public QList<Segment*>, public BaseType
          */
         explicit File(NzbFile *parent = 0, const QString &subject = QString(), quint32 bytes = 0, const QStringList &groups = QStringList());
 
-        /**
-         * Constructs a copy of \c other with a new parent \c parent
-         *
-         * @param other
-         *      The file to construct a copy of.
-         */
-//          File( const File &other );
         ~File();
 
         /**

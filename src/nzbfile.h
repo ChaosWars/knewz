@@ -40,8 +40,6 @@ class File;
 class NzbFile : public QList<File*>, public BaseType
 {
     public:
-//         enum{ NzbFileRole = Qt::UserRole };
-
         /**
          * Constructor.
          * @param filename
@@ -52,7 +50,6 @@ class NzbFile : public QList<File*>, public BaseType
          */
         explicit NzbFile(const QString &filename = QString(), quint64 bytes = 0);
 
-//         NzbFile( const NzbFile &other );
         ~NzbFile();
 
         /**
