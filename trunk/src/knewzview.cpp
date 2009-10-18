@@ -47,8 +47,6 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_Delete)
         {
-			qDebug() << "Event filter caught delete event";
-            //DownloadQueue *downloadqueue = m_parent->model()->downloadqueue;
             //QMutexLocker lock(&downloadqueue->mutex());
             QModelIndexList list = m_parent->selectionModel()->selectedRows();
             m_parent->model()->sanitizeSelection(list);
