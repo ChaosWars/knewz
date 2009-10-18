@@ -58,8 +58,8 @@ class KNewzModel : public BaseModel
 		* @param parent
 		*      The parent to add the children to. The parent must be valid and must be in column 0, ie.
 		*      parent.column() must return 0.
-		* @param nzbFile
-		*      The nzbFile which contains the data for the children.
+		* @param files
+		*      The QList which contains the data for the children.
 		* @param row
 		*      This parameter is the row at which to start inserting the children. If you call this function
 		*      immediately after adding a top level item with that item as \p parent, then just leave the
@@ -69,12 +69,12 @@ class KNewzModel : public BaseModel
 		* @return
 		*      \c false if \p parent was not valid or if parent.column() was larger than 0.
 		*/
-		bool insertChildren(const QModelIndex &parent, const NzbFile &nzbFile, int row = 0);
-
-		
+		bool insertFiles(const QModelIndex &parent, const QList<File*> &files, int row = 0);
+		bool appendFiles(const QModelIndex &parent, const QList<File*> &files);
 		bool insertNzbFiles(const QList<NzbFile*> &nzbFiles, int row = 0);
 		bool appendNzbFiles(const QList<NzbFile*> &nzbFiles);
-		bool prependNzbFiles(const QList<NzbFile*> &nzbFiles);
+		bool removeRows(const QList<File*> &files);
+		bool removeRow(File *file);
 		bool removeRows(const QList<NzbFile*> &nzbFiles);
 		bool removeRow(NzbFile *nzbFile);
 		
