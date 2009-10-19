@@ -24,29 +24,39 @@
 #include "segment.h"
 
 File::File(NzbFile *parent, const QString &subject, quint32 bytes, const QStringList &groups)
-        : QList<Segment*>(),
-        BaseType(BaseType::FILE),
-        m_parent(parent),
-        m_subject(subject),
-        m_bytes(bytes),
-        m_status(0),
-        m_groups(groups)
+	: QList<Segment*>(),
+	  BaseType(BaseType::FILE),
+	  m_parent(parent),
+	  m_subject(subject),
+	  m_bytes(bytes),
+	  m_status(0),
+	  m_groups(groups)
 {
 }
 
-// File::File(const File &other)
-//     : QList<Segment*>(other),
-//       BaseType(other)
-// {
-//     m_parent = other.m_parent;
-//     m_bytes = other.m_bytes;
-//     m_groups = other.m_groups;
-//     m_subject = other.m_subject;
-// }
+/*File::File(const File &other)
+	: QList<Segment*>(other),
+	  BaseType(other)
+{
+	m_parent = NULL;
+	m_bytes = other.m_bytes;
+	m_groups = other.m_groups;
+	m_subject = other.m_subject;
+	BaseType::operator=(other);
+	QList<Segment*>::operator=(other);
+	
+	foreach(Segment *segment, *this)
+	{
+		segment->m_parent = this;
+	}
+}*/
 
 File::~File()
 {
-    m_parent->setBytes(m_parent->bytes() - m_bytes);
+	if(m_parent)
+	{
+		m_parent->setBytes(m_parent->bytes() - m_bytes);
+	}
 }
 
 void File::dumpQueue()
@@ -69,14 +79,14 @@ void File::print()
 
 void File::setParent(NzbFile *parent)
 {
-    if (m_parent)
+    if(m_parent)
     {
         m_parent->setBytes(m_parent->bytes() - m_bytes);
     }
 
     m_parent = parent;
 
-    if (parent)
+    if(m_parent)
     {
         parent->setBytes(parent->bytes() + m_bytes);
     }
@@ -84,10 +94,9 @@ void File::setParent(NzbFile *parent)
 
 /*File& File::operator=(const File &other)
 {
-    if( this != &other )
+    if(this != &other)
 	{
-		m_state = other.m_state;
-		m_parent = other.m_parent;
+		m_parent = NULL;
 		m_bytes = other.m_bytes;
 		m_groups = other.m_groups;
 		m_subject = other.m_subject;
