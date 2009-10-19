@@ -132,48 +132,47 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 {
 	Q_UNUSED(column);
 	
-    if(action == Qt::IgnoreAction)
+	if(action == Qt::IgnoreAction)
 	{
-        return true;
+		return true;
 	}
 
 	QMutexLocker lock(&downloadqueue->mutex());
 	//External drag, ie. drag and drop from exploder/dolphin/konqueror/whatever Jobs is screwing you over with...
-    if (data->hasFormat("text/uri-list"))
-    {
-        if(data->hasUrls())
-        {
-            QStringList files;
+	if (data->hasFormat("text/uri-list"))
+	{
+		if(data->hasUrls())
+		{
+			QStringList files;
 
-            foreach(const QUrl &url, data->urls())
-            {
-                files << url.path();
-            }
+			foreach(const QUrl &url, data->urls())
+			{
+				files << url.path();
+			}
 
-            NzbReader reader;
-            QList<NzbFile*> nzbFiles;
+			NzbReader reader;
+			QList<NzbFile*> nzbFiles;
 
-            foreach(const QString &file, files)
-            {
-                if(file.size() > 0)
-                {
-                    NzbFile *nzbFile = reader.parseLocalData(file);
+			foreach(const QString &file, files)
+			{
+				if(file.size() > 0)
+				{
+					NzbFile *nzbFile = reader.parseLocalData(file);
 
-                    if (nzbFile->size() > 0)
-                    {
-                        nzbFiles.append(nzbFile);
-                    }
-                }
+					if (nzbFile->size() > 0)
+					{
+						nzbFiles.append(nzbFile);
+					}
+				}
+			}
 
-            }
-
-            if(nzbFiles.size() == 0)
+			if(nzbFiles.size() == 0)
 			{
                 return false;
 			}
 
-            if(parent.isValid())
-            {
+			if(parent.isValid())
+			{
                 /* We only want to add stuff to the top level if we are dropping NZB files */
 				int beginrow = row;
 				QModelIndex idx;
@@ -189,26 +188,12 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 				}
 
 				insertNzbFiles(nzbFiles, beginrow);
-
-				/*if(insertRows(beginrow, nzbFiles.size()))
-				{
-					QModelIndex start = index(beginrow, 0);
-					
-					foreach(NzbFile *nzbFile, nzbFiles)
-					{
-						QModelIndex idx = index(beginrow, 0);
-						setData(idx, QVariant::fromValue(*nzbFile));
-						beginrow++;
-					}
-
-					emit dataChanged(start, index(beginrow - 1, columnCount()));
-				}*/
-            }
-            else
-            {
-                /* Top level drop */
+			}
+			else
+			{
+				/* Top level drop */
 				appendNzbFiles(nzbFiles);
-            }
+			}
 		}
 	}
 
@@ -264,15 +249,13 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 							//We have to do this the slow, safe way since by taking a file we invalidate any known indexes
 							int filerow = nzbFile->indexOf(file);
 							beginRemoveRows(nzbParent, filerow, filerow);
-							files.append(nzbFile->takeAt(filerow));
+							files.append(nzbFile->detatchFile(filerow));
 							endRemoveRows();
 						}
 					}
 				}
 
-				int numfiles = files.size();
-
-				if(numfiles > 0)
+				if(files.size() > 0)
 				{
 					int beginrow = nzbFile->indexOf(droptarget);
 
@@ -338,7 +321,7 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 								{
 									filerow = droptarget->indexOf(file);
 									beginRemoveRows(parent, filerow, filerow);
-									files.append(droptarget->takeAt(filerow));
+									files.append(droptarget->detatchFile(filerow));
 									endRemoveRows();
 								}
 								break;
@@ -362,114 +345,39 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 			{
 				//Drop occured outside the tree's contents
 				//Only nzbfiles must be appended to the tree's contents
+				QList<NzbFile*> nzbFiles;
 				
+				foreach(BaseType *base, nzbData)
+				{
+					if(base->type() == BaseType::NZBFILE)
+					{
+						NzbFile *nzbFile = dynamic_cast<NzbFile*>(base);
+
+						if(!nzbFile)
+						{
+							continue;
+						}
+
+						int filerow = downloadqueue->indexOf(nzbFile);
+						beginRemoveRows(QModelIndex(), filerow, filerow);
+						nzbFiles.append(downloadqueue->takeAt(filerow));
+						endRemoveRows();
+					}
+				}
+				
+				if(nzbFiles.count() > 0)
+				{
+					appendNzbFiles(nzbFiles);
+				}
 			}
 		}
-
-        //Note: The list is garuanteed to contain only parents who's children are not in the list.
-		//See mimeData()
-        /*foreach(BaseType *base, nzbData)
-        {
-            if (base->type() == BaseType::NZBFILE)
-            {
-                NzbFile *nzbFile = dynamic_cast< NzbFile* >(base);
-
-                if (!nzbFile)
-				{
-                    continue;
-				}
-
-                //We can do this without an operator== in NzbFile since although the Qt docs claim
-                //you must have it, the compiler just compares the memory address for pointers.
-                //Since a copy operation on a QList of pointers just copies the pointer, the memory
-                //in all lists will point to the same object.
-                int currentrow = downloadqueue->indexOf(nzbFile);
-                //We can't use remove/insertRows() here, and we need to implement the
-				//begin/endRemove/InsertRows to avoid corruption of the model/view
-				QModelIndex idx = index(currentrow, 0);
-
-                //Naughty user, no dropping items on themselves or their children
-                if (idx == parent || idx == parent.parent())
-				{
-                    continue;
-				}
-
-                bool expanded = view->isExpanded(idx);
-				beginRemoveRows(QModelIndex(), currentrow, currentrow);
-                //Essentially take yourself...oh, the innuendo inherent in this operation :p
-				nzbFile = downloadqueue->takeAt(currentrow);
-                int rows = nzbFile->size();
-                endRemoveRows();
-                //Chaining ternary expressions...besides looking cool, it also deals with wankers who think dropping
-                //top-level items on other peoples children is funny
-				currentrow = parent.parent().isValid() ? parent.parent().row() : (parent.isValid() ? parent.row() : rowCount());
-				beginInsertRows(QModelIndex(), currentrow, currentrow);
-				downloadqueue->insert(currentrow, nzbFile);
-                endInsertRows();
-				QModelIndex newIdx = index(currentrow, 0);
-                emit dataChanged(newIdx, index(rows, columnCount(), newIdx));
-
-                if (expanded)
-				{
-                    view->setExpanded(newIdx, true);
-				}
-            }
-            else
-            {
-                File *file = dynamic_cast<File*>(base);
-
-				if(!file)
-				{
-					continue;
-				}
-
-                //Only process the drop if it is dropped on it's parent or on another sibling
-                if (file->parent() == parent.internalPointer() || file->parent() == parent.parent().internalPointer())
-                {
-                    NzbFile *nzbFile = file->parent();
-					int currentrow = nzbFile->indexOf(file);
-
-					if (currentrow >= 0 && currentrow < nzbFile->size())
-                    {
-                        QModelIndex parentIdx = index(downloadqueue->indexOf(nzbFile), 0);
-						beginRemoveRows(parentIdx, currentrow, currentrow);
-						file = nzbFile->takeAt(currentrow);
-                        endRemoveRows();
-
-						if(filerow < 0)
-						{
-							if(file->parent() != parent.internalPointer())
-							{
-								File *child = static_cast<File*>(parent.internalPointer());
-								filerow = nzbFile->indexOf(child) + 1;
-							}
-							else
-							{
-								filerow = 0;
-							}
-						}
-						
-						beginInsertRows(parentIdx, filerow, filerow);
-						nzbFile->insert(filerow, file);
-                        endInsertRows();
-						emit dataChanged(index(filerow, 0, parentIdx), index(filerow, columnCount(), parentIdx));
-
-						if(currentrow > filerow)
-						{
-							filerow++;
-						}
-                    }
-
-                }
-            }
-        }*/
-    }
+	}
 
 	//Unselect rows, otherwise the wrong rows become selected, which is odd and confusing.
 	//NOTE For some reason unkown to mankind, this line is absolutely fucking imperative, otherwise
 	//the selection gets deleted if nothing is done with it. Go figure.
 	view->selectionModel()->clearSelection();
-    return true;
+	return true;
 }
 
 Qt::ItemFlags KNewzModel::flags(const QModelIndex &index) const
@@ -1038,10 +946,12 @@ bool KNewzModel::setData(const QModelIndex& index, const QVariant& value, int ro
     else if (value.canConvert<File>() && (base->type() == BaseType::FILE))
     {
         File f_data = value.value<File>();
-        QModelIndex parent = index.parent();
+		QModelIndex parent = index.parent();
         //Same story here as above, except we need to go one step further and
 		//get a File. I'm sure you can follow it by now :)
-		*(*(*downloadqueue)[parent.row()])[index.row()] = f_data;
+		NzbFile *nzbFile = downloadqueue->at(parent.row());
+		*(*nzbFile)[index.row()] = f_data;
+		(*(*nzbFile)[index.row()]).setParent(nzbFile);
         return true;
     }
 

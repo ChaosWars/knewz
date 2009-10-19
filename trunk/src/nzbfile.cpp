@@ -59,6 +59,19 @@ void NzbFile::print()
     printf("bytes: %llu\n", m_bytes);
 }
 
+File* NzbFile::detatchFile(int row)
+{
+	File *file = NULL;
+
+	if(row >= 0 && row < count())
+	{
+		file = takeAt(row);
+		file->setParent(NULL);
+	}
+
+	return file;
+}
+
 NzbFile& NzbFile::operator=(const NzbFile & other)
 {
     if (this != &other)

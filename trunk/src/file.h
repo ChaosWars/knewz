@@ -62,6 +62,8 @@ class File : public QList<Segment*>, public BaseType
          */
         explicit File(NzbFile *parent = 0, const QString &subject = QString(), quint32 bytes = 0, const QStringList &groups = QStringList());
 
+		//File(const File &other);
+
         ~File();
 
         /**
@@ -140,7 +142,7 @@ class File : public QList<Segment*>, public BaseType
 
         quint32 status() const { return m_status; }
 
-        //File& operator=( const File &other );
+        //File& operator=(const File &other);
 
         friend class NzbFile;
 

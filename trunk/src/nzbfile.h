@@ -91,6 +91,8 @@ class NzbFile : public QList<File*>, public BaseType
 
         quint64 status() const { return m_status; }
 
+		File* detatchFile(int row);
+
         NzbFile& operator=(const NzbFile &other);
 
         /* QVariant stream operators */
