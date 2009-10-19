@@ -28,7 +28,6 @@
 #include <QModelIndexList>
 #include <QMutexLocker>
 #include "basetype.h"
-//#include "downloadqueue.h"
 #include "file.h"
 #include "knewzmodel.h"
 #include "knewzview.h"
@@ -47,7 +46,6 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_Delete)
         {
-            //QMutexLocker lock(&downloadqueue->mutex());
             QModelIndexList list = m_parent->selectionModel()->selectedRows();
             m_parent->model()->sanitizeSelection(list);
 
@@ -136,8 +134,9 @@ void KNewzView::dropEvent(QDropEvent *event)
 {
     if(event->mimeData()->hasFormat("text/uri-list"))
     {
-		QModelIndex index(indexAt(event->pos()));
-        model()->dropMimeData(event->mimeData(), event->proposedAction(), index.row(), columnAt(event->pos().y()), index);
+		QModelIndex idx(indexAt(event->pos()));
+		QModelIndex parent = model()->index(idx.row(), 0, idx.parent());
+        model()->dropMimeData(event->mimeData(), event->proposedAction(), idx.row(), idx.column(), parent);
         event->acceptProposedAction();
     }
     else if(event->mimeData()->hasFormat("text/x-nzb"))
@@ -147,8 +146,9 @@ void KNewzView::dropEvent(QDropEvent *event)
 
         if(mimeData)
         {
-			QModelIndex index(indexAt(event->pos()));
-			model()->dropMimeData(mimeData, event->dropAction(), index.row(), columnAt(event->pos().y()), index);
+			QModelIndex idx(indexAt(event->pos()));
+			QModelIndex parent = model()->index(idx.row(), 0, idx.parent());
+			model()->dropMimeData(mimeData, event->dropAction(), idx.row(), idx.column(), parent);
             event->accept();
         }
     }

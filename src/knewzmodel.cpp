@@ -302,7 +302,7 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 				if(!nzbData.contains(droptarget))
 				{
 					//If we don't get the index at column 0, everything goes to shit
-					QModelIndex nzbParent = index(row, 0);
+					//QModelIndex nzbParent = index(row, 0);
 					QList<NzbFile*> nzbFiles;
 					QList<File*> files;
 					NzbFile *nzbFile = NULL;
@@ -337,7 +337,7 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 								if(file->parent() == droptarget)
 								{
 									filerow = droptarget->indexOf(file);
-									beginRemoveRows(nzbParent, filerow, filerow);
+									beginRemoveRows(parent, filerow, filerow);
 									files.append(droptarget->takeAt(filerow));
 									endRemoveRows();
 								}
@@ -354,7 +354,7 @@ bool KNewzModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
 					if(files.size() > 0)
 					{
-						insertFiles(nzbParent, files);
+						insertFiles(parent, files);
 					}
 				}
 			}
@@ -548,7 +548,6 @@ bool KNewzModel::insertFiles(const QModelIndex &parent, const QList<File*> &file
 
 bool KNewzModel::appendFiles(const QModelIndex &parent, const QList<File*> &files)
 {
-	qDebug() << rowCount(parent);
 	return insertFiles(parent, files, rowCount(parent));
 }
 
