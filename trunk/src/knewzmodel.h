@@ -93,16 +93,18 @@ class KNewzModel : public BaseModel
         virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
         virtual Qt::DropActions supportedDropActions() const;
 
-    public Q_SLOTS:
-        void moveToTop();
-        void moveUp();
-        void moveDown();
-        void moveToBottom();
-
     private:
-        KNewzView *m_parent;
-        DownloadQueue *downloadqueue;
-        friend class KNewzViewEventFilter;
+		enum MoveTo{TOP = 0, UP, DOWN, BOTTOM};
+		KNewzView *m_parent;
+		DownloadQueue *downloadqueue;
+		friend class KNewzViewEventFilter;
+
+	public Q_SLOTS:
+		void moveTo(MoveTo position);
+		void moveToTop();
+		void moveUp();
+		void moveDown();
+		void moveToBottom();
 };
 
 #endif

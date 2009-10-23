@@ -48,7 +48,8 @@ class BaseModel : public QAbstractItemModel
 
         BaseModel(QTreeView *parent);
         virtual ~BaseModel() = 0;
-        virtual QList< File* > sanitizeSelection(QModelIndexList &selection) const;
+		void cleanSelection(QModelIndexList &selection) const;
+		QList< File* > sanitizeSelection(QModelIndexList &selection) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     protected:
