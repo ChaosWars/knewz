@@ -30,7 +30,6 @@
 #include <KDE/KSharedConfig>
 #include <KDE/KXmlGuiWindow>
 #include <KDE/KUrl>
-#include <QMutex>
 
 class KAction;
 class KComboBox;
@@ -124,8 +123,8 @@ class KNewz : public KXmlGuiWindow
         KAction *searchAction, *searchLineAction, *searchBoxAction;
         //Queue Actions
         KAction *resumeQueueAction, *stopQueueAction, *clearQueueAction;
-        static KNewz *m_instance;
-        static QMutex m_mutex;
+        //static KNewz *m_instance;
+        //static QMutex m_mutex;
         //Functions
         bool ok_to_close;
         void checkDirectories();

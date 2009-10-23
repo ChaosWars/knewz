@@ -38,7 +38,9 @@ BaseModel::~BaseModel()
 QVariant BaseModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+	{
         return rootItem.at(section);
+	}
 
     return QVariant();
 }
@@ -46,29 +48,30 @@ QVariant BaseModel::headerData(int section, Qt::Orientation orientation, int rol
 void BaseModel::clicked(const QModelIndex& index)
 {
     if (!(index.column() == 0))
+	{
         return;
+	}
 
     BaseType *base = static_cast< BaseType* >(index.internalPointer());
-
     Qt::CheckState checkstate = base->state() == Qt::Checked ? Qt::Unchecked : Qt::Checked;
-
     changeCheckState(index, checkstate, base);
 }
 
 void BaseModel::changeCheckState(const QModelIndex &idx, Qt::CheckState state, BaseType *base)
 {
-    if (!base)
+    if(!base)
+	{
         base = static_cast< BaseType* >(idx.internalPointer());
+	}
 
     base->setState(state);
-
     view->update(idx);
 
-    if (base->type() == BaseType::NZBFILE)
+    if(base->type() == BaseType::NZBFILE)
     {
         NzbFile *nzbFile = static_cast< NzbFile* >(idx.internalPointer());
 
-        for (int i = 0, size = nzbFile->size(); i < size; i++)
+        for(int i = 0, size = nzbFile->size(); i < size; i++)
         {
             nzbFile->at(i)->setState(state);
             view->update(index(i, 0, idx));
@@ -82,7 +85,6 @@ void BaseModel::changeCheckState(const QModelIndex &idx, Qt::CheckState state, B
 
         for (int i = 0, size = nzbFile->size(); i < size; i++)
         {
-
             if (nzbFile->at(i)->state() == m_state)
             {
                 counter++;
@@ -90,9 +92,23 @@ void BaseModel::changeCheckState(const QModelIndex &idx, Qt::CheckState state, B
         }
 
         counter == nzbFile->size() ? nzbFile->setState(m_state) : nzbFile->setState(Qt::PartiallyChecked);
-
         view->update(idx.parent());
     }
+}
+
+void BaseModel::cleanSelection(QModelIndexList &selection) const
+{
+	QMutableListIterator<QModelIndex> it(selection);
+	
+	while (it.hasNext())
+	{
+		QModelIndex idx = it.next();
+		
+		if(idx.column() > 0)
+		{
+			it.remove();
+		}
+	}
 }
 
 QList<File*> BaseModel::sanitizeSelection(QModelIndexList &selection) const
@@ -100,31 +116,22 @@ QList<File*> BaseModel::sanitizeSelection(QModelIndexList &selection) const
     /* We want to filter the index list here, since we cannot allow a selection to contain both
     root items and children of those root items. Here we traverse the list, filtering out any
     children who's parents are also in the list */
-
-    QMutableListIterator< QModelIndex > it(selection);
-
-    while (it.hasNext())
-    {
-        QModelIndex idx = it.next();
-
-        if (idx.column() > 0)
-            it.remove();
-    }
+	cleanSelection(selection);
 
     //List is now 4x shorter
-    it.toFront();
+	QMutableListIterator<QModelIndex> it(selection);
     QList<File*> files;
 
-    while (it.hasNext())
+    while(it.hasNext())
     {
         QModelIndex idx = it.next();
         BaseType *base = static_cast< BaseType* >(idx.internalPointer());
 
-        if (base->type() == BaseType::FILE)
+        if(base->type() == BaseType::FILE)
         {
             File *file = dynamic_cast< File* >(base);
 
-            if (file)
+            if(file)
             {
                 //If the current files parent is also in the list, then we don't want to process it
                 if(selection.indexOf(idx.parent(), 0) != -1)
