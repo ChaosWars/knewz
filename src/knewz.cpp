@@ -239,7 +239,7 @@ void KNewz::openRecentFile(const KUrl &url)
 
         if (nzbDialog.result() == QDialog::Accepted)
         {
-			m_model->appendNzbFiles(nzbDialog.files());
+			m_model->openNzbFiles(nzbDialog.files(), m_model->rowCount());
             /*downloadqueue->mutex().lock();
             int row = m_model->rowCount();
             int count = nzbDialog.files().size();
@@ -259,7 +259,6 @@ void KNewz::openRecentFile(const KUrl &url)
             downloadqueue->mutex().unlock();*/
         }
     }
-
 }
 
 void KNewz::optionsConfigure()
@@ -310,7 +309,7 @@ void KNewz::parseCommandLineArgs()
                     return;
                 }*/
 
-				m_model->appendNzbFiles(nzbDialog.files());
+				m_model->openNzbFiles(nzbDialog.files(), m_model->rowCount());
                 /*downloadqueue->mutex().lock();
 
                 int row = m_model->rowCount();
@@ -329,7 +328,7 @@ void KNewz::parseCommandLineArgs()
         }
         else
         {
-			m_model->appendNzbFiles(nzbFiles);
+			m_model->openNzbFiles(nzbFiles, m_model->rowCount());
             /*int count = nzbFiles.size();
             downloadqueue->mutex().lock();
             int row = m_model->rowCount();
@@ -463,7 +462,7 @@ void KNewz::openFiles(const QStringList &files, bool silently)
 
             if (nzbDialog.result() == QDialog::Accepted)
             {
-				m_model->appendNzbFiles(nzbDialog.files());
+				m_model->openNzbFiles(nzbDialog.files(), m_model->rowCount());
                 /*int count = nzbDialog.files().size();
 
                 if (count < 1)
@@ -487,7 +486,7 @@ void KNewz::openFiles(const QStringList &files, bool silently)
         }
         else
         {
-			m_model->appendNzbFiles(nzbFiles);
+			m_model->openNzbFiles(nzbFiles, m_model->rowCount());
             /*downloadqueue->mutex().lock();
             int row = m_model->rowCount();
             m_model->insertRows(row, nzbFiles.size());
