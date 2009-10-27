@@ -69,15 +69,10 @@ class KNewzModel : public BaseModel
 		* @return
 		*      \c false if \p parent was not valid or if parent.column() was larger than 0.
 		*/
-		bool insertFiles(const QModelIndex &parent, const QList<File*> &files, int row = 0);
-		bool appendFiles(const QModelIndex &parent, const QList<File*> &files);
+		bool insertFiles(NzbFile *parent, const QList<File*> &files, int row = 0);
 		bool insertNzbFiles(const QList<NzbFile*> &nzbFiles, int row = 0);
 		bool appendNzbFiles(const QList<NzbFile*> &nzbFiles);
-		bool removeRows(const QList<File*> &files);
-		bool removeRow(File *file);
-		bool removeRows(const QList<NzbFile*> &nzbFiles);
-		bool removeRow(NzbFile *nzbFile);
-		
+		bool openNzbFiles(const QList<NzbFile*> &nzbFiles, int row);
 		//Overridden function from QAbstractItemModel
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
         virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;

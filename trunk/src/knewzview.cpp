@@ -51,28 +51,29 @@ bool KNewzViewEventFilter::eventFilter(QObject *obj, QEvent *event)
 
             foreach(const QModelIndex &index, list)
             {
-                BaseType *base = static_cast< BaseType* >(index.internalPointer());
-
-                if (base->type() == BaseType::NZBFILE)
-                {
-                    NzbFile *nzbFile = dynamic_cast< NzbFile* >(base);
-
-                    if (nzbFile)
-                    {
-                        m_parent->model()->removeRow(nzbFile);
-                    }
-
-                }
-                else
-                {
-                    File *file = dynamic_cast< File* >(base);
-                    NzbFile *parent = file->parent();
-
-                    if (file)
-					{
-                        m_parent->model()->removeRows(parent->indexOf(file), 1, index.parent());
-					}
-                }
+				m_parent->model()->removeRows(index.row(), 1, index.parent());
+//                 BaseType *base = static_cast< BaseType* >(index.internalPointer());
+// 
+//                 if (base->type() == BaseType::NZBFILE)
+//                 {
+//                     NzbFile *nzbFile = dynamic_cast< NzbFile* >(base);
+// 
+//                     if(nzbFile)
+//                     {
+//                         m_parent->model()->removeRow(index.row());
+//                     }
+// 
+//                 }
+//                 else
+//                 {
+//                     File *file = dynamic_cast< File* >(base);
+//                     NzbFile *parent = file->parent();
+// 
+//                     if (file)
+// 					{
+//                         m_parent->model()->removeRows(parent->indexOf(file), 1, index.parent());
+// 					}
+//                 }
             }
         }
         else if (keyEvent->key() == Qt::Key_Space)
