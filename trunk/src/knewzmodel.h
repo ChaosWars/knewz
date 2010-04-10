@@ -93,9 +93,9 @@ class KNewzModel : public BaseModel
 		KNewzView *m_parent;
 		DownloadQueue *downloadqueue;
 		friend class KNewzViewEventFilter;
+		void moveTo(MoveTo position);
 
 	public Q_SLOTS:
-		void moveTo(MoveTo position);
 		void moveToTop();
 		void moveUp();
 		void moveDown();

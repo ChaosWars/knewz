@@ -45,6 +45,7 @@ class Connection : public QThread
         bool quit;
         Socket *socket;
         QWaitCondition cond;
+		QStringList commandQueue;
 };
 
 #endif

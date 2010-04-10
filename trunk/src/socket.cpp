@@ -46,7 +46,7 @@ void Socket::connectToHost()
 
 void Socket::parseReply(const QString &reply)
 {
-	Q_UNUSED(reply);
+	qDebug() << reply;
 }
 
 #include "socket.moc"

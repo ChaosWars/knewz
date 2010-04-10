@@ -48,82 +48,120 @@ void Connection::run()
 
     while(!socket->waitForConnected(timeout))
     {
-        kdDebug() << socket->errorString();
+        qDebug() << "Failed while waiting for socket connection: " << socket->errorString();
 
         if(retry < retry_attempts)
         {
-			kdDebug() << "Sleeping on connection for " << retry_delay << " seconds";
+			qDebug() << "Sleeping on connection for " << retry_delay << " seconds";
             sleep(retry_delay);
             retry++;
         }
         else
         {
-			kdDebug() << "Finished retrying connection";
+			qDebug() << "Finished retrying connection";
             break;
         }
 
-		kdDebug() << "Retrying connect: attempt #" << retry;
+		qDebug() << "Retrying connect: attempt #" << retry;
     }
 
-	kdDebug() << "Socket state: " << socket->state();
+	qDebug() << "Socket state: " << socket->state();
 
     if(socket->useSsl())
     {
-        kdDebug() << "Trying to secure SSL connection";
+        qDebug() << "Trying to secure SSL connection";
         retry = 0;
 
 		while(!socket->waitForEncrypted(timeout))
         {
-			kdDebug() << "SSL errors: " << socket->sslErrors();
+			qDebug() << "SSL errors: " << socket->sslErrors();
 
             if(retry < retry_attempts)
             {
-				kdDebug() << "Sleeping on ssl connection for " << retry_delay << " seconds";
+				qDebug() << "Sleeping on ssl connection for " << retry_delay << " seconds";
                 sleep(retry_delay);
                 retry++;
             }
             else
             {
-				kdDebug() << "Finished retrying ssl connection";
+				qDebug() << "Finished retrying ssl connection";
                 break;
             }
 
-            kdDebug() << "Retrying ssl connection: attempt #" << retry;
+            qDebug() << "Retrying ssl connection: attempt #" << retry;
         }
 
-		kdDebug() << "Socket mode: " << socket->mode();
-		kdDebug() << "Socket state: " << socket->state();
+		qDebug() << "Socket mode: " << socket->mode();
+		qDebug() << "Socket state: " << socket->state();
     }
 
     if(socket->state() == QSslSocket::ConnectedState)
     {
-		kdDebug() << "Connected";
+		qDebug() << "Connected";
+		retry = 0;
 
 		while (!quit)
         {
-			
-			while(socket->waitForReadyRead(timeout) && !quit)
+			while(!socket->waitForReadyRead(timeout) && !quit)
 			{
-				socket->parseReply(socket->readAll());
-				kdDebug() << "wait for ready read";
+				qDebug() << "Failed while waiting for ready read: " << socket->errorString();
+				
+				if(retry < retry_attempts)
+				{
+					qDebug() << "Sleeping on connection for " << retry_delay << " seconds";
+					sleep(retry_delay);
+					retry++;
+				}
+				else
+				{
+					qDebug() << "Failed on retry ready read";
+					break;
+				}
+
+				qDebug() << "Retrying connection for ready read: attempt #" << retry;
 			}
 
-			kdDebug() << "Not quitting";
-        }
+			socket->parseReply(socket->readAll());
 
-		kdDebug() << "Quitting";
+			if(!commandQueue.isEmpty())
+			{
+				socket->write(commandQueue.first().toLatin1());
+				retry = 0;
+				
+				while(!socket->waitForBytesWritten(timeout))
+				{
+					qDebug() << "Failed while waiting for bytes written: " << socket->errorString();
+					
+					if(retry < retry_attempts)
+					{
+						qDebug() << "Sleeping on connection for " << retry_delay << " seconds";
+						sleep(retry_delay);
+						retry++;
+					}
+					else
+					{
+						qDebug() << "Finished retrying connection";
+						break;
+					}
+
+					qDebug() << "Retrying connection for write: attempt #" << retry;
+				}
+			}
+        }
 	}
 	else
 	{
-		kdDebug() << "Not connected";
+		qDebug() << "Not connected";
 	}
 
+	qDebug() << "Closing socket";
     socket->close();
 }
 
 void Connection::close()
 {
 	quit = true;
+	socket->abort();
 }
 
 #include "connection.moc"
