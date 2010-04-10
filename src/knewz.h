@@ -106,14 +106,13 @@ class KNewz : public KXmlGuiWindow
         //Download queue instance
         //DownloadQueue *downloadqueue;
         //Actions
-        KAction *openFilesAction, *preferences;
+        KAction *openFilesAction, *preferences, *toggleDock;
         KConfigGroup *configGroup;
         KRecentFilesAction *recentFiles;
         KSharedConfigPtr config;
         KSystemTrayIcon *trayIcon;
         KNewzWallet *knewzwallet;
         //Dock Widget
-        QAction *toggleDock;
         QDockWidget *dock;
         DockButtonWidget *dockButtonWidget;
         //KNewzTitleWidget *titleWidget;

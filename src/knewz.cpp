@@ -104,6 +104,7 @@ KNewz::~KNewz()
     recentFiles->saveEntries(*configGroup);
     configGroup->changeGroup("SearchSettings");
     configGroup->writeEntry("SearchHistory", searchLine->historyItems());
+	configGroup->writeEntry("SearchEngine", QString::number(searchBox->currentIndex()));
     configGroup->writeEntry("CompletionHistory", searchLine->completionObject()->items());
 
     if(connection)
@@ -186,6 +187,7 @@ void KNewz::loadSettings()
     recentFiles->loadEntries(*configGroup);
     configGroup->changeGroup("SearchSettings");
     searchLine->setHistoryItems(configGroup->readEntry("SearchHistory", QStringList()));
+	searchBox->setCurrentIndex(configGroup->readEntry("SearchEngine", QString()).toInt());
     searchLine->completionObject()->setItems(configGroup->readEntry("CompletionHistory", QStringList()));
 
     if (KNewzSettings::saveEncrypted() && KNewzSettings::authentication())
@@ -370,9 +372,10 @@ void KNewz::searchTextChanged(const QString &text)
 void KNewz::setupActions()
 {
     createStandardStatusBarAction();
-    toggleDock = dock->toggleViewAction();
+	toggleDock = new KAction(i18n("Show &Dock"), this);
     toggleDock->setObjectName("toggle_dock");
-    toggleDock->setText(i18n("Show &Dock"));
+	toggleDock->setCheckable(true);
+	connect(toggleDock,SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
     actionCollection()->addAction("toggle_dock", toggleDock);
     openFilesAction = KStandardAction::open(this, SLOT(urlOpen()), actionCollection());
     recentFiles = KStandardAction::openRecent(this, SLOT(openRecentFile(KUrl)), actionCollection());
