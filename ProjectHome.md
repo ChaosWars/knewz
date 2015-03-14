@@ -1,0 +1,1 @@
+Newsreader for KDE4 for downloading the files listed in NZB files
