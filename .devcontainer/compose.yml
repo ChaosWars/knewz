@@ -1,0 +1,9 @@
+---
+services:
+  devcontainer:
+    command: sleep infinity
+    container_name: knewz-devcontainer
+    hostname: knewz-devcontainer
+    image: mcr.microsoft.com/devcontainers/base:noble
+    volumes:
+      - ..:/workspaces/knewz:cached
