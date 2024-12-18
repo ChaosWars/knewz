@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=com.googlecode.knewz
-Exec=@CMAKE_INSTALL_PREFIX@/bin/knewz
