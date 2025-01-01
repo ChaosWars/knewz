@@ -1,9 +1,14 @@
 ---
 services:
   devcontainer:
+    build:
+      args:
+        - LLVM_APT_LIST=/etc/apt/sources.list.d/llvm-snapshot.list
+        - LLVM_TOOLCHAIN_GPG=/etc/apt/keyrings/llvm-snapshot.gpg
+      context: .
+      dockerfile: Containerfile
     command: sleep infinity
-    container_name: knewz-devcontainer
-    hostname: knewz-devcontainer
-    image: mcr.microsoft.com/devcontainers/base:noble
+    container_name: knewz-dev
+    hostname: knewz-dev
     volumes:
       - ..:/workspaces/knewz:cached

@@ -1,0 +1,33 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "Clang",
+            "displayName": "Clang 19.1.6 aarch64-unknown-linux-gnu",
+            "description": "Using compilers: C = /usr/lib/llvm-19/bin/clang, CXX = /usr/lib/llvm-19/bin/clang++",
+            "binaryDir": "${sourceDir}/build",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/install",
+                "CMAKE_C_COMPILER": "/usr/lib/llvm-19/bin/clang",
+                "CMAKE_CXX_COMPILER": "/usr/lib/llvm-19/bin/clang++"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "Clang",
+            "displayName": "Clang 19.1.6 aarch64-unknown-linux-gnu",
+            "description": "Build the project using Clang",
+            "configurePreset": "Clang"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "Clang",
+            "displayName": "Clang 19.1.6 aarch64-unknown-linux-gnu",
+            "description": "Test the project using Clang",
+            "configurePreset": "Clang"
+        }
+    ]
+}

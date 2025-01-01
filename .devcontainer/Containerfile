@@ -1,0 +1,50 @@
+FROM mcr.microsoft.com/devcontainers/base:noble
+
+ENV LLVM_TOOLCHAIN_GPG /etc/apt/keyrings/llvm-snapshot.gpg
+RUN mkdir -m 0755 -p /etc/apt/keyrings \
+    && curl -fsSL https://apt.llvm.org/llvm-snapshot.gpg.key | sudo gpg --dearmor -o $LLVM_TOOLCHAIN_GPG \
+    && chmod a+r $LLVM_TOOLCHAIN_GPG
+
+ENV LLVM_APT_LIST /etc/apt/sources.list.d/llvm-snapshot.list
+RUN export ARCH=$(dpkg --print-architecture) \
+    && export VERSION_CODENAME=$(. /etc/os-release && echo $VERSION_CODENAME) \
+    && echo "deb [arch="$ARCH" signed-by=$LLVM_TOOLCHAIN_GPG] http://apt.llvm.org/"$VERSION_CODENAME"/ llvm-toolchain-"$VERSION_CODENAME"-19 main" | sudo tee "$LLVM_APT_LIST" > /dev/null \
+    && echo "deb-src [arch="$ARCH" signed-by=$LLVM_TOOLCHAIN_GPG] http://apt.llvm.org/"$VERSION_CODENAME"/ llvm-toolchain-"$VERSION_CODENAME"-19 main" | sudo tee -a "$LLVM_APT_LIST" > /dev/null
+
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get -yq update \
+    && apt-get -yq upgrade \
+    && apt-get -yq install --no-install-recommends \
+        build-essential \
+        ccache \
+        clang-19 \
+        clang-format-19 \
+        clang-tidy-19 \
+        clang-tools-19 \
+        clangd-19 \
+        cmake \
+        git \
+        jq \
+        kde-standard \
+        libc++-dev \
+        libc++abi-dev \
+        libclang-common-19-dev \
+        libclang-19-dev \
+        libclang-rt-19-dev \
+        libclang1-19 \
+        libfuzzer-19-dev \
+        libllvm-19-ocaml-dev \
+        libllvm19 \
+        libpolly-18-dev \
+        lld-19 \
+        lldb-19 \
+        llvm-19 \
+        llvm-19-dev \
+        llvm-19-runtime \
+        ninja-build \
+        python3-clang-19 \
+        python3-dbus \
+        python3-setproctitle \
+        python3-yaml \
+    && apt-get -yq autoremove && apt-get -yq clean && rm -rf /var/lib/apt/lists/*
+
+ENV PATH /usr/lib/llvm-19/bin:$PATH

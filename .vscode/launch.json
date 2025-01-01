@@ -1,0 +1,25 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb-dap",
+            "request": "launch",
+            "name": "LLDB DAP Launch",
+            "program": "${command:cmake.getLaunchTargetPath}",
+            "args": [],
+            "env": [],
+            "cwd": "${workspaceFolder}",
+            "runInTerminal": true
+        },
+        {
+            "type": "lldb-dap",
+            "request": "attach",
+            "name": "LLDB DAP Attach",
+            "program": "${command:cmake.getLaunchTargetPath}",
+            "waitFor": true
+        }
+    ]
+}
